@@ -1,0 +1,27 @@
+' Gambas module file
+
+Public sInfotext As String
+
+Public Sub Anzeige()
+    
+  Message.Info("Die ausgelagerte Funktion wurde aufgerufen", "OK")  'eine Testfunktion
+    
+End
+
+Public Sub Verschieben()
+    ''Verschieben Funktion
+    Shell "mv " & Quote(FMain.QUELLE) & " " & Quote(FMain.ZIEL) Wait 
+    If Error Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
+End
+
+
+
+
+
+'' andere Funktionen
+Public Sub Killen()
+    'Eine Datei endgültig löschen >>> rechte Seite
+    ' Try Kill FileView2.Dir &/ FileView2.Current
+    ' If Error Then Message("Es ist ein Fehler aufgetreten!")
+    ' FileView2.Reload  
+End

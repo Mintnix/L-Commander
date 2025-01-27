@@ -1,0 +1,20 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,53,54)
+  Background = &HDFFFFF
+  { TextArea1 TextArea
+    MoveScaled(1,2,51,47)
+    Font = Font["13"]
+    Text = ("F1\t\t=\tHilfefenster\nF2\t\t=\tDetails anzeigen\nF3\t\t=\tBildvorschau\nF4\t\t=\tVerzeichnisbaum anzeigen\nF5\t\t=\tDatei kopieren\nF6\t\t=\tDatei verschieben\nF7\t\t=\tVerzeichnis erstellen\nF8\t\t=\tDatei/Verzeichnis umbenennen\nF9\t\t=  \nF10\t=\tProgramm beenden\nF11\t=\tSchriftvorschau\nF12\t=  \nAlt\t\t=\tMenü\nReturn\t=\tDoppelklick\nEsc\t\t=\tZurück")
+    ReadOnly = True
+    Border = False
+  }
+  { URLLabel1 URLLabel
+    MoveScaled(1,50,50,3)
+    ToolTip = ("öffnet die entsprechende Internetseite openyourlinux.de")
+    Alignment = Align.Center
+    Text = ("Für mehr Informationen bitte den Link anklicken.")
+    Link = "https://openyourlinux.de"
+  }
+}

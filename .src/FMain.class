@@ -1,0 +1,867 @@
+' Gambas class file
+
+Public Trash_Dir As String = "~/.local/share/Trash"
+Public Trash_Files As String = Trash_Dir &/ "files"
+Public Trash_Info As String = Trash_Dir &/ "info"
+Public QUELLDATEI As String
+Public QUELLPFAD As String
+Public QUELLE As String
+Public ZIELDATEI As String
+Public ZIELPFAD As String
+Public ZIEL As String
+Public lOrdner As String
+Public rOrdner As String
+Public dTimeDate As Date
+Public iStandardfarbe As Integer = &HBFFFFF 'Standardfarbe
+Public iHindergrund As Integer = &HDFF7FF
+Public iVordergrund As Integer
+Public sEditfile As String
+Public iLR As Integer = 0                       'linkes oder rechtes Feld zuletzt gewählt
+
+
+Public Sub Form_Open()
+    'das passiert nach Start
+    Splitter1.Layout = [48, 4, 48]
+    Splitter3.Layout = [20, 3, 3, 24, 24, 3, 3, 20]
+    TextLabel1.Text = "Bereit für die Arbeit."
+    'Print Trash_Dir
+    'Print Trash_Files
+    'Print Trash_Info
+    FileView1.Background = iHindergrund
+    FileView2.Background = iHindergrund
+    FileView1.Dir = User.Home
+    FileView2.Dir = User.Home
+    lOrdner = FileView1.Dir
+    rOrdner = FileView2.Dir
+    Print lOrdner & "  |  " & rOrdner
+    LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
+    Spruch()
+    Menu2.Visible = False
+    Menu15.Visible = False
+End
+
+Public Sub Spruch()
+    'Spruch des Tages
+    Dim x As Integer
+    x = Rand(1, 20)
+    'Print x
+    If x = 1 Then Label1.Text = "Morgen, morgen nur nicht heute, sagen alle faulen Leute."
+    If x = 2 Then Label1.Text = "Denke nie gedacht zu haben, denn das Denken der Gedanken ist gedankenloses Denken."
+    If x = 3 Then Label1.Text = "Was du heute kannst besorgen, verschiebe nicht auf morgen."
+    If x = 4 Then Label1.Text = "Man muss das Eisen schmieden, solange es heiß ist."
+    If x = 5 Then Label1.Text = "Kindermund tut Wahrheit kund."
+    If x = 6 Then Label1.Text = "Was Hänschen nicht lernt, lernt Hans nimmermehr."
+    If x = 7 Then Label1.Text = "Lieber den Spatz in der Hand als die Taube auf dem Dach."
+    If x = 8 Then Label1.Text = "Man soll den Tag nicht vor dem Abend loben."
+    If x = 9 Then Label1.Text = "Kleinvieh macht auch Mist."
+    If x = 10 Then Label1.Text = "Pech im Spiel, Glück in der Liebe."
+    If x = 11 Then Label1.Text = "Ein blindes Huhn findet auch mal ein Korn."
+    If x = 12 Then Label1.Text = "Jeder ist seines Glückes Schmied."
+    If x = 13 Then Label1.Text = "Auf Regen folgt Sonnenschein."
+    If x = 14 Then Label1.Text = "Einem geschenkten Gaul schaut man nicht ins Maul."
+    If x = 15 Then Label1.Text = "Eine Schwalbe macht noch keinen Sommer."
+    If x = 16 Then Label1.Text = "Ist die Katze aus dem Haus, tanzen die Mäuse auf dem Tisch."
+    If x = 17 Then Label1.Text = "In der Not frisst der Teufel fliegen."
+    If x = 18 Then Label1.Text = "Allen Leuten recht getan, ist eine Kunst, die niemand kann."
+    If x = 19 Then Label1.Text = "Besser stumm als dumm."
+    If x = 20 Then Label1.Text = "Ein gebranntes Kind scheut das Feuer."    
+End
+
+
+Public Sub Menu5_Click()
+    'beenden
+    Me.Close
+End
+
+
+''###########################################################################################################################
+Public Sub Loeschen()
+    ' Löschfunktion in den Papierkorb
+    create_trashinfo
+    move_totrash
+    If Error Then TextLabel1.Text = "Das hat nicht funktioniert."
+End
+
+Public Sub create_trashinfo()
+    'Trashinfo-Datei erstellen
+    Dim Info As String = "[Trash Info]"
+    Dim Pfad As String
+    Dim deletion_date As String
+    Dim dDate As Date
+    'Dim iZahl As Integer = 0
+    Dim sTDatei As String = QUELLDATEI
+
+    dDate = Now()
+    deletion_date = "DeletionDate=" & Format$(dDate, "yyyy-mm-ddThh:nn:ss")
+    Pfad = "Path=" & QUELLPFAD &/ QUELLDATEI
+
+    If QUELLDATEI = "" Then 
+         Message("Fehler, nichts ausgewählt.", "OK")
+    Else If Exist(Trash_Info &/ QUELLDATEI & ".trashinfo") Then 
+         Message("Fehler.\nEine gleichnamige Datei liegt bereits im Papierkorb.\nBitte vorher den Papierkorb leeren.", "OK")
+    Else 
+         Print Trash_Info &/ QUELLDATEI & ".trashinfo"
+         Try File.Save(Trash_Info &/ sTDatei & ".trashinfo", Info & gb.NewLine & Pfad & gb.NewLine & deletion_date)
+         If Error Then Message("Es ist ein Fehler aufgetreten.", "OK")
+    Endif 
+End
+
+Public Sub move_totrash()
+    'Ab in den Papierkorb verschieben
+    If QUELLDATEI = "" Then 
+        TextLabel1.Text = "Keine Datei ausgewählt."
+    Else If
+        Exist(Trash_Files &/ QUELLDATEI) Then
+        TextLabel1.Text = "Konnte nicht gelöscht werden."
+    Else 
+        Try Move QUELLPFAD &/ QUELLDATEI To Trash_Files &/ QUELLDATEI
+        If Error Then Message("Es ist ein Fehler aufgetreten", "OK")
+        TextLabel1.Text = "Das Element → " & QUELLDATEI & " ← wurde in den Papierkorb verschoben!"
+    Endif 
+End
+''#############################################################################################################################
+
+Public Sub Kopieren()
+    ''Kopierfunktion mit den Testroutinen
+    ' Alle Dateien kopieren
+    Dim i As Integer
+    'Dim x As String
+
+    Print iLR
+    If iLR = 1 Then QUELLPFAD = FileView1.Dir
+    If iLR = 2 Then QUELLPFAD = FileView2.Dir
+    
+    If iLR = 1 Then 
+       If FileView1.Selection.Count > 1 Then 
+            For i = 0 To FileView1.Selection.Count - 1
+                Print i
+                Print FileView1.Selection[i]
+                QUELLE = QUELLPFAD &/ FileView1.Selection[i]
+                Print QUELLE & " MEHRERE DATEN"
+                If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
+                If Error Then TextLabel1.Text = "Sind die selbe Datei."
+                If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait
+                If Error Then TextLabel1.Text = "Kopie Ordner fehlgeschlagen."
+                If IsDir(QUELLE) = False Then Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait
+                If Error Then TextLabel1.Text = "Kopie Datei fehlgeschlagen." 
+                TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+                If Error Then TextLabel1.Text = "Das funktioniert nicht."
+            Next
+                FileView1.Reload
+                Print "neu geladen"
+            Else 
+            'Standardfunktion
+             Print QUELLE & " - EINZEL DATEI"
+             If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
+             If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait Else Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+             TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+             If Error Then TextLabel1.Text = "Das funktioniert nicht."
+        Endif 
+    Endif 
+    If iLR = 2 Then 
+       If FileView2.Selection.Count > 1 Then 
+            For i = 0 To FileView2.Selection.Count - 1
+                Print i
+                Print FileView2.Selection[i]
+                QUELLE = QUELLPFAD &/ FileView2.Selection[i]
+                Print QUELLE & " MEHRERE DATEN"
+                If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
+                If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait
+                If IsDir(QUELLE) = False Then Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+                TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+                If Error Then TextLabel1.Text = "Das funktioniert nicht."
+            Next
+                FileView2.Reload
+            Else 
+            'Standardfunktion
+             Print QUELLE & " - EINZEL DATEI"
+             If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
+             If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait Else Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+             TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+             If Error Then TextLabel1.Text = "Das funktioniert nicht."
+        Endif 
+    Endif 
+End
+
+
+'' Feldfunktionen hier machen -------------------------
+Public Sub FileView2_DblClick()
+ '' was bei Doppelklick passiert
+    Dim sPfad As String
+    'lOrdner = FileView1.Dir
+    Print FileView2.Path
+    Print FileView2.Dir
+    sPfad = FileView2.Path
+    Print IsDir(sPfad) 
+    If IsDir(sPfad) = True Then FileView2.Dir = FileView2.Path Else Try Desktop.Open(FileView2.Path)
+    'FileView2.Reload
+    TextLabel3.Text = FileView2.Dir
+    TextBox2.Text = FileView2.Current
+    Menu37.Enabled = False
+End
+
+Public Sub FileView1_DblClick()
+    '' was bei Doppelklick passiert
+    Dim sPfad As String
+    'lOrdner = FileView1.Dir
+    Print FileView1.Path
+    Print FileView1.Dir
+    sPfad = FileView1.Path
+    'If sPfad = "" Then FileView1.Dir = User.Home
+    'If sPfad = "" Then sPfad = User.Home
+    Print IsDir(sPfad) 
+    Print sPfad
+    If IsDir(sPfad) = True Then FileView1.Dir = FileView1.Path Else Try Desktop.Open(FileView1.Path)
+    'FileView1.Reload
+    TextLabel4.Text = FileView1.Dir
+    TextBox1.Text = FileView1.Current
+    Menu17.Enabled = False
+    'FileView1.Reload    
+    'If Menu33.Checked = True Then Desktop.Open(FileView1.Path)
+End
+
+Public Sub FileView1_Click()
+    'Auswahl bei Klick
+    QUELLE = FileView1.Path
+    ZIEL = FileView2.Dir
+    ZIELPFAD = FileView2.Dir
+End
+
+Public Sub FileView2_Click()
+    'Auswahl bei Klick
+    QUELLE = FileView2.Path
+    ZIEL = FileView1.Dir
+    ZIELPFAD = FileView1.Dir
+End
+
+Public Sub FileView1_LostFocus()
+    'Farbe bei Focus-Verlust zurücksetzen
+    FileView1.Background = iHindergrund
+    FileView1.Foreground = iVordergrund
+End
+
+Public Sub FileView2_LostFocus()
+    'Farbe bei Focus-Verlust zurücksetzen
+    FileView2.Background = iHindergrund
+    FileView2.Foreground = iVordergrund
+End
+
+Public Sub FileView1_Select()
+     ''Anzeige bei Auswahl im Feld links - was soll dargestellt werden
+    TextLabel4.Text = FileView1.Dir
+    TextBox1.Text = FileView1.Current
+    FileProperties1.Path = FileView1.Path
+    If Menu33.Checked = True Then Try PictureBox1.Picture = Picture.Load(FileView1.Path) Else PictureBox1.Picture = Null
+    If Error Then Return 
+
+    If FileView1.Selected Then sEditfile = FileView1.Current
+    Print sEditfile & " Select links ausgeführt"
+    QUELLE = FileView1.Path
+    QUELLDATEI = FileView1.Current
+    Wait 
+End
+
+Public Sub FileView2_Select()
+     ''Anzeige bei Auswahl im Feld rechts
+    TextLabel3.Text = FileView2.Dir
+    TextBox2.Text = FileView2.Current
+    If FileView2.Selected Then sEditfile = FileView2.Current
+    Print sEditfile & " Select rechts ausgeführt"
+    QUELLE = FileView2.Path
+    QUELLDATEI = FileView2.Current
+    Wait 
+End
+
+Public Sub FileView1_GotFocus()
+    ' Farbe bei Focus ändern
+    FileView1.Background = iStandardfarbe
+    FileView1.Foreground = &H000000
+    iLR = 1
+    FileView2.UnselectAll
+    Menu37.Enabled = False
+    ZIEL = FileView2.Dir
+    Print ZIEL & " Fokus links - rechtes Feld Ziel"
+End
+
+Public Sub FileView2_GotFocus()
+    ' Farbe bei Focus ändern
+    FileView2.Background = iStandardfarbe
+    FileView2.Foreground = &H000000
+    iLR = 2
+    FileView1.UnselectAll
+    Menu17.Enabled = False
+    ZIEL = FileView1.Dir
+    Print ZIEL & " Fokus rechts - linkes Feld Ziel"
+End
+
+
+'' Sonstiges hierher --------------------------------
+Public Sub LCDLabel2_Leave()
+    'Datum wieder anzeigen
+    LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
+End
+
+Public Sub LCDLabel2_Enter()
+    'Uhrzeit zeigen beim Überfahren
+    LCDLabel2.Text = Format(Time(Now), "hh:nn") & " Uhr"
+End
+
+
+'' hier kommen Menü und Knöpfe hin -------------------------------------
+Public Sub Button1_Click()
+    'zurück zu Home - Button links
+    FileView1.Dir = lOrdner
+    Print lOrdner
+    TextLabel4.Text = FileView1.Dir
+    TextBox1.Text = FileView1.Current
+    TextLabel1.Text = "Home"
+    Menu17.Enabled = False
+End
+
+Public Sub Button2_Click()
+    'zurück zu Home - Button rechts
+    FileView2.Dir = rOrdner
+    DirView1.Current = User.Home
+    DirView1.Reload
+    Print rOrdner
+    TextLabel3.Text = FileView2.Dir
+    TextBox2.Text = FileView2.Current
+    TextLabel1.Text = "Home"
+    Menu37.Enabled = False
+End
+
+Public Sub Button6_Click()
+    'Umbenennen - F8
+    If iLR = 1 Then 
+        sEditfile = FileView1.Current
+        FileView1.SetFocus
+        FileView1.Rename
+        TextLabel1.Foreground = 0
+        TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
+        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher mit der Maus auswählen, dann klappt auch das Umbenennen."
+        If sEditfile = "" Then TextLabel1.Foreground = 16711680
+    Endif
+
+    If iLR = 2 Then 
+        sEditfile = FileView2.Current
+        FileView2.SetFocus
+        FileView2.Rename
+        TextLabel1.Foreground = 0
+        TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
+        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher mit der Maus auswählen, dann klappt auch das Umbenennen."
+        If sEditfile = "" Then TextLabel1.Foreground = 16711680
+    Endif 
+End
+
+Public Sub Button7_Click()
+    'neuer Ordner erstellen - F7
+    If iLR = 1 Then 
+        If Not Exist(FileView1.Dir &/ "Neuer Ordner") Then
+            Mkdir FileView1.Dir &/ "Neuer Ordner"
+            TextLabel1.text = "Ordner wurde angelegt."
+            FileView1.Reload 
+            FileView1.SetFocus
+        Else 
+            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher mit der Maus auswählen."
+            FileView1.SetFocus
+            FileView1.Current = "Neuer Ordner"
+        Endif 
+    Endif 
+    If iLR = 2 Then 
+        If Not Exist(FileView2.Dir &/ "Neuer Ordner") Then
+            Mkdir FileView2.Dir &/ "Neuer Ordner"
+            TextLabel1.text = "Ordner wurde angelegt."
+            FileView2.Reload
+            FileView2.SetFocus
+        Else 
+            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher mit der Maus auswählen."
+            FileView2.SetFocus
+            FileView2.Current = "Neuer Ordner"
+        Endif 
+    Endif 
+End
+
+Public Sub Button5_Click()
+    'löschen Knopf
+    If iLR = 1 Then 
+       QUELLPFAD = FileView1.Dir
+       QUELLDATEI = FileView1.Current
+       Try Loeschen
+        FileView1.Reload
+        FileView2.Reload
+    Endif 
+    If iLR = 2 Then 
+       QUELLPFAD = FileView2.Dir
+       QUELLDATEI = FileView2.Current
+       Try Loeschen
+        FileView1.Reload
+        FileView2.Reload
+    Endif 
+End
+
+Public Sub Menu11_Click()
+    'rechts vergrößern
+    FileView2.IconSize = FileView2.IconSize * 2
+End
+
+Public Sub Menu12_Click()
+    '' alle Dateien auswählen >>> rechte Seite
+    If FileView2.Dir = User.Home Then FileView2.UnselectAll
+    If FileView2.Dir = User.Home Then Menu37.Enabled = False
+    If FileView2.Dir <> User.Home Then FileView2.SelectAll
+    If FileView2.Dir <> User.Home Then Menu37.Enabled = True
+End
+
+Public Sub Menu13_Click()
+    'rechts verkleinern
+    FileView2.IconSize = FileView2.IconSize / 2
+End
+
+Public Sub Menu14_Click()
+  'Ansicht Aktualisieren
+  DirView1.Reload
+  FileView1.Reload
+  FileView2.Reload
+End
+
+Public Sub Menu18_Click()
+  '' alle Dateien auswählen >>> linke Seite
+  If FileView1.Dir = User.Home Then FileView1.UnselectAll
+  If FileView1.Dir = User.Home Then Menu17.Enabled = False
+  If FileView1.Dir <> User.Home Then FileView1.SelectAll
+  If FileView1.Dir <> User.Home Then Menu17.Enabled = True
+End
+
+Public Sub Menu16_Click()
+  'Eine Datei löschen - linkes Feld
+    QUELLPFAD = FileView1.Dir
+    QUELLDATEI = FileView1.Current
+    Try Loeschen
+    FileView1.Reload
+    FileView2.Reload
+  'Eine Datei dauerhaft löschen
+    'Try Kill FileView1.Dir &/ FileView1.Current
+    'If Error Then Message("Es ist ein Fehler aufgetreten!")
+    'FileView1.Reload
+End
+
+Public Sub Menu17_Click()
+    '' Alle Dateien in den Papierkorb löschen >>> Linke Seite FileView1
+    Dim i As Integer
+    If FileView1.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
+    If FileView1.Dir <> User.Home Then
+        Print "Auswahl erlaubt, da nicht im Home-Ordner."
+        FileView1.SelectAll
+        For i = 0 To FileView1.Count - 1
+            Print i
+            Print FileView1.Selection[i]
+            QUELLPFAD = FileView1.Dir
+            QUELLDATEI = FileView1.Selection[i]
+            Print QUELLDATEI
+            Try Loeschen
+            If Error Then Message("Es ist ein Fehler aufgetreten!")
+        Next
+            FileView1.Reload
+            Menu17.Enabled = False
+        Else 
+            Menu17.Enabled = False
+    Endif 
+End
+
+Public Sub Menu8_Click()
+  'versteckte Dateien anzeigen
+  If Menu8.Checked = True Then FileView1.ShowHidden = True Else FileView1.ShowHidden = False
+  If Menu8.Checked = True Then FileView2.ShowHidden = True Else FileView2.ShowHidden = False
+End
+
+Public Sub Menu6_Click()
+    'Einstellungsmenü
+    'Einstellungen.Show
+    Message.Info("Demnächst weitere Funktionen\nund individuelle Programmeinstellungen.", "Okay")
+    
+End
+
+Public Sub Menu22_Click()
+    ' Kompakte Ansicht
+    FileView1.View = 1
+End
+
+Public Sub Menu23_Click()
+    'Detail Ansicht
+    FileView1.View = 2
+End
+
+Public Sub Menu25_Click()
+    'Normale Ansicht
+    FileView2.View = 0
+End
+
+Public Sub Menu26_Click()
+    'Kompakte Ansicht
+    FileView2.View = 1
+End
+
+Public Sub Menu27_Click()
+    'Detail Ansicht
+    FileView2.View = 2
+End
+
+Public Sub Menu29_Click()
+    'Blaue Farbe
+    iHindergrund = &H1F1FFF
+    iVordergrund = &HFFFF1F
+    TextLabel3.Foreground = iVordergrund
+    TextLabel4.Foreground = iVordergrund
+    FileView1.Foreground = iVordergrund
+    FileView1.Background = iHindergrund
+    FileView2.Foreground = iVordergrund
+    FileView2.Background = iHindergrund
+    Me.Background = iHindergrund
+    Me.Foreground = -1
+    Me.Refresh() 
+End
+
+Public Sub Menu30_Click()
+    'gelb
+    iHindergrund = &HFFFFBF
+    iVordergrund = 44444533
+    TextLabel3.Foreground = iVordergrund
+    TextLabel4.Foreground = iVordergrund
+    FileView1.Foreground = iVordergrund
+    FileView1.Background = iHindergrund
+    FileView2.Foreground = iVordergrund
+    FileView2.Background = iHindergrund
+    Me.Background = iHindergrund
+    Me.Foreground = -1
+    Me.Refresh() 
+End
+
+Public Sub Menu31_Click()
+    'rot
+    iHindergrund = &HFF9F9F
+    iVordergrund = &H0000FF
+    TextLabel3.Foreground = iVordergrund
+    TextLabel4.Foreground = iVordergrund
+    FileView1.Foreground = iVordergrund
+    FileView1.Background = iHindergrund
+    FileView2.Foreground = iVordergrund
+    FileView2.Background = iHindergrund
+    Me.Background = iHindergrund
+    Me.Foreground = -1
+    Me.Refresh() 
+End
+
+Public Sub Menu32_Click()
+    'grau
+    iHindergrund = 14737632
+    iVordergrund = &HFF571F
+    TextLabel3.Foreground = iVordergrund
+    TextLabel4.Foreground = iVordergrund
+    FileView1.Foreground = iVordergrund
+    FileView1.Background = iHindergrund
+    FileView2.Foreground = iVordergrund
+    FileView2.Background = iHindergrund
+    Me.Background = iHindergrund
+    Me.Foreground = -1
+    Me.Refresh() 
+End
+
+Public Sub Menu33_Click()
+    'Bildvorschau
+    If Menu33.Checked = True Then Splitter1.Layout = [20, 4, 76] Else Splitter1.Layout = [48, 4, 48]
+    If Menu33.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
+    If Menu33.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
+    If Menu33.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True
+    If Menu33.Checked = True Then PictureBox1.Visible = True Else PictureBox1.Visible = False
+    If Menu33.Checked = True Then FileView1.Filter = ["*.png", "*.bmp", "*.jpg"] Else FileView1.Filter = Null
+    If Menu33.Checked = True Then FileView1.ShowDirectory = False Else FileView1.ShowDirectory = True
+End
+
+Public Sub Menu19_Click()
+    'Details rechts anzeigen
+    Dim hFont As Font
+    hFont = Font[", Bold,12"]
+    FileProperties1.Font = hFont
+    If Menu19.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
+    If Menu19.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
+    If Menu19.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True 
+    If Menu19.Checked = True Then FileProperties1.Visible = True Else FileProperties1.Visible = False
+
+End
+
+Public Sub Menu34_Click()
+    'Baum anzeigen
+    Dim hFont As Font
+    hFont = Font[", Bold,11"]
+    DirView1.Font = hFont
+    'DirView1.Reload
+    DirView1.Current = FileView1.Dir
+    If Menu34.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
+    If Menu34.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
+    If Menu34.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True
+    If Menu34.Checked = True Then DirView1.Visible = True Else DirView1.Visible = False
+    'If Menu34.Checked = True Then DirView1.Current = FileView1.Dir Else DirView1.Current = Null
+    'FileView1.Dir = FileView1.Dir
+End
+
+
+Public Sub DirView1_Select()
+    'Pfad im Baum auswählen und anzeigen
+    FileView1.Dir = DirView1.Current
+End
+
+Public Sub Menu20_Click()
+    'Icons vergrößern
+    FileView1.IconSize = FileView1.IconSize * 2 
+    FileView2.IconSize = FileView2.IconSize * 2
+    Print FileView1.IconSize 
+End
+
+Public Sub Menu24_Click()
+    'Icons verkleinern
+    FileView1.IconSize = FileView1.IconSize / 2 
+    FileView2.IconSize = FileView2.IconSize / 2
+    Print FileView1.IconSize 
+End
+
+Public Sub Menu21_Click()
+    'normale Ansicht
+    FileView1.View = 0
+End
+
+Public Sub Button3_Click()
+    ' Kopieren über Knopf - F5
+    Kopieren()
+    Wait 
+    'Ansicht Aktualisieren
+    FileView2.Reload
+    FileView1.Reload
+End
+
+Public Sub Button4_Click()
+    ' Verschieben über Knopf - F6
+    ZIELDATEI = ZIEL &/ QUELLDATEI
+    If Exist(ZIELDATEI) Then 
+        TextLabel1.Text = "Datei existiert schon."
+    Else  
+        Funktionen.Verschieben()
+        TextLabel1.Text = Funktionen.sInfotext
+    Endif 
+    FileView2.Reload
+    FileView1.Reload
+End
+
+Public Sub Menu36_Click()
+    'links vergrößern
+    FileView1.IconSize = FileView1.IconSize * 2
+End
+
+Public Sub Menu37_Click()
+    '' Alle Dateien in den Papierkorb löschen >>> Rechte Seite FileView2
+    Dim i As Integer
+    If FileView2.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
+    If FileView2.Dir <> User.Home Then
+        Print "Auswahl erlaubt, da nicht im Home-Ordner."
+        FileView2.SelectAll
+        For i = 0 To FileView2.Count - 1
+            Print i
+            Print FileView2.Selection[i]
+            QUELLPFAD = FileView2.Dir
+            QUELLDATEI = FileView2.Selection[i]
+            Print QUELLDATEI
+            'Try Loeschen
+            Print "GELÖSCHT !!!"
+            If Error Then Message("Es ist ein Fehler aufgetreten!")
+        Next
+            FileView2.Reload
+            Menu37.Enabled = False
+        Else 
+            Menu37.Enabled = False
+    Endif 
+End
+
+Public Sub Button8_Click()
+     'ein Ordner Zurück - Button links
+    Dim Zeile As String
+    Dim Liste As String[]
+    Dim Wort As String
+        
+    Zeile = FileView1.Dir
+    TextLabel1.Text = "Zurück"
+       
+    If Zeile <> User.Home Then
+
+        Print Zeile
+        Liste = Split(Zeile, "/")
+        For Each Wort In Liste
+            Print (Wort)
+        Next
+        Print
+        Print Liste.Last
+        'Zeile = Replace(Zeile, Liste.Last, "")
+        Zeile = Left(Zeile, Zeile.Len - Liste.Last.Len)
+        Zeile = Left(Zeile, Zeile.Len - 1)
+        Print Zeile
+        FileView1.Dir = Zeile
+    Endif 
+    Menu17.Enabled = False
+End
+
+Public Sub Button9_Click()
+   'ein Ordner Zurück - Button rechts
+    Dim Zeile As String
+    Dim Liste As String[]
+    Dim Wort As String
+        
+    Zeile = FileView2.Dir
+    TextLabel1.Text = "Zurück"
+       
+    If Zeile <> User.Home Then
+        Print Zeile
+        Liste = Split(Zeile, "/")
+        For Each Wort In Liste
+            Print (Wort)
+        Next
+        Print
+        Print Liste.Last
+        'Zeile = Replace(Zeile, Liste.Last, "")
+        Zeile = Left(Zeile, Zeile.Len - Liste.Last.Len)
+        Zeile = Left(Zeile, Zeile.Len - 1)
+        Print Zeile
+        FileView2.Dir = Zeile
+    Endif 
+    Menu37.Enabled = False
+End
+
+Public Sub Menu41_Click()
+    ' F5 - Kopieren
+    Button3_Click
+End
+
+Public Sub Menu40_Click()
+    ' F6 - Verschieben
+    Button4_Click
+End
+
+Public Sub Menu39_Click()
+    ' F7 - Ordner erstellen
+    Button7_Click
+End
+
+Public Sub Menu38_Click()
+    ' F8 - Umbenennen
+    Button6_Click
+End
+
+Public Sub Menu35_Click()
+    ' Element Löschen in Papierkorb
+    Button5_Click
+End
+
+Public Sub Menu42_Click()
+    'Vorschau Ansicht
+    FileView1.View = 3
+End
+
+Public Sub Menu43_Click()
+    'Vorschau Ansicht
+    FileView2.View = 3
+End
+
+Public Sub Menu44_Click()
+    'Papierkorb anzeigen zum Leeren oder Wiederherstellen
+    Shell "nemo trash:///"
+End
+
+Public Sub Menu9_Click()
+    'eigentliche Hilfefunktion
+    Hilfe.ShowModal
+End
+
+Public Sub Menu10_Click()
+    'Versionsinfo = V
+    Spruch()
+    TextLabel1.Font.Bold = True
+    TextLabel1.Background = &HFFFF00
+    TextLabel1.Foreground = &H0000FF
+    TextLabel1.Text = "Linux-Commander Version:  " & Application.Version & "  -   Besuchen Sie die Seite openyourlinux.de für Neuigkeiten."
+    Wait 2
+    TextLabel1.Background = -1
+    TextLabel1.Foreground = -1
+    TextLabel1.Font.Bold = False
+    TextLabel1.Text = "Bereit für die Arbeit."
+End
+
+Public Sub Menu45_Click()
+    'Schriftvorschau
+    Dim sBeispieltext As String 
+
+    If Menu45.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
+    If Menu45.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
+    If Menu45.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
+    If Menu45.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True 
+    If Menu45.Checked = True Then TextArea1.Visible = True Else TextArea1.Visible = False
+    If Menu45.Checked = True Then FileView1.Filter = ["*.ttf", "*.otf", "*.woff", "*.eot"] Else FileView1.Filter = Null
+    If Menu45.Checked = True Then FontBox1.Visible = True Else FontBox1.Visible = False
+    If Menu45.Checked = True Then Menu48.Visible = True Else Menu48.Visible = False
+    If Menu45.Checked = True Then Menu18.Visible = False Else Menu18.Visible = True
+    If Menu45.Checked = True Then Menu17.Visible = False Else Menu17.Visible = True
+
+    sBeispieltext = "Dieser Text soll die gewählte Schriftart abbilden.\n\n Für eine Beurteilung, ob der Font für die gewünschte Verwendung \n geeignet ist, müsste man diesen in einem Text lesen können.\n So wie hier dargestellt.\n Es folgen noch ein paar Buchstaben, Zahlen und Sonderzeichen.\n\n\n A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Ä Ö Ü \n a b c d e f g h i j k l m n o p q r s t u v w x y z ä ö ü \n + - * / ß , . ; : _ ^ ° ! § $ % & ( ) = ? ` ´ #\n\n\nFür eine andere Schriftart wählen Sie aus der\nunteren Schriftauswahlbox die entsprechenden Parameter aus.\n\nFinden Sie in der linken Liste neue Schriftarten\nso können Sie diese über das Kontextmenü lokal installieren."
+
+    TextArea1.Text = sBeispieltext
+End
+
+Public Sub FontBox1_Click()
+    'Schriftart auswählen
+    Dim hFont As Font
+    Dim xTest As String
+    
+    hFont = Font[FontBox1.Value]
+    xTest = FontBox1.Value
+    Print xTest
+    TextArea1.Font = hFont
+    TextArea1.Refresh
+End
+
+Public Sub Menu47_Click()
+    'links verkleinern
+    FileView1.IconSize = FileView1.IconSize / 2
+End
+
+Public Sub Menu46_Click()
+     'Eine Datei rechts löschen
+    QUELLPFAD = FileView2.Dir
+    QUELLDATEI = FileView2.Current
+    Try Loeschen
+    FileView1.Reload
+    FileView2.Reload
+  'Eine Datei dauerhaft löschen
+    'Try Kill FileView1.Dir &/ FileView1.Current
+    'If Error Then Message("Es ist ein Fehler aufgetreten!")
+    'FileView1.Reload
+End 
+
+Public Sub FileView1_KeyPress()
+    'Tastenabfrage
+    If Key.Code = Key.Return Then FileView1_DblClick()
+    If Key.Code = Key.Esc Then Button8_Click()
+End
+
+Public Sub FileView2_KeyPress()
+    'Tastenabfrage
+    If Key.Code = Key.Return Then FileView2_DblClick()
+    If Key.Code = Key.Esc Then Button9_Click()
+End
+
+Public Sub Menu48_Click()
+    'Schriftart lokal installieren
+    If Menu45.Checked = True Then 
+         If IsDir(FileView1.Path) = False Then
+              If Not Exist("~/.lokal/share/fonts" &/ FileView1.Current) Then
+                 Try Copy FileView1.Path To "~/.local/share/fonts" &/ FileView1.Current
+              Endif 
+         Endif 
+         TextLabel1.Text = "SCHRIFTART wurde in das lokale Verzeichnis kopiert."
+    Endif 
+End

@@ -1,0 +1,415 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(21.4286,18.5714,171.4286,100)
+  Background = &HDFFFFF
+  Text = ("LC - der einfachste Linux Commander der Welt")
+  Icon = Picture["LC_Icon.png"]
+  Arrangement = Arrange.Vertical
+  Padding = 5
+  { Menu2 Menu
+    Text = ("LINKS")
+    { Menu21 Menu
+      Text = ("Normale Ansicht")
+      Picture = Picture["icon:/medium/view-icon"]
+    }
+    { Menu22 Menu
+      Text = ("Kompakte Ansicht")
+      Picture = Picture["icon:/medium/view-compact"]
+    }
+    { Menu23 Menu
+      Text = ("Detailierte Ansicht")
+      Picture = Picture["icon:/medium/view-detail"]
+    }
+    { Menu42 Menu
+      Text = ("Vorschau Ansicht")
+      Picture = Picture["icon:/medium/view-preview"]
+    }
+    { Menu36 Menu
+      Text = ("Ansicht vergrößern")
+      Picture = Picture["icon:/medium/add"]
+    }
+    { Menu47 Menu
+      Text = ("Ansicht verkleinern")
+      Picture = Picture["icon:/medium/remove"]
+    }
+    { Menu16 Menu
+      Text = ("Datei löschen")
+      Picture = Picture["icon:/medium/trash"]
+    }
+    { Menu18 Menu
+      Text = ("Alles auswählen")
+      Picture = Picture["icon:/medium/select-all"]
+    }
+    { Menu17 Menu
+      Text = ("Alle Dateien löschen")
+      Picture = Picture["icon:/medium/trash"]
+      Enabled = False
+    }
+    { Menu48 Menu
+      Text = ("Schrift installieren")
+      Picture = Picture["icon:/medium/brush"]
+      Visible = False
+    }
+  }
+  { Menu1 Menu
+    Text = Shortcut(("Programm"), "P")
+    { Menu6 Menu
+      Text = ("Einstellungen")
+      Picture = Picture["icon:/medium/development"]
+      Shortcut = "Alt+E"
+    }
+    { Menu28 Menu
+      Text = ("Programmfarbe ändern")
+      Picture = Picture["icon:/medium/color"]
+      { Menu29 Menu
+        Text = ("Blau")
+        Picture = Picture["icon:/medium/flag-blue"]
+      }
+      { Menu30 Menu
+        Text = ("Gelb")
+        Picture = Picture["icon:/medium/flag-yellow"]
+      }
+      { Menu31 Menu
+        Text = ("Rot")
+        Picture = Picture["icon:/medium/flag-red"]
+      }
+      { Menu32 Menu
+        Text = ("Grau")
+        Picture = Picture["icon:/medium/flag"]
+      }
+    }
+    { Menu9 Menu
+      Text = ("Hilfe")
+      Picture = Picture["icon:/medium/help"]
+      Shortcut = "F1"
+    }
+    { Menu10 Menu
+      Text = ("Über")
+      Picture = Picture["icon:/medium/info"]
+      Shortcut = "V"
+    }
+    { Menu7 Menu
+    }
+    { Menu5 Menu
+      Text = ("Beenden")
+      Picture = Picture["icon:/medium/close"]
+      Shortcut = "F10"
+    }
+  }
+  { Menu3 Menu
+    Text = Shortcut(("Ansicht"), "A")
+    { Menu14 Menu
+      Text = ("Ansicht Aktualisieren")
+      Picture = Picture["icon:/medium/refresh"]
+      Shortcut = "R"
+    }
+    { Menu8 Menu
+      Text = ("Versteckte Dateien anzeigen")
+      Picture = Picture["icon:/medium/watch"]
+      Toggle = True
+      Shortcut = "H"
+    }
+    { Menu19 Menu
+      Text = ("Details anzeigen")
+      Picture = Picture["icon:/medium/indent"]
+      Toggle = True
+      Shortcut = "F2"
+    }
+    { Menu33 Menu
+      Text = ("Bildvorschau")
+      Picture = Picture["icon:/medium/preview"]
+      Toggle = True
+      Shortcut = "F3"
+    }
+    { Menu34 Menu
+      Text = ("Baum anzeigen")
+      Picture = Picture["icon:/medium/view-tree"]
+      Toggle = True
+      Shortcut = "F4"
+    }
+    { Menu45 Menu
+      Text = ("Schriftvorschau")
+      Picture = Picture["icon:/medium/font"]
+      Toggle = True
+      Shortcut = "F11"
+    }
+    { Menu20 Menu
+      Text = ("Icons vergrößern")
+      Picture = Picture["icon:/medium/add"]
+      Shortcut = "PgUp"
+    }
+    { Menu24 Menu
+      Text = ("Icons verkleinern")
+      Picture = Picture["icon:/medium/remove"]
+      Shortcut = "PgDown"
+    }
+  }
+  { Menu4 Menu
+    Text = Shortcut(("Funktionen"), "F")
+    { Menu41 Menu
+      Text = ("Kopieren")
+      Picture = Picture["icon:/medium/copy"]
+      Shortcut = "F5"
+    }
+    { Menu40 Menu
+      Text = ("Verschieben")
+      Picture = Picture["icon:/medium/move"]
+      Shortcut = "F6"
+    }
+    { Menu39 Menu
+      Text = ("Verzeichnis anlegen")
+      Picture = Picture["icon:/medium/new-dir"]
+      Shortcut = "F7"
+    }
+    { Menu38 Menu
+      Text = ("Datei oder Verzeichnis umbenennen")
+      Picture = Picture["icon:/medium/rename"]
+      Shortcut = "F8"
+    }
+    { Menu35 Menu
+      Text = ("Löschen")
+      Picture = Picture["icon:/medium/trash"]
+      Shortcut = "Del"
+    }
+    { Menu44 Menu
+      Text = ("Papierkorb durchwühlen")
+      Picture = Picture["icon:/medium/trash-full"]
+      Shortcut = "T"
+    }
+  }
+  { Menu15 Menu
+    Text = ("RECHTS")
+    { Menu25 Menu
+      Text = ("Normale Ansicht")
+      Picture = Picture["icon:/medium/view-icon"]
+    }
+    { Menu26 Menu
+      Text = ("Kompakte Ansicht")
+      Picture = Picture["icon:/medium/view-compact"]
+    }
+    { Menu27 Menu
+      Text = ("Detailierte Ansicht")
+      Picture = Picture["icon:/medium/view-detail"]
+    }
+    { Menu43 Menu
+      Text = ("Vorschau Ansicht")
+      Picture = Picture["icon:/medium/view-preview"]
+    }
+    { Menu11 Menu
+      Text = ("Ansicht vergrößern")
+      Picture = Picture["icon:/medium/add"]
+    }
+    { Menu13 Menu
+      Text = ("Ansicht verkleinern")
+      Picture = Picture["icon:/medium/remove"]
+    }
+    { Menu46 Menu
+      Text = ("Datei löschen")
+      Picture = Picture["icon:/medium/trash"]
+    }
+    { Menu12 Menu
+      Text = ("Alles auswählen")
+      Picture = Picture["icon:/medium/select-all"]
+    }
+    { Menu37 Menu
+      Text = ("Alle Dateien löschen")
+      Picture = Picture["icon:/medium/trash"]
+      Enabled = False
+    }
+  }
+  { Splitter3 Splitter
+    MoveScaled(1,1,169,6)
+    NoTabFocus = True
+    Centered = True
+    { TextBox1 TextBox
+      MoveScaled(0,0,38,5)
+      Background = Color.Background
+      Alignment = Align.Center
+      ReadOnly = True
+    }
+    { Button1 Button
+      MoveScaled(39,1,4,4)
+      Background = Color.Transparent
+      ToolTip = ("Zurück zum Heimatverzeichnis")
+      Picture = Picture["icon:/medium/home"]
+    }
+    { Button8 Button
+      MoveScaled(44,1,4,4)
+      Background = Color.Transparent
+      ToolTip = ("Einen Ordner zurück gehen")
+      Picture = Picture["icon:/medium/up"]
+    }
+    { TextLabel4 TextLabel
+      MoveScaled(54,1,31,3)
+      Text = ("Verzeichnis: links")
+      Alignment = Align.Center
+    }
+    { TextLabel3 TextLabel
+      MoveScaled(85,1,31,3)
+      Text = ("Verzeichnis: rechts")
+      Alignment = Align.Center
+    }
+    { Button9 Button
+      MoveScaled(120,1,4,4)
+      Background = Color.Transparent
+      ToolTip = ("Einen Ordner zurück gehen")
+      Picture = Picture["icon:/medium/up"]
+    }
+    { Button2 Button
+      MoveScaled(125,1,4,4)
+      Background = Color.Transparent
+      ToolTip = ("Zurück zum Heimatverzeichnis")
+      Picture = Picture["icon:/medium/home"]
+    }
+    { TextBox2 TextBox
+      MoveScaled(130,0,39,5)
+      Background = Color.Background
+      Alignment = Align.Center
+      ReadOnly = True
+    }
+  }
+  { Splitter1 Splitter
+    MoveScaled(1,13,169,69)
+    Expand = True
+    Centered = True
+    Spacing = True
+    { FileView1 FileView
+      MoveScaled(2,3,50,64)
+      Font = Font["12"]
+      Background = Color.Transparent
+      Drop = True
+      PopupMenu = "Menu2"
+      Mode = Select.Multiple
+      ShowDirectory = True
+    }
+    { VBox1 VBox
+      MoveScaled(56,3,18,64)
+      NoTabFocus = True
+      Centered = True
+      { Spring5 Spring
+        MoveScaled(6,1,4,4)
+      }
+      { Button3 Button
+        MoveScaled(1,5,16,6)
+        ToolTip = ("Kopieren")
+        Text = ("F5")
+        Picture = Picture["icon:/medium/copy"]
+      }
+      { Spring1 Spring
+        MoveScaled(6,11,4,4)
+      }
+      { Button4 Button
+        MoveScaled(1,15,16,6)
+        ToolTip = ("Verschieben")
+        Text = ("F6")
+        Picture = Picture["icon:/medium/move"]
+      }
+      { Spring2 Spring
+        MoveScaled(6,22,4,4)
+      }
+      { Button7 Button
+        MoveScaled(1,26,16,6)
+        ToolTip = ("Neuen Ordner erstellen")
+        Text = ("F7")
+        Picture = Picture["icon:/medium/new-dir"]
+      }
+      { Spring8 Spring
+        MoveScaled(7,32,4,4)
+      }
+      { Button6 Button
+        MoveScaled(1,37,16,6)
+        ToolTip = ("Umbenennen")
+        Text = ("F8")
+        Picture = Picture["icon:/medium/rename"]
+      }
+      { Spring7 Spring
+        MoveScaled(7,45,4,4)
+      }
+      { Button5 Button
+        MoveScaled(1,50,16,6)
+        ToolTip = ("Löschen")
+        Picture = Picture["icon:/medium/trash"]
+      }
+      { Spring4 Spring
+        MoveScaled(7,59,4,4)
+      }
+    }
+    { FileView2 FileView
+      MoveScaled(78,3,50,64)
+      Font = Font["12"]
+      Background = Color.Transparent
+      Drop = True
+      PopupMenu = "Menu15"
+      Mode = Select.Multiple
+      ShowDirectory = True
+    }
+    { TextArea1 TextArea
+      MoveScaled(131,50,35,11)
+      Visible = False
+      NoTabFocus = True
+      ToolTip = ("F11 beendet die Funktion.")
+      Text = ("Dies ist ein Text, der hier angezeigt wird.")
+    }
+    { DirView1 DirView
+      MoveScaled(131,35,35,14)
+      Visible = False
+      NoTabFocus = True
+      ToolTip = ("F4 beendet die Funktion.")
+    }
+    { PictureBox1 PictureBox
+      MoveScaled(131,20,35,14)
+      Visible = False
+      NoTabFocus = True
+      ToolTip = ("F3 beendet die Funktion.")
+      Alignment = Align.Center
+      Border = Border.Plain
+    }
+    { FileProperties1 FileProperties
+      MoveScaled(131,1,35,18)
+      Visible = False
+      NoTabFocus = True
+      ToolTip = ("F2 beendet die Funktion.")
+    }
+  }
+  { HBox2 HBox
+    MoveScaled(1,83,169,6)
+    Centered = True
+    Padding = 5
+    { TextLabel1 TextLabel
+      MoveScaled(3,0,161,6)
+      NoTabFocus = True
+      Padding = 5
+      Text = ("Was kann denn hier für ein Text stehen?")
+      Alignment = Align.Center
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(1,90,169,5)
+    NoTabFocus = True
+    Direction = Direction.LeftToRight
+    Padding = 5
+    { Label1 Label
+      MoveScaled(2,0,91,5)
+      Font = Font["10"]
+      Foreground = Color.Gray
+      Alignment = Align.Center
+      Text = ("Spruch des Tages")
+    }
+    { Spring6 Spring
+      MoveScaled(94,1,4,4)
+    }
+    { FontBox1 FontBox
+      MoveScaled(100,1,32,4)
+      Visible = False
+    }
+    { LCDLabel2 LCDLabel
+      MoveScaled(133,1,35,3)
+      Font = Font["Sans,14"]
+      Foreground = Color.Black
+      ToolTip = ("Heute ist:")
+      Alignment = Align.Center
+      Border = True
+    }
+  }
+}
