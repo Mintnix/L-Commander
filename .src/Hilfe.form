@@ -1,20 +1,20 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,53,54)
+  MoveScaled(0,0,58,85)
   Background = &HDFFFFF
   { TextArea1 TextArea
-    MoveScaled(1,2,51,47)
+    MoveScaled(1,1,56,74)
     Font = Font["13"]
-    Text = ("F1\t\t=\tHilfefenster\nF2\t\t=\tDetails anzeigen\nF3\t\t=\tBildvorschau\nF4\t\t=\tVerzeichnisbaum anzeigen\nF5\t\t=\tDatei kopieren\nF6\t\t=\tDatei verschieben\nF7\t\t=\tVerzeichnis erstellen\nF8\t\t=\tDatei/Verzeichnis umbenennen\nF9\t\t=  \nF10\t=\tProgramm beenden\nF11\t=\tSchriftvorschau\nF12\t=  \nAlt\t\t=\tMenü\nReturn\t=\tDoppelklick\nEsc\t\t=\tZurück")
+    Text = ("F1\t\t\t=\tHilfefenster\nF2\t\t\t=\tDetails anzeigen\nF3\t\t\t=\tBildvorschau\nF4\t\t\t=\tVerzeichnisbaum anzeigen\nF5\t\t\t=\tDatei kopieren\nF6\t\t\t=\tDatei verschieben\nF7\t\t\t=\tVerzeichnis erstellen\nF8\t\t\t=\tDatei/Ordner umbenennen\nF9\t\t\t=  \nF10\t\t=\tProgramm beenden\nF11\t\t=\tSchriftvorschau\nF12\t\t=\tZugriff USB/Ext. Datenträger  \n\nReturn\t\t=\tDoppelklick\nEsc\t\t\t=\tZurück\nH\t\t\t=\tVersteckte Dateien anzeigen\nR\t\t\t=\tAnsicht aktualisieren\nPgUp\t\t=\tSymbole vergrößern\nPgDown\t=\tSymbole verkleinern\nEntf\t\t=\tDatei/Ordner löschen\nT\t\t\t=\tPapierkorb durchsuchen\n\nAlt\t\t\t=\tMenü\nV\t\t\t=\tVersionsinfo")
     ReadOnly = True
     Border = False
   }
   { URLLabel1 URLLabel
-    MoveScaled(1,50,50,3)
+    MoveScaled(1,77,55,6)
     ToolTip = ("öffnet die entsprechende Internetseite openyourlinux.de")
     Alignment = Align.Center
     Text = ("Für mehr Informationen bitte den Link anklicken.")
-    Link = "https://openyourlinux.de"
+    Link = "https://openyourlinux.blogspot.com/p/lc-der-linux-commander.html"
   }
 }

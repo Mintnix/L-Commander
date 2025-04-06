@@ -22,7 +22,7 @@ Public iLR As Integer = 0                       'linkes oder rechtes Feld zuletz
 Public Sub Form_Open()
     'das passiert nach Start
     Splitter1.Layout = [48, 4, 48]
-    Splitter3.Layout = [20, 3, 3, 24, 24, 3, 3, 20]
+    Splitter3.Layout = [3, 20, 3, 24, 24, 3, 20, 3]
     TextLabel1.Text = "Bereit für die Arbeit."
     'Print Trash_Dir
     'Print Trash_Files
@@ -76,10 +76,57 @@ End
 
 ''###########################################################################################################################
 Public Sub Loeschen()
-    ' Löschfunktion in den Papierkorb
-    create_trashinfo
-    move_totrash
-    If Error Then TextLabel1.Text = "Das hat nicht funktioniert."
+    '' Löschfunktion in den Papierkorb
+    'Test auf externes Medium
+    Dim aPfadArray As String[]
+    'Dim Sb As String
+    
+    If iLR = 1 Then 
+        If FileView1.Dir Begins "/media" &/ User.Name Then 
+            aPfadArray = Split(FileView1.Dir, "/") 
+            'For Each Sb In aPfadArray
+            'Print "["; Sb; "] ";
+            'Next
+            Try Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
+            Trash_Info = Trash_Dir &/ "info"
+            Trash_Files = Trash_Dir &/ "files"
+            Print Trash_Dir
+            Print Trash_Info
+            Print Trash_Files
+        Endif 
+        If FileView1.Dir Not Begins "/media" &/ User.Name Then 
+            Trash_Dir = "~/.local/share/Trash"
+            Trash_Info = Trash_Dir &/ "info"
+            Trash_Files = Trash_Dir &/ "files"
+            Print "Standardmülleimer links"
+        Endif
+    Endif  
+    If iLR = 2 Then 
+        If FileView2.Dir Begins "/media" &/ User.Name Then 
+            aPfadArray = Split(FileView2.Dir, "/") 
+            'For Each Sb In aPfadArray
+            'Print "["; Sb; "] ";
+            'Next
+            Try Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
+            Trash_Info = Trash_Dir &/ "info"
+            Trash_Files = Trash_Dir &/ "files"
+            Print Trash_Dir
+            Print Trash_Info
+            Print Trash_Files
+        Endif 
+        If FileView2.Dir Not Begins "/media" &/ User.Name Then 
+            Trash_Dir = "~/.local/share/Trash"
+            Trash_Info = Trash_Dir &/ "info"
+            Trash_Files = Trash_Dir &/ "files"
+            Print "Standardmülleimer rechts"
+        Endif 
+    Endif
+        If Not Exist(Trash_Dir) Then Mkdir Trash_Dir
+        If Not Exist(Trash_Info) Then Mkdir Trash_Info
+        If Not Exist(Trash_Files) Then Mkdir Trash_Files
+        create_trashinfo
+        move_totrash
+        If Error Then TextLabel1.Text = "Das hat nicht funktioniert." 
 End
 
 Public Sub create_trashinfo()
@@ -154,6 +201,7 @@ Public Sub Kopieren()
              Print QUELLE & " - EINZEL DATEI"
              If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
              If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait Else Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+             If QUELLE = "" Then QUELLE = "NICHTS"
              TextLabel1.Text = QUELLE & " <=> wurde kopiert."
              If Error Then TextLabel1.Text = "Das funktioniert nicht."
         Endif 
@@ -177,6 +225,7 @@ Public Sub Kopieren()
              Print QUELLE & " - EINZEL DATEI"
              If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
              If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait Else Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+             If QUELLE = "" Then QUELLE = "NICHTS"
              TextLabel1.Text = QUELLE & " <=> wurde kopiert."
              If Error Then TextLabel1.Text = "Das funktioniert nicht."
         Endif 
@@ -189,8 +238,8 @@ Public Sub FileView2_DblClick()
  '' was bei Doppelklick passiert
     Dim sPfad As String
     'lOrdner = FileView1.Dir
-    Print FileView2.Path
-    Print FileView2.Dir
+    'Print FileView2.Path
+    Print "Doppelklick Feld rechts"
     sPfad = FileView2.Path
     Print IsDir(sPfad) 
     If IsDir(sPfad) = True Then FileView2.Dir = FileView2.Path Else Try Desktop.Open(FileView2.Path)
@@ -204,8 +253,8 @@ Public Sub FileView1_DblClick()
     '' was bei Doppelklick passiert
     Dim sPfad As String
     'lOrdner = FileView1.Dir
-    Print FileView1.Path
-    Print FileView1.Dir
+    'Print FileView1.Path
+    Print "Doppelklick Feld links"
     sPfad = FileView1.Path
     'If sPfad = "" Then FileView1.Dir = User.Home
     'If sPfad = "" Then sPfad = User.Home
@@ -222,72 +271,99 @@ End
 
 Public Sub FileView1_Click()
     'Auswahl bei Klick
+    Print "Klick links"
+    iLR = 1
     QUELLE = FileView1.Path
+    QUELLDATEI = FileView1.Current
     ZIEL = FileView2.Dir
     ZIELPFAD = FileView2.Dir
+    
+    TextLabel4.Text = FileView1.Dir
+    TextBox1.Text = FileView1.Current
+    FileView1.Refresh
+    Wait 
 End
 
 Public Sub FileView2_Click()
     'Auswahl bei Klick
+    Print "Klick rechts"
+    iLR = 2
     QUELLE = FileView2.Path
+    QUELLDATEI = FileView2.Current
     ZIEL = FileView1.Dir
     ZIELPFAD = FileView1.Dir
+    
+    TextLabel3.Text = FileView2.Dir
+    TextBox2.Text = FileView2.Current
+    FileView2.Refresh
+    Wait 
 End
 
 Public Sub FileView1_LostFocus()
     'Farbe bei Focus-Verlust zurücksetzen
     FileView1.Background = iHindergrund
     FileView1.Foreground = iVordergrund
+    TextBox1.Background = iHindergrund
 End
 
 Public Sub FileView2_LostFocus()
     'Farbe bei Focus-Verlust zurücksetzen
     FileView2.Background = iHindergrund
     FileView2.Foreground = iVordergrund
+    TextBox2.Background = iHindergrund
 End
 
 Public Sub FileView1_Select()
-     ''Anzeige bei Auswahl im Feld links - was soll dargestellt werden
+    ''Anzeige bei Auswahl im Feld links - was soll dargestellt werden
+    Print FileView1.Current
+    iLR = 1
+    QUELLE = FileView1.Path
+    QUELLDATEI = FileView1.Current
+    ZIEL = FileView2.Dir
+    ZIELPFAD = FileView2.Dir
     TextLabel4.Text = FileView1.Dir
     TextBox1.Text = FileView1.Current
+    
+    If FileView1.HasFocus Then TextBox1.Foreground = &HFF003F Else TextBox1.Foreground = &H000000
+    
     FileProperties1.Path = FileView1.Path
     If Menu33.Checked = True Then Try PictureBox1.Picture = Picture.Load(FileView1.Path) Else PictureBox1.Picture = Null
     If Error Then Return 
-
-    If FileView1.Selected Then sEditfile = FileView1.Current
-    Print sEditfile & " Select links ausgeführt"
-    QUELLE = FileView1.Path
-    QUELLDATEI = FileView1.Current
-    Wait 
 End
 
 Public Sub FileView2_Select()
-     ''Anzeige bei Auswahl im Feld rechts
-    TextLabel3.Text = FileView2.Dir
-    TextBox2.Text = FileView2.Current
-    If FileView2.Selected Then sEditfile = FileView2.Current
-    Print sEditfile & " Select rechts ausgeführt"
+    ''Anzeige bei Auswahl im Feld rechts
+    Print FileView2.Current
+    iLR = 2
     QUELLE = FileView2.Path
     QUELLDATEI = FileView2.Current
-    Wait 
+    ZIEL = FileView1.Dir
+    ZIELPFAD = FileView1.Dir
+    TextLabel3.Text = FileView2.Dir
+    TextBox2.Text = FileView2.Current
+    
+    If FileView2.HasFocus Then TextBox2.Foreground = &HFF003F Else TextBox2.Foreground = &H000000
 End
 
 Public Sub FileView1_GotFocus()
     ' Farbe bei Focus ändern
     FileView1.Background = iStandardfarbe
     FileView1.Foreground = &H000000
-    iLR = 1
+    TextBox1.Background = &HFFFFBF
+   
     FileView2.UnselectAll
     Menu37.Enabled = False
     ZIEL = FileView2.Dir
     Print ZIEL & " Fokus links - rechtes Feld Ziel"
+    
 End
 
 Public Sub FileView2_GotFocus()
     ' Farbe bei Focus ändern
     FileView2.Background = iStandardfarbe
     FileView2.Foreground = &H000000
-    iLR = 2
+    TextBox2.Background = &HFFFFBF
+    
     FileView1.UnselectAll
     Menu17.Enabled = False
     ZIEL = FileView1.Dir
@@ -299,11 +375,13 @@ End
 Public Sub LCDLabel2_Leave()
     'Datum wieder anzeigen
     LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
+    Zeitfenster.Close
 End
 
 Public Sub LCDLabel2_Enter()
     'Uhrzeit zeigen beim Überfahren
     LCDLabel2.Text = Format(Time(Now), "hh:nn") & " Uhr"
+    Zeitfenster.ShowModal
 End
 
 
@@ -313,9 +391,12 @@ Public Sub Button1_Click()
     FileView1.Dir = lOrdner
     Print lOrdner
     TextLabel4.Text = FileView1.Dir
+    FileView1.Current = ""
     TextBox1.Text = FileView1.Current
     TextLabel1.Text = "Home"
     Menu17.Enabled = False
+    
+    QUELLE = ""
 End
 
 Public Sub Button2_Click()
@@ -325,9 +406,12 @@ Public Sub Button2_Click()
     DirView1.Reload
     Print rOrdner
     TextLabel3.Text = FileView2.Dir
+    FileView2.Current = ""
     TextBox2.Text = FileView2.Current
     TextLabel1.Text = "Home"
     Menu37.Enabled = False
+    
+    QUELLE = ""
 End
 
 Public Sub Button6_Click()
@@ -387,15 +471,16 @@ Public Sub Button5_Click()
        QUELLPFAD = FileView1.Dir
        QUELLDATEI = FileView1.Current
        Try Loeschen
-        FileView1.Reload
-        FileView2.Reload
+       FileView1.Reload
+       FileView2.Reload
     Endif 
-    If iLR = 2 Then 
+    
+    If iLR = 2 Then
        QUELLPFAD = FileView2.Dir
        QUELLDATEI = FileView2.Current
        Try Loeschen
-        FileView1.Reload
-        FileView2.Reload
+       FileView1.Reload
+       FileView2.Reload
     Endif 
 End
 
@@ -641,11 +726,39 @@ End
 Public Sub Button4_Click()
     ' Verschieben über Knopf - F6
     ZIELDATEI = ZIEL &/ QUELLDATEI
-    If Exist(ZIELDATEI) Then 
-        TextLabel1.Text = "Datei existiert schon."
-    Else  
-        Funktionen.Verschieben()
-        TextLabel1.Text = Funktionen.sInfotext
+    If iLR = 1 Then 
+        If Exist(ZIELDATEI) Then 
+        TextLabel1.Text = QUELLDATEI & " - Datei existiert schon."
+        Print ZIELDATEI & "   ist die Zieldatei"
+        TextBox2.Background = &HFF571F
+        FileView2.SetFocus
+        FileView2.Current = FileView1.Current
+        'FileView2.Reload
+        Print "Reload"
+        Wait 1
+        FileView1.SetFocus
+        TextBox2.Background = -1
+        Else
+            Funktionen.Verschieben()
+            TextLabel1.Text = Funktionen.sInfotext
+        Endif 
+    Endif 
+    If iLR = 2 Then 
+        If Exist(ZIELDATEI) Then 
+        TextLabel1.Text = QUELLDATEI & " - Datei existiert schon."
+        Print ZIELDATEI & "   ist die Zieldatei"
+        TextBox1.Background = &HFF571F
+        FileView1.SetFocus
+        FileView1.Current = FileView2.Current
+        'FileView2.Reload
+        Print "Reload"
+        Wait 1
+        FileView2.SetFocus
+        TextBox1.Background = -1
+        Else
+            Funktionen.Verschieben()
+            TextLabel1.Text = Funktionen.sInfotext
+        Endif 
     Endif 
     FileView2.Reload
     FileView1.Reload
@@ -669,7 +782,7 @@ Public Sub Menu37_Click()
             QUELLPFAD = FileView2.Dir
             QUELLDATEI = FileView2.Selection[i]
             Print QUELLDATEI
-            'Try Loeschen
+            Try Loeschen
             Print "GELÖSCHT !!!"
             If Error Then Message("Es ist ein Fehler aufgetreten!")
         Next
@@ -703,8 +816,14 @@ Public Sub Button8_Click()
         Zeile = Left(Zeile, Zeile.Len - 1)
         Print Zeile
         FileView1.Dir = Zeile
-    Endif 
+    Endif
+    If Zeile = "" Then FileView1.Dir = User.Home
+     
     Menu17.Enabled = False
+    TextLabel4.Text = FileView1.Dir
+    FileView1.Current = ""
+    TextBox1.Text = FileView1.Current
+    QUELLE = ""
 End
 
 Public Sub Button9_Click()
@@ -730,7 +849,13 @@ Public Sub Button9_Click()
         Print Zeile
         FileView2.Dir = Zeile
     Endif 
+    If Zeile = "" Then FileView2.Dir = User.Home
+    
     Menu37.Enabled = False
+    TextLabel3.Text = FileView2.Dir
+    FileView2.Current = ""
+    TextBox2.Text = FileView2.Current
+    QUELLE = ""
 End
 
 Public Sub Menu41_Click()
@@ -784,7 +909,7 @@ Public Sub Menu10_Click()
     TextLabel1.Font.Bold = True
     TextLabel1.Background = &HFFFF00
     TextLabel1.Foreground = &H0000FF
-    TextLabel1.Text = "Linux-Commander Version:  " & Application.Version & "  -   Besuchen Sie die Seite openyourlinux.de für Neuigkeiten."
+    TextLabel1.Text = "L-Commander Version:  " & Application.Version & "  -   Besuchen Sie die Seite openyourlinux.de für Neuigkeiten."
     Wait 2
     TextLabel1.Background = -1
     TextLabel1.Foreground = -1
@@ -864,4 +989,33 @@ Public Sub Menu48_Click()
          Endif 
          TextLabel1.Text = "SCHRIFTART wurde in das lokale Verzeichnis kopiert."
     Endif 
+End
+
+
+Public Sub TextBox2_KeyPress()
+    'Bei Return soll der Pfad geändert werden
+    If Key.Code = Key.Return Then FileView2.Dir = FileView2.Dir &/ TextBox2.Text
+    If Key.Code = Key.Return Then TextLabel3.Text = FileView2.Dir
+    'FileView2.Refresh
+
+End
+
+Public Sub Menu49_Click()
+    'Zugriff auf externe Datenträger
+    If FileView1.HasFocus Then FileView1.Dir = "/media/" & User.Name
+    If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
+    
+End
+
+Public Sub Button10_Click()
+    'Externe Datenträger anzeigen
+    Menu49_Click
+
+End
+
+Public Sub TextBox1_KeyPress()
+    'Bei Return soll der Pfad geändert werden
+    If Key.Code = Key.Return Then FileView1.Dir = FileView1.Dir &/ TextBox1.Text
+    If Key.Code = Key.Return Then TextLabel4.Text = FileView1.Dir
+
 End

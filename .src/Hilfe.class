@@ -1,1 +1,7 @@
 ' Gambas class file
+
+Public Sub Form_KeyPress()
+    'Form schließen
+    If Key.Code = Key.Esc Then Me.Close
+
+End

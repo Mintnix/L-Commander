@@ -1,11 +1,12 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(21.4286,18.5714,171.4286,100)
+  MoveScaled(0,0,171.4286,100)
   Background = &HDFFFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
   Arrangement = Arrange.Vertical
+  Centered = True
   Padding = 5
   { Menu2 Menu
     Text = ("LINKS")
@@ -167,6 +168,11 @@
       Picture = Picture["icon:/medium/rename"]
       Shortcut = "F8"
     }
+    { Menu49 Menu
+      Text = ("Zugriff auf externe Datenträger")
+      Picture = Picture["icon:/medium/usb"]
+      Shortcut = "F12"
+    }
     { Menu35 Menu
       Text = ("Löschen")
       Picture = Picture["icon:/medium/trash"]
@@ -222,31 +228,34 @@
     MoveScaled(1,1,169,6)
     NoTabFocus = True
     Centered = True
-    { TextBox1 TextBox
-      MoveScaled(0,0,38,5)
-      Background = Color.Background
-      Alignment = Align.Center
-      ReadOnly = True
-    }
     { Button1 Button
-      MoveScaled(39,1,4,4)
+      MoveScaled(6,1,4,4)
       Background = Color.Transparent
       ToolTip = ("Zurück zum Heimatverzeichnis")
       Picture = Picture["icon:/medium/home"]
     }
+    { TextBox1 TextBox
+      MoveScaled(12,1,27,5)
+      Background = Color.Transparent
+      NoTabFocus = True
+      Alignment = Align.Center
+      Border = False
+    }
     { Button8 Button
-      MoveScaled(44,1,4,4)
+      MoveScaled(45,1,4,4)
       Background = Color.Transparent
       ToolTip = ("Einen Ordner zurück gehen")
       Picture = Picture["icon:/medium/up"]
     }
     { TextLabel4 TextLabel
-      MoveScaled(54,1,31,3)
+      MoveScaled(50,1,31,3)
+      Font = Font["Bold"]
       Text = ("Verzeichnis: links")
       Alignment = Align.Center
     }
     { TextLabel3 TextLabel
       MoveScaled(85,1,31,3)
+      Font = Font["Bold"]
       Text = ("Verzeichnis: rechts")
       Alignment = Align.Center
     }
@@ -256,17 +265,18 @@
       ToolTip = ("Einen Ordner zurück gehen")
       Picture = Picture["icon:/medium/up"]
     }
+    { TextBox2 TextBox
+      MoveScaled(127,1,32,5)
+      Background = Color.Transparent
+      NoTabFocus = True
+      Alignment = Align.Center
+      Border = False
+    }
     { Button2 Button
-      MoveScaled(125,1,4,4)
+      MoveScaled(163,1,4,4)
       Background = Color.Transparent
       ToolTip = ("Zurück zum Heimatverzeichnis")
       Picture = Picture["icon:/medium/home"]
-    }
-    { TextBox2 TextBox
-      MoveScaled(130,0,39,5)
-      Background = Color.Background
-      Alignment = Align.Center
-      ReadOnly = True
     }
   }
   { Splitter1 Splitter
@@ -326,8 +336,17 @@
       { Spring7 Spring
         MoveScaled(7,45,4,4)
       }
+      { Button10 Button
+        MoveScaled(1,48,16,6)
+        ToolTip = ("Externe Datenträger anzeigen")
+        Text = ("F12")
+        Picture = Picture["icon:/medium/usb"]
+      }
+      { Spring3 Spring
+        MoveScaled(7,53,4,4)
+      }
       { Button5 Button
-        MoveScaled(1,50,16,6)
+        MoveScaled(1,55,16,6)
         ToolTip = ("Löschen")
         Picture = Picture["icon:/medium/trash"]
       }
@@ -407,7 +426,7 @@
       MoveScaled(133,1,35,3)
       Font = Font["Sans,14"]
       Foreground = Color.Black
-      ToolTip = ("Heute ist:")
+      ToolTip = ("Bewegen Sie die Maus in das Uhrzeitfenster,\num es auszublenden.")
       Alignment = Align.Center
       Border = True
     }
