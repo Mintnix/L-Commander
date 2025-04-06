@@ -1,5 +1,11 @@
 # Gambas Form File 3.0
 
-{ Zeitfenster Form
-  MoveScaled(0,0,64,64)
+{ Form Form
+  MoveScaled(0,0,100,36)
+  Border = False
+  { LCDLabel1 LCDLabel
+    MoveScaled(0,0,100,36)
+    Background = Color.SoftRoyal
+    Foreground = Color.DarkRed
+  }
 }

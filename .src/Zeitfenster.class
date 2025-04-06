@@ -1,2 +1,8 @@
 ' Gambas class file
 
+
+Public Sub Form_Open()
+    'Zeit anzeigen
+    LCDLabel1.Text = Format(Time(Now), "hh:nn") & " Uhr"
+
+End
