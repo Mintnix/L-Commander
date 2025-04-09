@@ -226,11 +226,11 @@
   }
   { Splitter3 Splitter
     MoveScaled(1,1,169,6)
-    NoTabFocus = True
     Centered = True
     { Button1 Button
       MoveScaled(6,1,4,4)
       Background = Color.Transparent
+      NoTabFocus = True
       ToolTip = ("Zurück zum Heimatverzeichnis")
       Picture = Picture["icon:/medium/home"]
     }
@@ -238,30 +238,37 @@
       MoveScaled(12,1,27,5)
       Background = Color.Transparent
       NoTabFocus = True
+      ToolTip = ("Pfad eingeben und Bestätigung\nzeigt den Ordner an")
       Alignment = Align.Center
       Border = False
     }
     { Button8 Button
       MoveScaled(45,1,4,4)
       Background = Color.Transparent
+      NoTabFocus = True
       ToolTip = ("Einen Ordner zurück gehen")
       Picture = Picture["icon:/medium/up"]
     }
     { TextLabel4 TextLabel
       MoveScaled(50,1,31,3)
       Font = Font["Bold"]
+      NoTabFocus = True
+      ToolTip = ("Rechtsklick öffnet\nein Terminal")
       Text = ("Verzeichnis: links")
       Alignment = Align.Center
     }
     { TextLabel3 TextLabel
       MoveScaled(85,1,31,3)
       Font = Font["Bold"]
+      NoTabFocus = True
+      ToolTip = ("Rechtsklick öffnet\nein Terminal")
       Text = ("Verzeichnis: rechts")
       Alignment = Align.Center
     }
     { Button9 Button
       MoveScaled(120,1,4,4)
       Background = Color.Transparent
+      NoTabFocus = True
       ToolTip = ("Einen Ordner zurück gehen")
       Picture = Picture["icon:/medium/up"]
     }
@@ -269,12 +276,14 @@
       MoveScaled(127,1,32,5)
       Background = Color.Transparent
       NoTabFocus = True
+      ToolTip = ("Pfad eingeben und Bestätigung\nzeigt den Ordner an")
       Alignment = Align.Center
       Border = False
     }
     { Button2 Button
       MoveScaled(163,1,4,4)
       Background = Color.Transparent
+      NoTabFocus = True
       ToolTip = ("Zurück zum Heimatverzeichnis")
       Picture = Picture["icon:/medium/home"]
     }
@@ -284,8 +293,9 @@
     Expand = True
     Centered = True
     Spacing = True
-    { FileView1 FileView
+    { !FileView1 FileView
       MoveScaled(2,3,50,64)
+      #Public = True
       Font = Font["12"]
       Background = Color.Transparent
       Drop = True
@@ -302,6 +312,7 @@
       }
       { Button3 Button
         MoveScaled(1,5,16,6)
+        Background = Color.Transparent
         ToolTip = ("Kopieren")
         Text = ("F5")
         Picture = Picture["icon:/medium/copy"]
@@ -311,6 +322,7 @@
       }
       { Button4 Button
         MoveScaled(1,15,16,6)
+        Background = Color.Transparent
         ToolTip = ("Verschieben")
         Text = ("F6")
         Picture = Picture["icon:/medium/move"]
@@ -320,6 +332,7 @@
       }
       { Button7 Button
         MoveScaled(1,26,16,6)
+        Background = Color.Transparent
         ToolTip = ("Neuen Ordner erstellen")
         Text = ("F7")
         Picture = Picture["icon:/medium/new-dir"]
@@ -329,6 +342,7 @@
       }
       { Button6 Button
         MoveScaled(1,37,16,6)
+        Background = Color.Transparent
         ToolTip = ("Umbenennen")
         Text = ("F8")
         Picture = Picture["icon:/medium/rename"]
@@ -338,6 +352,7 @@
       }
       { Button10 Button
         MoveScaled(1,48,16,6)
+        Background = Color.Transparent
         ToolTip = ("Externe Datenträger anzeigen")
         Text = ("F12")
         Picture = Picture["icon:/medium/usb"]
@@ -347,6 +362,7 @@
       }
       { Button5 Button
         MoveScaled(1,55,16,6)
+        Background = Color.Transparent
         ToolTip = ("Löschen")
         Picture = Picture["icon:/medium/trash"]
       }
@@ -354,8 +370,9 @@
         MoveScaled(7,59,4,4)
       }
     }
-    { FileView2 FileView
+    { !FileView2 FileView
       MoveScaled(78,3,50,64)
+      #Public = True
       Font = Font["12"]
       Background = Color.Transparent
       Drop = True

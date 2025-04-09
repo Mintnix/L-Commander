@@ -20,13 +20,30 @@ Public iLR As Integer = 0                       'linkes oder rechtes Feld zuletz
 
 
 Public Sub Form_Open()
-    'das passiert nach Start
+    ''das passiert nach Start
+    Dim hFile As Stream
+    Dim sLine1 As String
+    Dim sLine2 As String
+    Dim sLine3 As String = 0
+
+    ''Konfigurationsdatei wird automatisch angelegt
+    If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
+    ''hier wird geladen und in Variablen gefüllt
+    hFile = Open "~/.lc_config.txt" For Read
+    Line Input #hFile, sLine1
+    Line Input #hFile, sLine2
+    Line Input #hFile, sLine3
+    iHindergrund = sLine1
+    iVordergrund = sLine2
+    If sLine3 = "" Then sLine3 = 0
+    Einstellungen.CheckBox1.Value = sLine3
+    ''Laden Ende
+
     Splitter1.Layout = [48, 4, 48]
     Splitter3.Layout = [3, 20, 3, 24, 24, 3, 20, 3]
     TextLabel1.Text = "Bereit für die Arbeit."
-    'Print Trash_Dir
-    'Print Trash_Files
-    'Print Trash_Info
+    Me.Background = iHindergrund
+    Me.Foreground = iVordergrund
     FileView1.Background = iHindergrund
     FileView2.Background = iHindergrund
     FileView1.Dir = User.Home
@@ -38,6 +55,8 @@ Public Sub Form_Open()
     Spruch()
     Menu2.Visible = False
     Menu15.Visible = False
+    If sLine3 = -1 Then TextBox1.NoTabFocus = False
+    If sLine3 = -1 Then TextBox2.NoTabFocus = False
 End
 
 Public Sub Spruch()
@@ -561,8 +580,8 @@ End
 
 Public Sub Menu6_Click()
     'Einstellungsmenü
-    'Einstellungen.Show
-    Message.Info("Demnächst weitere Funktionen\nund individuelle Programmeinstellungen.", "Okay")
+    Einstellungen.Show
+    'Message.Info("Demnächst weitere Funktionen\nund individuelle Programmeinstellungen.", "Okay")
     
 End
 
@@ -895,7 +914,9 @@ End
 
 Public Sub Menu44_Click()
     'Papierkorb anzeigen zum Leeren oder Wiederherstellen
-    Shell "nemo trash:///"
+    'Shell "nemo trash:///"
+    Desktop.UsePortal = False
+    Desktop.Open("trash:///")
 End
 
 Public Sub Menu9_Click()
@@ -994,7 +1015,13 @@ End
 
 Public Sub TextBox2_KeyPress()
     'Bei Return soll der Pfad geändert werden
-    If Key.Code = Key.Return Then FileView2.Dir = FileView2.Dir &/ TextBox2.Text
+    If Key.Code = Key.Return Then 
+        If TextBox2.Text = ".." Then FileView2.Dir = User.Home
+        If TextBox2.Text = ".." Then TextBox2.Text = ""
+        If TextBox2.Text = "." Then FileView2.Dir = User.Home
+        If TextBox2.Text = "." Then TextBox2.Text = ""
+        FileView2.Dir = FileView2.Dir &/ TextBox2.Text
+    Endif
     If Key.Code = Key.Return Then TextLabel3.Text = FileView2.Dir
     'FileView2.Refresh
 
@@ -1015,7 +1042,45 @@ End
 
 Public Sub TextBox1_KeyPress()
     'Bei Return soll der Pfad geändert werden
-    If Key.Code = Key.Return Then FileView1.Dir = FileView1.Dir &/ TextBox1.Text
+    If Key.Code = Key.Return Then 
+        If TextBox1.Text = ".." Then FileView1.Dir = User.Home
+        If TextBox1.Text = ".." Then TextBox1.Text = ""
+        If TextBox1.Text = "." Then FileView1.Dir = User.Home
+        If TextBox1.Text = "." Then TextBox1.Text = ""
+        FileView1.Dir = FileView1.Dir &/ TextBox1.Text
+    Endif
     If Key.Code = Key.Return Then TextLabel4.Text = FileView1.Dir
 
+End
+
+Public Sub TextLabel4_Menu()
+    'Terminal mit Pfad öffnen
+    Desktop.OpenTerminal(TextLabel4.Text)
+End
+
+Public Sub TextLabel3_Menu()
+    'Terminal mit Pfad öffnen
+    Desktop.OpenTerminal(TextLabel3.Text)
+End
+
+
+
+Public Sub TextBox1_GotFocus()
+    'Feld weiß machen
+    TextBox1.Background = &HFFFFFF
+End
+
+Public Sub TextBox1_LostFocus()
+    'Feld Farbe wieder ändern
+    TextBox1.Background = iHindergrund
+End
+
+Public Sub TextBox2_GotFocus()
+    'Feld weiß machen
+    TextBox2.Background = &HFFFFFF
+End
+
+Public Sub TextBox2_LostFocus()
+    'Feld Farbe wieder ändern
+    TextBox2.Background = iHindergrund
 End
