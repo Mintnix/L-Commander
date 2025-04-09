@@ -1,5 +1,34 @@
 # Gambas Form File 3.0
 
-{ Einstellungen Form
-  MoveScaled(0,0,64,64)
+{ Form Form
+  MoveScaled(0,0,100,43)
+  Background = &HDFFFFF
+  Text = ("Programmeinstellung")
+  Resizable = False
+  Centered = True
+  { Frame1 Frame
+    MoveScaled(1,1,98,10)
+    Text = ("Farbthema")
+    { TextLabel1 TextLabel
+      MoveScaled(2,3,57,5)
+      Text = ("Hier können Sie ein Farbthema der Anwendung nach Belieben auswählen, je nach Geschmäckle. ")
+    }
+  }
+  { ComboBox1 ComboBox
+    MoveScaled(68,4,28,5)
+    List = [("Blau"), ("Rot"), ("Grün"), ("Gelb"), ("Grau"), ("Retroblau")]
+  }
+  { Frame2 Frame
+    MoveScaled(1,12,98,24)
+    Text = ("Sonstige Einstellungen")
+    { !CheckBox1 CheckBox
+      MoveScaled(3,4,57,4)
+      #Public = True
+      Text = ("TABULATOR - Fokus der beiden Textboxen einschalten.")
+    }
+  }
+  { Button1 Button
+    MoveScaled(1,37,98,5)
+    Text = ("Speichern !")
+  }
 }

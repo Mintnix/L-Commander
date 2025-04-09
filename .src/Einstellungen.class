@@ -1,2 +1,84 @@
 ' Gambas class file
 
+
+Public Sub ComboBox1_Click()
+    '' Farbthema
+    If ComboBox1.Text = "Blau" Then 
+        'blau
+        FMain.iHindergrund = &HDFFFFF
+        FMain.iVordergrund = &HC00000
+        'FMain.FileView1.Foreground = FMain.iVordergrund
+        FMain.FileView1.Background = FMain.iHindergrund
+        'FMain.FileView2.Foreground = FMain.iVordergrund
+        FMain.FileView2.Background = FMain.iHindergrund
+        FMain.Background = FMain.iHindergrund
+        FMain.Foreground = FMain.iVordergrund
+        FMain.Refresh
+    Endif
+    If ComboBox1.Text = "Rot" Then 
+        'rot
+        FMain.iHindergrund = &HFFDFE7
+        FMain.iVordergrund = &H0000FF
+        'FMain.FileView1.Foreground = FMain.iVordergrund
+        FMain.FileView1.Background = FMain.iHindergrund
+        'FMain.FileView2.Foreground = FMain.iVordergrund
+        FMain.FileView2.Background = FMain.iHindergrund
+        FMain.Background = FMain.iHindergrund
+        FMain.Foreground = FMain.iVordergrund
+        FMain.Refresh
+    Endif
+    If ComboBox1.Text = "Grün" Then
+        'grün
+        FMain.iHindergrund = &HDFFFE7
+        FMain.iVordergrund = &H0000FF
+        'FMain.FileView1.Foreground = FMain.iVordergrund
+        FMain.FileView1.Background = FMain.iHindergrund
+        'FMain.FileView2.Foreground = FMain.iVordergrund
+        FMain.FileView2.Background = FMain.iHindergrund
+        FMain.Background = FMain.iHindergrund
+        FMain.Foreground = FMain.iVordergrund
+        FMain.Refresh
+    Endif    
+    If ComboBox1.Text = "Gelb" Then 
+        'gelb
+        FMain.iHindergrund = &HFFFFDF
+        FMain.iVordergrund = &H000000
+        'FMain.FileView1.Foreground = FMain.iVordergrund
+        FMain.FileView1.Background = FMain.iHindergrund
+        'FMain.FileView2.Foreground = FMain.iVordergrund
+        FMain.FileView2.Background = FMain.iHindergrund
+        FMain.Background = FMain.iHindergrund
+        FMain.Foreground = FMain.iVordergrund
+        FMain.Refresh
+    Endif
+    If ComboBox1.Text = "Grau" Then 
+        'grau
+        FMain.iHindergrund = &HC0C0C0
+        FMain.iVordergrund = &HFFFFFF
+        'FMain.FileView1.Foreground = FMain.iVordergrund
+        FMain.FileView1.Background = FMain.iHindergrund
+        'FMain.FileView2.Foreground = FMain.iVordergrund
+        FMain.FileView2.Background = FMain.iHindergrund
+        FMain.Background = FMain.iHindergrund
+        FMain.Foreground = FMain.iVordergrund
+        FMain.Refresh
+    Endif
+        If ComboBox1.Text = "Retroblau" Then 
+        'retroblau
+        FMain.iHindergrund = &H0000FF
+        FMain.iVordergrund = &HFFFF00
+        'FMain.FileView1.Foreground = FMain.iVordergrund
+        FMain.FileView1.Background = FMain.iHindergrund
+        'FMain.FileView2.Foreground = FMain.iVordergrund
+        FMain.FileView2.Background = FMain.iHindergrund
+        FMain.Background = FMain.iHindergrund
+        FMain.Foreground = FMain.iVordergrund
+        FMain.Refresh
+    Endif
+End
+
+Public Sub Button1_Click()
+    'Speichern und Schließen
+    File.Save("~/.lc_config.txt", FMain.iHindergrund & gb.NewLine & FMain.iVordergrund & gb.NewLine & CheckBox1.Value & gb.NewLine)
+    Me.Close
+End
