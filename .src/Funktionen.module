@@ -14,14 +14,55 @@ Public Sub Verschieben()
     If Error Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
 End
 
+Public Sub Spruch()
+    ''Spruch des Tages
+    Dim x As Integer
+    x = Rand(1, 20)
+    'Print x
+    If x = 1 Then FMain.Label1.Text = "Morgen, morgen nur nicht heute, sagen alle faulen Leute."
+    If x = 2 Then FMain.Label1.Text = "Denke nie gedacht zu haben, denn das Denken der Gedanken ist gedankenloses Denken."
+    If x = 3 Then FMain.Label1.Text = "Was du heute kannst besorgen, verschiebe nicht auf morgen."
+    If x = 4 Then FMain.Label1.Text = "Man muss das Eisen schmieden, solange es heiß ist."
+    If x = 5 Then FMain.Label1.Text = "Kindermund tut Wahrheit kund."
+    If x = 6 Then FMain.Label1.Text = "Was Hänschen nicht lernt, lernt Hans nimmermehr."
+    If x = 7 Then FMain.Label1.Text = "Lieber den Spatz in der Hand als die Taube auf dem Dach."
+    If x = 8 Then FMain.Label1.Text = "Man soll den Tag nicht vor dem Abend loben."
+    If x = 9 Then FMain.Label1.Text = "Kleinvieh macht auch Mist."
+    If x = 10 Then FMain.Label1.Text = "Pech im Spiel, Glück in der Liebe."
+    If x = 11 Then FMain.Label1.Text = "Ein blindes Huhn findet auch mal ein Korn."
+    If x = 12 Then FMain.Label1.Text = "Jeder ist seines Glückes Schmied."
+    If x = 13 Then FMain.Label1.Text = "Auf Regen folgt Sonnenschein."
+    If x = 14 Then FMain.Label1.Text = "Einem geschenkten Gaul schaut man nicht ins Maul."
+    If x = 15 Then FMain.Label1.Text = "Eine Schwalbe macht noch keinen Sommer."
+    If x = 16 Then FMain.Label1.Text = "Ist die Katze aus dem Haus, tanzen die Mäuse auf dem Tisch."
+    If x = 17 Then FMain.Label1.Text = "In der Not frisst der Teufel fliegen."
+    If x = 18 Then FMain.Label1.Text = "Allen Leuten recht getan, ist eine Kunst, die niemand kann."
+    If x = 19 Then FMain.Label1.Text = "Besser stumm als dumm."
+    If x = 20 Then FMain.Label1.Text = "Ein gebranntes Kind scheut das Feuer."    
+End
 
-
-
-
-'' andere Funktionen
 Public Sub Killen()
-    'Eine Datei endgültig löschen >>> rechte Seite
-    ' Try Kill FileView2.Dir &/ FileView2.Current
-    ' If Error Then Message("Es ist ein Fehler aufgetreten!")
-    ' FileView2.Reload  
+    ''Eine Datei endgültig löschen
+    Dim iFrage As Integer
+    
+    If FMain.iLR = 1 Then 
+         iFrage = Message.Delete("Soll " & FMain.FileView1.Path & " wirklich gelöscht und endgültig zerstört werden?", "JA", "NEIN")
+         If iFrage = 1 Then 
+             If IsDir(FMain.FileView1.Path) Then Try Rmdir FMain.FileView1.Path Else Try Kill FMain.FileView1.Path
+         Else 
+             Print "Nix passiert!"
+         Endif
+    Endif
+       'Try Kill FMain.FileView1.Path
+    If FMain.iLR = 2 Then
+         iFrage = Message.Delete("Soll " & FMain.FileView2.Path & " wirklich gelöscht und endgültig zerstört werden?", "JA", "NEIN")
+         If iFrage = 1 Then
+             If IsDir(FMain.FileView2.Path) Then Try Rmdir FMain.FileView2.Path Else Try Kill FMain.FileView2.Path
+         Else 
+             Print "Nix passiert!"
+         Endif
+    Endif 
+    If Error Then Message("Es ist ein Fehler aufgetreten\n oder das Verzeichnis ist nicht leer!")
+    FMain.FileView1.Reload 
+    FMain.FileView2.Reload
 End

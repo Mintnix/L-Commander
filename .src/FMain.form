@@ -63,6 +63,8 @@
     { Menu28 Menu
       Text = ("Programmfarbe ändern")
       Picture = Picture["icon:/medium/color"]
+      Enabled = False
+      Visible = False
       { Menu29 Menu
         Text = ("Blau")
         Picture = Picture["icon:/medium/flag-blue"]
@@ -121,13 +123,13 @@
       Text = ("Bildvorschau")
       Picture = Picture["icon:/medium/preview"]
       Toggle = True
-      Shortcut = "F3"
+      Shortcut = "Ctrl+F3"
     }
     { Menu34 Menu
       Text = ("Baum anzeigen")
       Picture = Picture["icon:/medium/view-tree"]
       Toggle = True
-      Shortcut = "F4"
+      Shortcut = "Ctrl+F4"
     }
     { Menu45 Menu
       Text = ("Schriftvorschau")
@@ -168,20 +170,30 @@
       Picture = Picture["icon:/medium/rename"]
       Shortcut = "F8"
     }
+    { Menu50 Menu
+      Text = ("Datei oder Verzeichnis einpacken")
+      Picture = Picture["icon:/medium/compress"]
+      Shortcut = "Ctrl+F9"
+    }
     { Menu49 Menu
       Text = ("Zugriff auf externe Datenträger")
       Picture = Picture["icon:/medium/usb"]
       Shortcut = "F12"
     }
-    { Menu35 Menu
-      Text = ("Löschen")
-      Picture = Picture["icon:/medium/trash"]
-      Shortcut = "Del"
-    }
     { Menu44 Menu
       Text = ("Papierkorb durchwühlen")
       Picture = Picture["icon:/medium/trash-full"]
       Shortcut = "T"
+    }
+    { Menu51 Menu
+      Text = ("Endgültig Löschen")
+      Picture = Picture["icon:/medium/delete"]
+      Shortcut = "Ctrl+F8"
+    }
+    { Menu35 Menu
+      Text = ("Löschen")
+      Picture = Picture["icon:/medium/trash"]
+      Shortcut = "Del"
     }
   }
   { Menu15 Menu
@@ -391,13 +403,13 @@
       MoveScaled(131,35,35,14)
       Visible = False
       NoTabFocus = True
-      ToolTip = ("F4 beendet die Funktion.")
+      ToolTip = ("Strg F4 beendet die Funktion.")
     }
     { PictureBox1 PictureBox
       MoveScaled(131,20,35,14)
       Visible = False
       NoTabFocus = True
-      ToolTip = ("F3 beendet die Funktion.")
+      ToolTip = ("Strg F3 beendet die Funktion.")
       Alignment = Align.Center
       Border = Border.Plain
     }
@@ -425,8 +437,9 @@
     NoTabFocus = True
     Direction = Direction.LeftToRight
     Padding = 5
-    { Label1 Label
+    { !Label1 Label
       MoveScaled(2,0,91,5)
+      #Public = True
       Font = Font["10"]
       Foreground = Color.Gray
       Alignment = Align.Center

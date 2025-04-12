@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,100,43)
+  MoveScaled(0,0,100,64)
   Background = &HDFFFFF
   Text = ("Programmeinstellung")
   Resizable = False
@@ -10,25 +10,41 @@
     MoveScaled(1,1,98,10)
     Text = ("Farbthema")
     { TextLabel1 TextLabel
-      MoveScaled(2,3,57,5)
+      MoveScaled(2,3,57,6)
       Text = ("Hier können Sie ein Farbthema der Anwendung nach Belieben auswählen, je nach Geschmäckle. ")
     }
   }
   { ComboBox1 ComboBox
-    MoveScaled(68,4,28,5)
+    MoveScaled(66,4,32,5)
     List = [("Blau"), ("Rot"), ("Grün"), ("Gelb"), ("Grau"), ("Retroblau")]
   }
   { Frame2 Frame
-    MoveScaled(1,12,98,24)
+    MoveScaled(1,12,98,44)
     Text = ("Sonstige Einstellungen")
     { !CheckBox1 CheckBox
-      MoveScaled(3,4,57,4)
+      MoveScaled(3,4,92,5)
       #Public = True
       Text = ("TABULATOR - Fokus der beiden Textboxen einschalten.")
     }
+    { !CheckBox2 CheckBox
+      MoveScaled(3,11,92,5)
+      #Public = True
+      Text = ("VORSCHAU - Dateianzeige standardmäßig als Vorschau anzeigen.")
+    }
+    { !CheckBox3 CheckBox
+      MoveScaled(3,18,92,5)
+      #Public = True
+      Text = ("LISTEN - Dateianzeige standardmäßig als Liste anzeigen. ")
+    }
+    { !CheckBox4 CheckBox
+      MoveScaled(3,25,92,5)
+      #Public = True
+      Text = ("MAXIMIERT - Programm entsprechend der Bildschirmgröße darstellen.")
+    }
   }
   { Button1 Button
-    MoveScaled(1,37,98,5)
+    MoveScaled(1,58,98,5)
+    ToolTip = ("Einige Einstellungen werden\nerst nach einem Neustart der\nAnwendung aktiv. ")
     Text = ("Speichern !")
   }
 }

@@ -3,9 +3,10 @@
 { Form Form
   MoveScaled(0,0,100,36)
   Border = False
-  { LCDLabel1 LCDLabel
+  { !LCDLabel1 LCDLabel
     MoveScaled(0,0,100,36)
+    #Public = True
     Background = Color.SoftRoyal
-    Foreground = Color.DarkRed
+    Foreground = Color.Red
   }
 }

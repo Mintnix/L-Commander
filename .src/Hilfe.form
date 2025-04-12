@@ -1,20 +1,25 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,58,85)
+  MoveScaled(0,0,92,85)
   Background = &HDFFFFF
   { TextArea1 TextArea
-    MoveScaled(1,1,56,74)
-    Font = Font["13"]
-    Text = ("F1\t\t\t=\tHilfefenster\nF2\t\t\t=\tDetails anzeigen\nF3\t\t\t=\tBildvorschau\nF4\t\t\t=\tVerzeichnisbaum anzeigen\nF5\t\t\t=\tDatei kopieren\nF6\t\t\t=\tDatei verschieben\nF7\t\t\t=\tVerzeichnis erstellen\nF8\t\t\t=\tDatei/Ordner umbenennen\nF9\t\t\t=  \nF10\t\t=\tProgramm beenden\nF11\t\t=\tSchriftvorschau\nF12\t\t=\tZugriff USB/Ext. Datenträger  \n\nReturn\t\t=\tDoppelklick\nEsc\t\t\t=\tZurück\nH\t\t\t=\tVersteckte Dateien anzeigen\nR\t\t\t=\tAnsicht aktualisieren\nPgUp\t\t=\tSymbole vergrößern\nPgDown\t=\tSymbole verkleinern\nEntf\t\t=\tDatei/Ordner löschen\nT\t\t\t=\tPapierkorb durchsuchen\n\nAlt\t\t\t=\tMenü\nV\t\t\t=\tVersionsinfo")
+    MoveScaled(1,1,90,73)
+    Font = Font["11"]
+    Text = ("F1\t\t=\tHilfefenster\t\t\t\t\t\tReturn\t\t=\tDoppelklick\nF2\t\t=\tDetails anzeigen\t\t\t\t\tEsc\t\t\t=\tZurück\nF3\t\t=\t\t\t\t\t\t\t\t\t\tEntf\t\t=\tDatei/Ordner löschen\t\nF4\t\t=\t\t\t\t\t\t\t\t\t\tH\t\t\t=\tVersteckte Dateien anzeigen\nF5\t\t=\tDatei kopieren\t\t\t\t\tR\t\t\t=\tAnsicht aktualisieren\t\nF6\t\t=\tDatei verschieben\t\t\t\tPgUp\t\t=\tSymbole vergrößern\t\nF7\t\t=\tVerzeichnis erstellen\t\t\t\tPgDown\t=\tSymbole verkleinern\t\nF8\t\t=\tDatei/Ordner umbenennen\t\tT\t\t\t=\tPapierkorb durchsuchen\t\nF9\t\t=\t\t\t\t\t\t\t\t\t\tV\t\t\t=\tVersionsinfo\nF10\t=\tProgramm beenden\t\t\t\tAlt\t\t\t=\tMenü\nF11\t=\tSchriftvorschau\nF12\t=\tZugriff USB/Ext. Datenträger\t\n\nStrg F1\t\t=\t\nStrg F2\t\t=\t\nStrg F3\t\t=\tBildvorschau\nStrg F4\t\t=\tVerzeichnisbaum anzeigen\nStrg F5\t\t=\t\nStrg F6\t\t=\t\nStrg F7\t\t=\t\nStrg F8\t\t=\tDatei/Ordner endgültig und unwiderruflich löschen\nStrg F9\t\t=\tARCHIV.zip anlegen und Datei/Ordner in Archiv kopieren  \nStrg F10\t\t=\nStrg F11\t\t=\t\nStrg F12\t\t=\n")
     ReadOnly = True
     Border = False
   }
   { URLLabel1 URLLabel
-    MoveScaled(1,77,55,6)
-    ToolTip = ("öffnet die entsprechende Internetseite openyourlinux.de")
+    MoveScaled(13,77,76,7)
+    ToolTip = ("Öffnet die entsprechende Internetseite\nfür das Programm L-Commander. ")
     Alignment = Align.Center
     Text = ("Für mehr Informationen bitte den Link anklicken.")
     Link = "https://openyourlinux.blogspot.com/p/lc-der-linux-commander.html"
+  }
+  { PictureBox1 PictureBox
+    MoveScaled(2,75,9,9)
+    Picture = Picture.Load("LC_Icon.png")
+    Alignment = Align.Center
   }
 }

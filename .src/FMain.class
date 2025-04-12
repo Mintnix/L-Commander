@@ -24,19 +24,34 @@ Public Sub Form_Open()
     Dim hFile As Stream
     Dim sLine1 As String
     Dim sLine2 As String
-    Dim sLine3 As String = 0
+    Dim sLine3 As String
+    Dim sLine4 As String
+    Dim sLine5 As String
+    Dim sLine6 As String
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
     ''hier wird geladen und in Variablen gefüllt
     hFile = Open "~/.lc_config.txt" For Read
-    Line Input #hFile, sLine1
-    Line Input #hFile, sLine2
-    Line Input #hFile, sLine3
+    Line Input #hFile, sLine1   'Hintergrund
+    Line Input #hFile, sLine2   'Vordergrund
+    Line Input #hFile, sLine3   'TabStop
+    Line Input #hFile, sLine4   'Vorschau
+    Line Input #hFile, sLine5   'Listen
+    Line Input #hFile, sLine6   'Fullscreen
+    
+    If sLine1 = "" Then sLine1 = &HDFF7FF
+    If sLine2 = "" Then sLine2 = &H000000
+    If sLine3 = "" Then sLine3 = 0
+    If sLine4 = "" Then sLine4 = 0
+    If sLine5 = "" Then sLine5 = 0
+    If sLine6 = "" Then sLine6 = 0
     iHindergrund = sLine1
     iVordergrund = sLine2
-    If sLine3 = "" Then sLine3 = 0
     Einstellungen.CheckBox1.Value = sLine3
+    Einstellungen.CheckBox2.Value = sLine4
+    Einstellungen.CheckBox3.Value = sLine5
+    Einstellungen.CheckBox4.Value = sLine6
     ''Laden Ende
 
     Splitter1.Layout = [48, 4, 48]
@@ -52,38 +67,18 @@ Public Sub Form_Open()
     rOrdner = FileView2.Dir
     Print lOrdner & "  |  " & rOrdner
     LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
-    Spruch()
+    Funktionen.Spruch()
     Menu2.Visible = False
     Menu15.Visible = False
     If sLine3 = -1 Then TextBox1.NoTabFocus = False
     If sLine3 = -1 Then TextBox2.NoTabFocus = False
-End
-
-Public Sub Spruch()
-    'Spruch des Tages
-    Dim x As Integer
-    x = Rand(1, 20)
-    'Print x
-    If x = 1 Then Label1.Text = "Morgen, morgen nur nicht heute, sagen alle faulen Leute."
-    If x = 2 Then Label1.Text = "Denke nie gedacht zu haben, denn das Denken der Gedanken ist gedankenloses Denken."
-    If x = 3 Then Label1.Text = "Was du heute kannst besorgen, verschiebe nicht auf morgen."
-    If x = 4 Then Label1.Text = "Man muss das Eisen schmieden, solange es heiß ist."
-    If x = 5 Then Label1.Text = "Kindermund tut Wahrheit kund."
-    If x = 6 Then Label1.Text = "Was Hänschen nicht lernt, lernt Hans nimmermehr."
-    If x = 7 Then Label1.Text = "Lieber den Spatz in der Hand als die Taube auf dem Dach."
-    If x = 8 Then Label1.Text = "Man soll den Tag nicht vor dem Abend loben."
-    If x = 9 Then Label1.Text = "Kleinvieh macht auch Mist."
-    If x = 10 Then Label1.Text = "Pech im Spiel, Glück in der Liebe."
-    If x = 11 Then Label1.Text = "Ein blindes Huhn findet auch mal ein Korn."
-    If x = 12 Then Label1.Text = "Jeder ist seines Glückes Schmied."
-    If x = 13 Then Label1.Text = "Auf Regen folgt Sonnenschein."
-    If x = 14 Then Label1.Text = "Einem geschenkten Gaul schaut man nicht ins Maul."
-    If x = 15 Then Label1.Text = "Eine Schwalbe macht noch keinen Sommer."
-    If x = 16 Then Label1.Text = "Ist die Katze aus dem Haus, tanzen die Mäuse auf dem Tisch."
-    If x = 17 Then Label1.Text = "In der Not frisst der Teufel fliegen."
-    If x = 18 Then Label1.Text = "Allen Leuten recht getan, ist eine Kunst, die niemand kann."
-    If x = 19 Then Label1.Text = "Besser stumm als dumm."
-    If x = 20 Then Label1.Text = "Ein gebranntes Kind scheut das Feuer."    
+    If sLine4 = -1 Then FileView1.View = 3
+    If sLine4 = -1 Then FileView2.View = 3
+    If sLine5 = -1 Then FileView1.View = 1
+    If sLine5 = -1 Then FileView2.View = 1
+    If sLine5 = -1 Then FileView1.IconSize = 28
+    If sLine5 = -1 Then FileView2.IconSize = 28
+    If sLine6 = -1 Then FMain.Maximized = True
 End
 
 
@@ -400,6 +395,7 @@ End
 Public Sub LCDLabel2_Enter()
     'Uhrzeit zeigen beim Überfahren
     LCDLabel2.Text = Format(Time(Now), "hh:nn") & " Uhr"
+    Zeitfenster.LCDLabel1.Background = iHindergrund
     Zeitfenster.ShowModal
 End
 
@@ -698,7 +694,7 @@ Public Sub Menu34_Click()
     Dim hFont As Font
     hFont = Font[", Bold,11"]
     DirView1.Font = hFont
-    'DirView1.Reload
+    DirView1.Background = iHindergrund
     DirView1.Current = FileView1.Dir
     If Menu34.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
     If Menu34.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
@@ -926,7 +922,7 @@ End
 
 Public Sub Menu10_Click()
     'Versionsinfo = V
-    Spruch()
+    Funktionen.Spruch()
     TextLabel1.Font.Bold = True
     TextLabel1.Background = &HFFFF00
     TextLabel1.Foreground = &H0000FF
@@ -1055,7 +1051,7 @@ End
 
 Public Sub TextLabel4_Menu()
     'Terminal mit Pfad öffnen
-    Desktop.OpenTerminal(TextLabel4.Text)
+    Desktop.OpenTerminal(TextLabel4.Text) 
 End
 
 Public Sub TextLabel3_Menu()
@@ -1083,4 +1079,25 @@ End
 Public Sub TextBox2_LostFocus()
     'Feld Farbe wieder ändern
     TextBox2.Background = iHindergrund
+End
+
+Public Sub Menu50_Click()
+    'Zip Archiv erstellen
+    If iLR = 1 Then
+        Shell "zip -r ARCHIV.zip " & Quote(FileView1.Path)
+        TextLabel1.Text = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt, oder Daten wurden dem bestehenden ARCHIV.zip hinzugefügt."
+        FileView1.Reload
+        FileView2.Reload
+    Endif
+    If iLR = 2 Then
+        Shell "zip -r ARCHIV.zip " & Quote(FileView2.Path)
+        TextLabel1.Text = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt, oder Daten wurden dem bestehenden ARCHIV.zip hinzugefügt."
+        FileView2.Reload
+        FileView1.Reload
+    Endif
+End
+
+Public Sub Menu51_Click()
+    ' Datei oder Ordner zerstören und endgültig löschen
+    Funktionen.Killen
 End
