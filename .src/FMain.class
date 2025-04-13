@@ -9,6 +9,7 @@ Public QUELLE As String
 Public ZIELDATEI As String
 Public ZIELPFAD As String
 Public ZIEL As String
+Public sTDatei As String
 Public lOrdner As String
 Public rOrdner As String
 Public dTimeDate As Date
@@ -81,7 +82,6 @@ Public Sub Form_Open()
     If sLine6 = -1 Then FMain.Maximized = True
 End
 
-
 Public Sub Menu5_Click()
     'beenden
     Me.Close
@@ -91,16 +91,12 @@ End
 ''###########################################################################################################################
 Public Sub Loeschen()
     '' Löschfunktion in den Papierkorb
-    'Test auf externes Medium
+    'zuerst Test auf externes Medium
     Dim aPfadArray As String[]
-    'Dim Sb As String
     
     If iLR = 1 Then 
         If FileView1.Dir Begins "/media" &/ User.Name Then 
             aPfadArray = Split(FileView1.Dir, "/") 
-            'For Each Sb In aPfadArray
-            'Print "["; Sb; "] ";
-            'Next
             Try Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
             Trash_Info = Trash_Dir &/ "info"
             Trash_Files = Trash_Dir &/ "files"
@@ -118,9 +114,6 @@ Public Sub Loeschen()
     If iLR = 2 Then 
         If FileView2.Dir Begins "/media" &/ User.Name Then 
             aPfadArray = Split(FileView2.Dir, "/") 
-            'For Each Sb In aPfadArray
-            'Print "["; Sb; "] ";
-            'Next
             Try Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
             Trash_Info = Trash_Dir &/ "info"
             Trash_Files = Trash_Dir &/ "files"
@@ -149,33 +142,42 @@ Public Sub create_trashinfo()
     Dim Pfad As String
     Dim deletion_date As String
     Dim dDate As Date
-    'Dim iZahl As Integer = 0
-    Dim sTDatei As String = QUELLDATEI
+    Dim iZahl As Integer = 1
+   
+    sTDatei = QUELLDATEI
 
     dDate = Now()
     deletion_date = "DeletionDate=" & Format$(dDate, "yyyy-mm-ddThh:nn:ss")
     Pfad = "Path=" & QUELLPFAD &/ QUELLDATEI
 
-    If QUELLDATEI = "" Then 
-         Message("Fehler, nichts ausgewählt.", "OK")
-    Else If Exist(Trash_Info &/ QUELLDATEI & ".trashinfo") Then 
-         Message("Fehler.\nEine gleichnamige Datei liegt bereits im Papierkorb.\nBitte vorher den Papierkorb leeren.", "OK")
+    If sTDatei = "" Then
+        Message("Fehler, nichts ausgewählt.", "OK")
+    Else If Exist(Trash_Info &/ sTDatei & ".trashinfo") Then 
+            While Exist(Trash_Info &/ sTDatei & ".trashinfo")
+                iZahl += 1
+                sTDatei = QUELLDATEI & "." & iZahl
+                'Print sTDatei & "   ist die Trashinfodatei"
+            Wend 
+            Print "Gleichnamige Datei existiert schon. Es wurde eine fortlaufende Nummer an die Trash-Info angefügt."
+            Try File.Save(Trash_Info &/ sTDatei & ".trashinfo", Info & gb.NewLine & Pfad & gb.NewLine & deletion_date)
+            If Error Then Message("Es ist ein Fehler aufgetreten.", "OK")
     Else 
-         Print Trash_Info &/ QUELLDATEI & ".trashinfo"
-         Try File.Save(Trash_Info &/ sTDatei & ".trashinfo", Info & gb.NewLine & Pfad & gb.NewLine & deletion_date)
-         If Error Then Message("Es ist ein Fehler aufgetreten.", "OK")
-    Endif 
+        Print "Trash-Info der Datei wurde angelegt."
+        Try File.Save(Trash_Info &/ sTDatei & ".trashinfo", Info & gb.NewLine & Pfad & gb.NewLine & deletion_date)
+    Endif
 End
 
 Public Sub move_totrash()
     'Ab in den Papierkorb verschieben
-    If QUELLDATEI = "" Then 
+    Dim iZahl As Integer = 1
+    
+    If sTDatei = "" Then 
         TextLabel1.Text = "Keine Datei ausgewählt."
-    Else If
-        Exist(Trash_Files &/ QUELLDATEI) Then
-        TextLabel1.Text = "Konnte nicht gelöscht werden."
+    Else If Exist(Trash_Files &/ sTDatei) Then
+        TextLabel1.Text = "Fehler: Datei existiert schon unter " & Trash_Files & " !" 
     Else 
-        Try Move QUELLPFAD &/ QUELLDATEI To Trash_Files &/ QUELLDATEI
+        Print "Datei wurde in den Papierkorb verschoben."
+        Try Move QUELLPFAD &/ QUELLDATEI To Trash_Files &/ sTDatei
         If Error Then Message("Es ist ein Fehler aufgetreten", "OK")
         TextLabel1.Text = "Das Element → " & QUELLDATEI & " ← wurde in den Papierkorb verschoben!"
     Endif 
@@ -209,7 +211,7 @@ Public Sub Kopieren()
                 If Error Then TextLabel1.Text = "Das funktioniert nicht."
             Next
                 FileView1.Reload
-                Print "neu geladen"
+                'Print "neu geladen"
             Else 
             'Standardfunktion
              Print QUELLE & " - EINZEL DATEI"
@@ -533,16 +535,12 @@ Public Sub Menu18_Click()
 End
 
 Public Sub Menu16_Click()
-  'Eine Datei löschen - linkes Feld
+  'Eine Datei in den Papierkorb löschen - linkes Feld
     QUELLPFAD = FileView1.Dir
     QUELLDATEI = FileView1.Current
     Try Loeschen
     FileView1.Reload
     FileView2.Reload
-  'Eine Datei dauerhaft löschen
-    'Try Kill FileView1.Dir &/ FileView1.Current
-    'If Error Then Message("Es ist ein Fehler aufgetreten!")
-    'FileView1.Reload
 End
 
 Public Sub Menu17_Click()
@@ -584,6 +582,7 @@ End
 Public Sub Menu22_Click()
     ' Kompakte Ansicht
     FileView1.View = 1
+    FileView1.IconSize = 22
 End
 
 Public Sub Menu23_Click()
@@ -599,6 +598,7 @@ End
 Public Sub Menu26_Click()
     'Kompakte Ansicht
     FileView2.View = 1
+    FileView2.IconSize = 22
 End
 
 Public Sub Menu27_Click()
@@ -750,7 +750,7 @@ Public Sub Button4_Click()
         FileView2.Current = FileView1.Current
         'FileView2.Reload
         Print "Reload"
-        Wait 1
+        Wait
         FileView1.SetFocus
         TextBox2.Background = -1
         Else
