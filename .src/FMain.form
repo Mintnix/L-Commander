@@ -61,31 +61,16 @@
       Shortcut = "Alt+E"
     }
     { Menu28 Menu
-      Text = ("Programmfarbe ändern")
-      Picture = Picture["icon:/medium/color"]
-      Enabled = False
-      Visible = False
+      Text = ("ext. Programm ausführen")
+      Picture = Picture["icon:/medium/application"]
       { Menu29 Menu
-        Text = ("Blau")
-        Picture = Picture["icon:/medium/flag-blue"]
+        Text = ("Data-SCP")
+        Picture = Picture["icon:/medium/exclusive"]
       }
       { Menu30 Menu
-        Text = ("Gelb")
-        Picture = Picture["icon:/medium/flag-yellow"]
+        Text = ("Data-Backup")
+        Picture = Picture["icon:/medium/floppy"]
       }
-      { Menu31 Menu
-        Text = ("Rot")
-        Picture = Picture["icon:/medium/flag-red"]
-      }
-      { Menu32 Menu
-        Text = ("Grau")
-        Picture = Picture["icon:/medium/flag"]
-      }
-    }
-    { Menu9 Menu
-      Text = ("Hilfe")
-      Picture = Picture["icon:/medium/help"]
-      Shortcut = "F1"
     }
     { Menu10 Menu
       Text = ("Über")
@@ -194,6 +179,37 @@
       Text = ("Löschen")
       Picture = Picture["icon:/medium/trash"]
       Shortcut = "Del"
+    }
+  }
+  { Menu52 Menu
+    Text = Shortcut(("Orte"), "O")
+    { Menu55 Menu
+      Text = ("Computer")
+      Picture = Picture["icon:/medium/computer"]
+      Shortcut = "Alt+C"
+    }
+    { Menu56 Menu
+      Text = ("Fritzbox NAS")
+      Picture = Picture["icon:/medium/folder-network"]
+      Shortcut = "Alt+B"
+    }
+    { Menu57 Menu
+      Text = ("Netzwerk")
+      Picture = Picture["icon:/medium/network"]
+      Shortcut = "Alt+N"
+    }
+  }
+  { Menu53 Menu
+    Text = Shortcut(("Hilfe"), "H")
+    { Menu9 Menu
+      Text = ("Tastencodes")
+      Picture = Picture["icon:/medium/help"]
+      Shortcut = "F1"
+    }
+    { Menu54 Menu
+      Text = ("Programminfo im Internet")
+      Picture = Picture["icon:/medium/internet"]
+      Shortcut = "Alt+I"
     }
   }
   { Menu15 Menu
@@ -426,6 +442,7 @@
     Padding = 5
     { TextLabel1 TextLabel
       MoveScaled(3,0,161,6)
+      Font = Font["Bold"]
       NoTabFocus = True
       Padding = 5
       Text = ("Was kann denn hier für ein Text stehen?")

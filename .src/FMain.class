@@ -80,6 +80,9 @@ Public Sub Form_Open()
     If sLine5 = -1 Then FileView1.IconSize = 28
     If sLine5 = -1 Then FileView2.IconSize = 28
     If sLine6 = -1 Then FMain.Maximized = True
+    
+    If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
+    If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
 End
 
 Public Sub Menu5_Click()
@@ -183,7 +186,7 @@ Public Sub move_totrash()
     Endif 
 End
 ''#############################################################################################################################
-
+''---------------------------------------------------------------------------------------------------------------------------------------------------------------
 Public Sub Kopieren()
     ''Kopierfunktion mit den Testroutinen
     ' Alle Dateien kopieren
@@ -247,7 +250,7 @@ Public Sub Kopieren()
         Endif 
     Endif 
 End
-
+'' --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 '' Feldfunktionen hier machen -------------------------
 Public Sub FileView2_DblClick()
@@ -607,64 +610,15 @@ Public Sub Menu27_Click()
 End
 
 Public Sub Menu29_Click()
-    'Blaue Farbe
-    iHindergrund = &H1F1FFF
-    iVordergrund = &HFFFF1F
-    TextLabel3.Foreground = iVordergrund
-    TextLabel4.Foreground = iVordergrund
-    FileView1.Foreground = iVordergrund
-    FileView1.Background = iHindergrund
-    FileView2.Foreground = iVordergrund
-    FileView2.Background = iHindergrund
-    Me.Background = iHindergrund
-    Me.Foreground = -1
-    Me.Refresh() 
+    'Data-SCP
+    Exec ["data-scp"] Wait 
 End
 
 Public Sub Menu30_Click()
-    'gelb
-    iHindergrund = &HFFFFBF
-    iVordergrund = 44444533
-    TextLabel3.Foreground = iVordergrund
-    TextLabel4.Foreground = iVordergrund
-    FileView1.Foreground = iVordergrund
-    FileView1.Background = iHindergrund
-    FileView2.Foreground = iVordergrund
-    FileView2.Background = iHindergrund
-    Me.Background = iHindergrund
-    Me.Foreground = -1
-    Me.Refresh() 
+    'Data-Backup
+    'Exec ["data-backup"] Wait 
 End
 
-Public Sub Menu31_Click()
-    'rot
-    iHindergrund = &HFF9F9F
-    iVordergrund = &H0000FF
-    TextLabel3.Foreground = iVordergrund
-    TextLabel4.Foreground = iVordergrund
-    FileView1.Foreground = iVordergrund
-    FileView1.Background = iHindergrund
-    FileView2.Foreground = iVordergrund
-    FileView2.Background = iHindergrund
-    Me.Background = iHindergrund
-    Me.Foreground = -1
-    Me.Refresh() 
-End
-
-Public Sub Menu32_Click()
-    'grau
-    iHindergrund = 14737632
-    iVordergrund = &HFF571F
-    TextLabel3.Foreground = iVordergrund
-    TextLabel4.Foreground = iVordergrund
-    FileView1.Foreground = iVordergrund
-    FileView1.Background = iHindergrund
-    FileView2.Foreground = iVordergrund
-    FileView2.Background = iHindergrund
-    Me.Background = iHindergrund
-    Me.Foreground = -1
-    Me.Refresh() 
-End
 
 Public Sub Menu33_Click()
     'Bildvorschau
@@ -738,46 +692,87 @@ Public Sub Button3_Click()
     FileView1.Reload
 End
 
+''<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 Public Sub Button4_Click()
-    ' Verschieben über Knopf - F6
-    ZIELDATEI = ZIEL &/ QUELLDATEI
-    If iLR = 1 Then 
-        If Exist(ZIELDATEI) Then 
-        TextLabel1.Text = QUELLDATEI & " - Datei existiert schon."
-        Print ZIELDATEI & "   ist die Zieldatei"
-        TextBox2.Background = &HFF571F
-        FileView2.SetFocus
-        FileView2.Current = FileView1.Current
-        'FileView2.Reload
-        Print "Reload"
-        Wait
-        FileView1.SetFocus
-        TextBox2.Background = -1
-        Else
-            Funktionen.Verschieben()
-            TextLabel1.Text = Funktionen.sInfotext
+    ''Verschiebefunktion mit den Testroutinen für die jeweilige Seite
+    Dim i As Integer
+
+    If iLR = 1 Then QUELLPFAD = FileView1.Dir 'links
+    If iLR = 2 Then QUELLPFAD = FileView2.Dir 'rechts
+    
+    If iLR = 1 Then                                                             'linke Auswahl nach rechts verschieben
+       If FileView1.Selection.Count > 1 Then 
+            For i = 0 To FileView1.Selection.Count - 1
+                Print i
+                Print FileView1.Selection[i]
+                QUELLE = QUELLPFAD &/ FileView1.Selection[i]
+                Print QUELLE & " MEHRERE DATEN"
+                'If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, Datei existiert schon."
+                If Not Exist(ZIEL &/ FileView1.Selection[i]) Then 
+                    Funktionen.Verschieben()
+                    TextLabel1.Text = Funktionen.sInfotext
+                    Wait 0.2
+                    'FileView1.Reload
+                    FileView2.Reload
+                Else 
+                    TextLabel1.Text = "Die Datei existiert schon und wird nicht verschoben."
+                    Wait 0.2
+                    'FileView1.Reload
+                    FileView2.Reload
+                Endif
+            Next
+        Else 
+            'Standardfunktion für einzelne Datei/Ordner
+            Print QUELLE & " - EINZEL DATEI"
+            Print ZIEL
+            If Not Exist(ZIEL &/ FileView1.Current) Then 
+                Funktionen.Verschieben
+                TextLabel1.Text = Funktionen.sInfotext
+                FileView2.Reload
+            Else
+                TextLabel1.Text = "Fehler, die Datei existiert schon und wird nicht verschoben."
+            Endif 
+            If QUELLE = "" Then TextLabel1.Text = "Das funktioniert nicht."
         Endif 
+        FileView1.Reload
     Endif 
-    If iLR = 2 Then 
-        If Exist(ZIELDATEI) Then 
-        TextLabel1.Text = QUELLDATEI & " - Datei existiert schon."
-        Print ZIELDATEI & "   ist die Zieldatei"
-        TextBox1.Background = &HFF571F
-        FileView1.SetFocus
-        FileView1.Current = FileView2.Current
-        'FileView2.Reload
-        Print "Reload"
-        Wait 1
-        FileView2.SetFocus
-        TextBox1.Background = -1
-        Else
-            Funktionen.Verschieben()
-            TextLabel1.Text = Funktionen.sInfotext
+    
+    If iLR = 2 Then                                                             'rechte Auswahl nach links verschieben
+       If FileView2.Selection.Count > 1 Then 
+            For i = 0 To FileView2.Selection.Count - 1
+                Print i
+                Print FileView2.Selection[i]
+                QUELLE = QUELLPFAD &/ FileView2.Selection[i]
+                Print QUELLE & " MEHRERE DATEN"
+                'If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, Datei existiert schon."
+                If Not Exist(ZIEL &/ FileView2.Selection[i]) Then 
+                    Funktionen.Verschieben()
+                    TextLabel1.Text = Funktionen.sInfotext
+                    Wait 0.2
+                    'FileView1.Reload
+                    FileView1.Reload
+                Else 
+                    TextLabel1.Text = "Die Datei existiert schon und wird nicht verschoben."
+                    Wait 0.2
+                Endif
+            Next
+        Else 
+            'Standardfunktion für einzelne Datei/Ordner
+            Print QUELLE & " - EINZEL DATEI"
+            Print ZIEL
+            If Not Exist(ZIEL &/ FileView2.Current) Then 
+                Funktionen.Verschieben
+                TextLabel1.Text = Funktionen.sInfotext
+                FileView1.Reload
+            Else
+                TextLabel1.Text = "Fehler, die Datei existiert schon und wird nicht verschoben."
+            Endif 
+            If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
         Endif 
+        FileView2.Reload
     Endif 
-    FileView2.Reload
-    FileView1.Reload
 End
+''<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 Public Sub Menu36_Click()
     'links vergrößern
@@ -1101,3 +1096,31 @@ Public Sub Menu51_Click()
     ' Datei oder Ordner zerstören und endgültig löschen
     Funktionen.Killen
 End
+
+Public Sub Menu55_Click()
+    'Computer anzeigen ( über nemo )
+    Desktop.UsePortal = False
+    Try Desktop.Open("computer:///")
+    If Error Then Return 
+End
+
+Public Sub Menu56_Click()
+    'Fritzbox anzeigen ( über nemo )
+    Desktop.UsePortal = False
+    Try Desktop.Open("smb://fritz.box/fritz.nas")
+    If Error Then Print "Fehler!"
+End
+
+Public Sub Menu57_Click()
+    'Netzwerk anzeigen ( über nemo )
+    Desktop.UsePortal = False
+    Try Desktop.Open("network:///")
+    If Error Then Return 
+End
+
+Public Sub Menu54_Click()
+    ' Hilfe Link öffnen
+    Desktop.UsePortal = False
+    Desktop.Open("https://openyourlinux.blogspot.com/p/lc-der-linux-commander.html")
+End
+
