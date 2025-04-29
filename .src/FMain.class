@@ -488,19 +488,11 @@ End
 Public Sub Button5_Click()
     'löschen Knopf
     If iLR = 1 Then 
-       QUELLPFAD = FileView1.Dir
-       QUELLDATEI = FileView1.Current
-       Try Loeschen
-       FileView1.Reload
-       FileView2.Reload
+       Menu16_Click()
     Endif 
     
     If iLR = 2 Then
-       QUELLPFAD = FileView2.Dir
-       QUELLDATEI = FileView2.Current
-       Try Loeschen
-       FileView1.Reload
-       FileView2.Reload
+       Menu46_Click()
     Endif 
 End
 
@@ -538,10 +530,27 @@ Public Sub Menu18_Click()
 End
 
 Public Sub Menu16_Click()
-  'Eine Datei in den Papierkorb löschen - linkes Feld
-    QUELLPFAD = FileView1.Dir
-    QUELLDATEI = FileView1.Current
-    Try Loeschen
+    'Datei(en) links löschen
+    Dim i As Integer
+    'mehrere Dateien löschen
+    If FileView1.Selection.Count > 1 Then 
+        For i = 0 To FileView1.Selection.Count - 1
+            Print i
+            Print FileView1.Selection[i]
+            QUELLPFAD = FileView1.Dir
+            QUELLDATEI = FileView1.Selection[i]
+            Print QUELLDATEI & "  " & QUELLPFAD
+            Try Loeschen 
+            Wait 0.5
+        Next
+    Else 
+    'eine Datei löschen
+        QUELLPFAD = FileView1.Dir
+        QUELLDATEI = FileView1.Current
+        Try Loeschen
+        Print "Es würde gelöscht werden!"
+    Endif 
+    TextBox1.Text = ""
     FileView1.Reload
     FileView2.Reload
 End
@@ -615,8 +624,8 @@ Public Sub Menu29_Click()
 End
 
 Public Sub Menu30_Click()
-    'Data-Backup
-    'Exec ["data-backup"] Wait 
+    'Taschenrechner
+    Exec ["gnome-calculator"] Wait 
 End
 
 
@@ -967,16 +976,31 @@ Public Sub Menu47_Click()
 End
 
 Public Sub Menu46_Click()
-     'Eine Datei rechts löschen
-    QUELLPFAD = FileView2.Dir
-    QUELLDATEI = FileView2.Current
-    Try Loeschen
+    'Datei(en) rechts löschen
+    Dim i As Integer
+    'mehrere Dateien löschen
+    If FileView2.Selection.Count > 1 Then 
+        For i = 0 To FileView2.Selection.Count - 1
+            Print i
+            Print FileView2.Selection[i]
+            QUELLPFAD = FileView2.Dir
+            QUELLDATEI = FileView2.Selection[i]
+            Print QUELLDATEI & "  " & QUELLPFAD
+            Try Loeschen 
+            Wait 1
+                'FileView2.Reload
+        Next
+    
+    Else 
+    'eine Datei löschen
+        QUELLPFAD = FileView2.Dir
+        QUELLDATEI = FileView2.Current
+        Try Loeschen
+        Print "Es würde gelöscht werden!"
+    Endif 
+    TextBox2.Text = ""
     FileView1.Reload
     FileView2.Reload
-  'Eine Datei dauerhaft löschen
-    'Try Kill FileView1.Dir &/ FileView1.Current
-    'If Error Then Message("Es ist ein Fehler aufgetreten!")
-    'FileView1.Reload
 End 
 
 Public Sub FileView1_KeyPress()
@@ -1124,3 +1148,9 @@ Public Sub Menu54_Click()
     Desktop.Open("https://openyourlinux.blogspot.com/p/lc-der-linux-commander.html")
 End
 
+
+Public Sub Menu31_Click()
+    'Rechner öffnen
+    Desktop.Open()
+
+End

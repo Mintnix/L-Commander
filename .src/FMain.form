@@ -68,8 +68,8 @@
         Picture = Picture["icon:/medium/exclusive"]
       }
       { Menu30 Menu
-        Text = ("Data-Backup")
-        Picture = Picture["icon:/medium/floppy"]
+        Text = ("Rechner")
+        Picture = Picture["icon:/medium/calculator"]
       }
     }
     { Menu10 Menu
