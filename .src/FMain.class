@@ -172,7 +172,7 @@ End
 
 Public Sub move_totrash()
     'Ab in den Papierkorb verschieben
-    Dim iZahl As Integer = 1
+    'Dim iZahl As Integer = 1
     
     If sTDatei = "" Then 
         TextLabel1.Text = "Keine Datei ausgewählt."
@@ -186,7 +186,7 @@ Public Sub move_totrash()
     Endif 
 End
 ''#############################################################################################################################
-''---------------------------------------------------------------------------------------------------------------------------------------------------------------
+''-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Public Sub Kopieren()
     ''Kopierfunktion mit den Testroutinen
     ' Alle Dateien kopieren
@@ -212,6 +212,7 @@ Public Sub Kopieren()
                 If Error Then TextLabel1.Text = "Kopie Datei fehlgeschlagen." 
                 TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 If Error Then TextLabel1.Text = "Das funktioniert nicht."
+                Wait 0.1
             Next
                 FileView1.Reload
                 'Print "neu geladen"
@@ -237,6 +238,7 @@ Public Sub Kopieren()
                 If IsDir(QUELLE) = False Then Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
                 TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 If Error Then TextLabel1.Text = "Das funktioniert nicht."
+                Wait 0.1
             Next
                 FileView2.Reload
             Else 
@@ -436,6 +438,10 @@ End
 
 Public Sub Button6_Click()
     'Umbenennen - F8
+    Dim Farbe As Integer
+    Farbe = TextLabel1.Foreground
+    Print Farbe
+    
     If iLR = 1 Then 
         sEditfile = FileView1.Current
         FileView1.SetFocus
@@ -444,6 +450,9 @@ Public Sub Button6_Click()
         TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
         If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher mit der Maus auswählen, dann klappt auch das Umbenennen."
         If sEditfile = "" Then TextLabel1.Foreground = 16711680
+        Wait 2
+        TextLabel1.Foreground = iVordergrund
+        TextLabel1.Refresh
     Endif
 
     If iLR = 2 Then 
@@ -454,6 +463,9 @@ Public Sub Button6_Click()
         TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
         If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher mit der Maus auswählen, dann klappt auch das Umbenennen."
         If sEditfile = "" Then TextLabel1.Foreground = 16711680
+        Wait 2
+        TextLabel1.Foreground = iVordergrund
+        TextLabel1.Refresh
     Endif 
 End
 
@@ -709,6 +721,7 @@ Public Sub Button4_Click()
     If iLR = 1 Then QUELLPFAD = FileView1.Dir 'links
     If iLR = 2 Then QUELLPFAD = FileView2.Dir 'rechts
     
+    'Verschieben von mehreren Dateien 
     If iLR = 1 Then                                                             'linke Auswahl nach rechts verschieben
        If FileView1.Selection.Count > 1 Then 
             For i = 0 To FileView1.Selection.Count - 1
@@ -716,18 +729,14 @@ Public Sub Button4_Click()
                 Print FileView1.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView1.Selection[i]
                 Print QUELLE & " MEHRERE DATEN"
-                'If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, Datei existiert schon."
                 If Not Exist(ZIEL &/ FileView1.Selection[i]) Then 
                     Funktionen.Verschieben()
                     TextLabel1.Text = Funktionen.sInfotext
-                    Wait 0.2
-                    'FileView1.Reload
+                    Wait 0.3
                     FileView2.Reload
                 Else 
-                    TextLabel1.Text = "Die Datei existiert schon und wird nicht verschoben."
-                    Wait 0.2
-                    'FileView1.Reload
-                    FileView2.Reload
+                    TextLabel1.Text = "Die Datei " & FileView1.Selection[i] & " existiert schon und wird nicht verschoben."
+                    Wait 1
                 Endif
             Next
         Else 
@@ -739,13 +748,14 @@ Public Sub Button4_Click()
                 TextLabel1.Text = Funktionen.sInfotext
                 FileView2.Reload
             Else
-                TextLabel1.Text = "Fehler, die Datei existiert schon und wird nicht verschoben."
+                TextLabel1.Text = "Fehler, die Datei " & QUELLE & " existiert schon und wird nicht verschoben."
             Endif 
             If QUELLE = "" Then TextLabel1.Text = "Das funktioniert nicht."
         Endif 
         FileView1.Reload
     Endif 
     
+    'Verschieben von mehreren Dateien 
     If iLR = 2 Then                                                             'rechte Auswahl nach links verschieben
        If FileView2.Selection.Count > 1 Then 
             For i = 0 To FileView2.Selection.Count - 1
@@ -753,16 +763,14 @@ Public Sub Button4_Click()
                 Print FileView2.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView2.Selection[i]
                 Print QUELLE & " MEHRERE DATEN"
-                'If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, Datei existiert schon."
                 If Not Exist(ZIEL &/ FileView2.Selection[i]) Then 
                     Funktionen.Verschieben()
                     TextLabel1.Text = Funktionen.sInfotext
-                    Wait 0.2
-                    'FileView1.Reload
+                    Wait 0.3
                     FileView1.Reload
                 Else 
-                    TextLabel1.Text = "Die Datei existiert schon und wird nicht verschoben."
-                    Wait 0.2
+                    TextLabel1.Text = "Die Datei " & FileView2.Selection[i] & " existiert schon und wird nicht verschoben."
+                    Wait 1
                 Endif
             Next
         Else 
@@ -774,7 +782,7 @@ Public Sub Button4_Click()
                 TextLabel1.Text = Funktionen.sInfotext
                 FileView1.Reload
             Else
-                TextLabel1.Text = "Fehler, die Datei existiert schon und wird nicht verschoben."
+                TextLabel1.Text = "Fehler, die Datei " & QUELLE & " existiert schon und wird nicht verschoben."
             Endif 
             If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
         Endif 
