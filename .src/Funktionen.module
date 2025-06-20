@@ -14,6 +14,23 @@ Public Sub Verschieben()
     If Error Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
 End
 
+Public Sub Baum()
+    'Baum anzeigen
+    Dim hFont As Font
+    hFont = Font[", Bold,11"]
+    
+    If FMain.bBaum = -1 Then 
+        FMain.DirView1.Font = hFont
+        FMain.DirView1.Background = FMain.iHindergrund
+        FMain.DirView1.Current = FMain.FileView1.Dir
+        FMain.DirView1.Visible = True
+        FMain.Splitter1.Layout = [18, 50, 4, 30]
+        FMain.Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3]
+    Endif 
+    
+End
+
+
 Public Sub Spruch()
     ''Spruch des Tages
     Dim x As Integer

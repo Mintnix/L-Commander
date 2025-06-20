@@ -14,10 +14,12 @@ Public lOrdner As String
 Public rOrdner As String
 Public dTimeDate As Date
 Public iStandardfarbe As Integer = &HBFFFFF 'Standardfarbe
-Public iHindergrund As Integer = &HDFF7FF
+Public iHindergrund As Integer = &HDFF7FF   
 Public iVordergrund As Integer
 Public sEditfile As String
-Public iLR As Integer = 0                       'linkes oder rechtes Feld zuletzt gewählt
+Public iLR As Integer = 0                   'linkes oder rechtes Feld zuletzt gewählt
+Public bRand As Boolean                     'Ränder anzeigen ja oder nein
+Static Public bBaum As Boolean              'Baum anzeigen
 
 
 Public Sub Form_Open()
@@ -29,6 +31,8 @@ Public Sub Form_Open()
     Dim sLine4 As String
     Dim sLine5 As String
     Dim sLine6 As String
+    Dim sLine7 As String
+    Dim sLine8 As String
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
@@ -40,6 +44,8 @@ Public Sub Form_Open()
     Line Input #hFile, sLine4   'Vorschau
     Line Input #hFile, sLine5   'Listen
     Line Input #hFile, sLine6   'Fullscreen
+    Line Input #hFile, sLine7   'Ränder
+    Line Input #hFile, sLine8   'Verzeichnisbaum
     
     If sLine1 = "" Then sLine1 = &HDFF7FF
     If sLine2 = "" Then sLine2 = &H000000
@@ -47,30 +53,18 @@ Public Sub Form_Open()
     If sLine4 = "" Then sLine4 = 0
     If sLine5 = "" Then sLine5 = 0
     If sLine6 = "" Then sLine6 = 0
+    If sLine7 = "" Then sLine7 = 0
+    If sLine8 = "" Then sLine8 = 0
     iHindergrund = sLine1
     iVordergrund = sLine2
     Einstellungen.CheckBox1.Value = sLine3
     Einstellungen.CheckBox2.Value = sLine4
     Einstellungen.CheckBox3.Value = sLine5
     Einstellungen.CheckBox4.Value = sLine6
+    Einstellungen.CheckBox5.Value = sLine7
+    Einstellungen.CheckBox6.Value = sLine8
     ''Laden Ende
 
-    Splitter1.Layout = [48, 4, 48]
-    Splitter3.Layout = [3, 20, 3, 24, 24, 3, 20, 3]
-    TextLabel1.Text = "Bereit für die Arbeit."
-    Me.Background = iHindergrund
-    Me.Foreground = iVordergrund
-    FileView1.Background = iHindergrund
-    FileView2.Background = iHindergrund
-    FileView1.Dir = User.Home
-    FileView2.Dir = User.Home
-    lOrdner = FileView1.Dir
-    rOrdner = FileView2.Dir
-    Print lOrdner & "  |  " & rOrdner
-    LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
-    Funktionen.Spruch()
-    Menu2.Visible = False
-    Menu15.Visible = False
     If sLine3 = -1 Then TextBox1.NoTabFocus = False
     If sLine3 = -1 Then TextBox2.NoTabFocus = False
     If sLine4 = -1 Then FileView1.View = 3
@@ -80,14 +74,66 @@ Public Sub Form_Open()
     If sLine5 = -1 Then FileView1.IconSize = 28
     If sLine5 = -1 Then FileView2.IconSize = 28
     If sLine6 = -1 Then FMain.Maximized = True
+    If sLine7 = -1 Then bRand = -1 Else bRand = 0
+    If sLine8 = -1 Then bBaum = -1 Else bBaum = 0
+
+    Splitter1.Layout = [0, 48, 4, 48]
+    Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
+    TextLabel1.Text = "Bereit für die Arbeit."
+    Me.Background = iHindergrund
+    Me.Foreground = iVordergrund
+    FileView1.Background = iHindergrund
+    FileView2.Background = iHindergrund
+    FileView1.Foreground = iVordergrund
+    FileView2.Foreground = iVordergrund
+    FileView1.Dir = User.Home
+    FileView2.Dir = User.Home
+    lOrdner = FileView1.Dir
+    rOrdner = FileView2.Dir
+    Print lOrdner & "  |  " & rOrdner
+    LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
+    
+    Wait 
+   
+    Funktionen.Spruch()
+    Menu2.Visible = False
+    Menu15.Visible = False
+    
+    NoBorder()
+    Funktionen.Baum()
     
     If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
     If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
+    
+    If bBaum = -1 Then
+        Menu34.Checked = True
+        Menu33.Visible = False
+        Menu45.Visible = False
+        Menu19.Visible = False
+    Endif 
 End
 
 Public Sub Menu5_Click()
     'beenden
     Me.Close
+End
+
+''____________________________________________
+Public Sub NoBorder()
+    ''Ränder ein- oder ausschalten
+    If bRand = -1 Then 
+        FileView1.Border = False 
+        FileView2.Border = False
+        DirView1.Border = False
+        FileProperties1.Border = False
+        PictureBox1.Border = 0
+        TextArea1.Border = False 
+        TextBox1.Border = False
+        TextBox2.Border = False
+        Splitter1.Border = False
+        Splitter3.Border = False
+        LCDLabel2.Border = False
+    Endif
 End
 
 
@@ -347,6 +393,8 @@ Public Sub FileView1_Select()
     
     If FileView1.HasFocus Then TextBox1.Foreground = &HFF003F Else TextBox1.Foreground = &H000000
     
+    DirView1.Current = FileView1.Dir
+    
     FileProperties1.Path = FileView1.Path
     If Menu33.Checked = True Then Try PictureBox1.Picture = Picture.Load(FileView1.Path) Else PictureBox1.Picture = Null
     If Error Then Return 
@@ -411,6 +459,8 @@ End
 Public Sub Button1_Click()
     'zurück zu Home - Button links
     FileView1.Dir = lOrdner
+    DirView1.Current = User.Home
+    DirView1.Reload
     Print lOrdner
     TextLabel4.Text = FileView1.Dir
     FileView1.Current = ""
@@ -424,8 +474,6 @@ End
 Public Sub Button2_Click()
     'zurück zu Home - Button rechts
     FileView2.Dir = rOrdner
-    DirView1.Current = User.Home
-    DirView1.Reload
     Print rOrdner
     TextLabel3.Text = FileView2.Dir
     FileView2.Current = ""
@@ -643,13 +691,14 @@ End
 
 Public Sub Menu33_Click()
     'Bildvorschau
-    If Menu33.Checked = True Then Splitter1.Layout = [20, 4, 76] Else Splitter1.Layout = [48, 4, 48]
+    If Menu33.Checked = True Then Splitter1.Layout = [0, 20, 4, 76] Else Splitter1.Layout = [0, 48, 4, 48]
     If Menu33.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
     If Menu33.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
     If Menu33.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True
     If Menu33.Checked = True Then PictureBox1.Visible = True Else PictureBox1.Visible = False
     If Menu33.Checked = True Then FileView1.Filter = ["*.png", "*.bmp", "*.jpg"] Else FileView1.Filter = Null
     If Menu33.Checked = True Then FileView1.ShowDirectory = False Else FileView1.ShowDirectory = True
+    If Menu33.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
 End
 
 Public Sub Menu19_Click()
@@ -661,6 +710,7 @@ Public Sub Menu19_Click()
     If Menu19.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
     If Menu19.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True 
     If Menu19.Checked = True Then FileProperties1.Visible = True Else FileProperties1.Visible = False
+    If Menu19.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
 
 End
 
@@ -671,11 +721,12 @@ Public Sub Menu34_Click()
     DirView1.Font = hFont
     DirView1.Background = iHindergrund
     DirView1.Current = FileView1.Dir
+    If Menu34.Checked = True Then Splitter1.Layout = [18, 50, 4, 30] Else Splitter1.Layout = [0, 48, 4, 48]
     If Menu34.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
     If Menu34.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
-    If Menu34.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True
+    If Menu34.Checked = True Then Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3] Else Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
     If Menu34.Checked = True Then DirView1.Visible = True Else DirView1.Visible = False
-    'If Menu34.Checked = True Then DirView1.Current = FileView1.Dir Else DirView1.Current = Null
+    If Menu34.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
     'FileView1.Dir = FileView1.Dir
 End
 

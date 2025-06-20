@@ -6,7 +6,7 @@ Public Sub ComboBox1_Click()
     If ComboBox1.Text = "Blau" Then 
         'blau
         FMain.iHindergrund = &HDFFFFF
-        FMain.iVordergrund = &HC00000
+        FMain.iVordergrund = &H000000
         'FMain.FileView1.Foreground = FMain.iVordergrund
         FMain.FileView1.Background = FMain.iHindergrund
         'FMain.FileView2.Foreground = FMain.iVordergrund
@@ -30,7 +30,7 @@ Public Sub ComboBox1_Click()
     If ComboBox1.Text = "Grün" Then
         'grün
         FMain.iHindergrund = &HDFFFE7
-        FMain.iVordergrund = &H0000FF
+        FMain.iVordergrund = &H6C00E0
         'FMain.FileView1.Foreground = FMain.iVordergrund
         FMain.FileView1.Background = FMain.iHindergrund
         'FMain.FileView2.Foreground = FMain.iVordergrund
@@ -53,7 +53,7 @@ Public Sub ComboBox1_Click()
     Endif
     If ComboBox1.Text = "Grau" Then 
         'grau
-        FMain.iHindergrund = &HC0C0C0
+        FMain.iHindergrund = &H606060
         FMain.iVordergrund = &HFFFFFF
         'FMain.FileView1.Foreground = FMain.iVordergrund
         FMain.FileView1.Background = FMain.iHindergrund
@@ -79,6 +79,6 @@ End
 
 Public Sub Button1_Click()
     'Speichern und Schließen
-    File.Save("~/.lc_config.txt", FMain.iHindergrund & gb.NewLine & FMain.iVordergrund & gb.NewLine & CheckBox1.Value & gb.NewLine & CheckBox2.Value & gb.NewLine & CheckBox3.Value & gb.NewLine & CheckBox4.Value & gb.NewLine)
+    File.Save("~/.lc_config.txt", FMain.iHindergrund & gb.NewLine & FMain.iVordergrund & gb.NewLine & CheckBox1.Value & gb.NewLine & CheckBox2.Value & gb.NewLine & CheckBox3.Value & gb.NewLine & CheckBox4.Value & gb.NewLine & CheckBox5.Value & gb.NewLine & CheckBox6.Value & gb.NewLine)
     Me.Close
 End

@@ -27,19 +27,29 @@
       Text = ("TABULATOR - Fokus der beiden Textboxen einschalten.")
     }
     { !CheckBox2 CheckBox
-      MoveScaled(3,11,92,5)
+      MoveScaled(3,10,92,5)
       #Public = True
       Text = ("VORSCHAU - Dateianzeige standardmäßig als Vorschau anzeigen.")
     }
     { !CheckBox3 CheckBox
-      MoveScaled(3,18,92,5)
+      MoveScaled(3,16,92,5)
       #Public = True
       Text = ("LISTEN - Dateianzeige standardmäßig als Liste anzeigen. ")
     }
     { !CheckBox4 CheckBox
-      MoveScaled(3,25,92,5)
+      MoveScaled(3,22,92,5)
       #Public = True
       Text = ("MAXIMIERT - Programm entsprechend der Bildschirmgröße darstellen.")
+    }
+    { !CheckBox5 CheckBox
+      MoveScaled(3,28,92,5)
+      #Public = True
+      Text = ("RAND - Ränder der Steuerelemente verbergen. ")
+    }
+    { !CheckBox6 CheckBox
+      MoveScaled(3,34,92,5)
+      #Public = True
+      Text = ("BAUM - Verzeichnisbaum bei Start eingeschaltet.")
     }
   }
   { Button1 Button
