@@ -110,6 +110,7 @@ Public Sub Form_Open()
         Menu33.Visible = False
         Menu45.Visible = False
         Menu19.Visible = False
+        Button10.Enabled = False
     Endif 
 End
 
@@ -727,7 +728,8 @@ Public Sub Menu34_Click()
     If Menu34.Checked = True Then Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3] Else Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
     If Menu34.Checked = True Then DirView1.Visible = True Else DirView1.Visible = False
     If Menu34.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
-    'FileView1.Dir = FileView1.Dir
+    If Menu34.Checked = True Then Button10.Enabled = False Else Button10.Enabled = True
+    
 End
 
 
@@ -1211,5 +1213,11 @@ End
 Public Sub Menu31_Click()
     'Rechner öffnen
     Desktop.Open()
+
+End
+
+Public Sub Button11_Click()
+
+    Menu49_Click()
 
 End

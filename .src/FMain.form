@@ -256,8 +256,14 @@
     MoveScaled(1,1,169,6)
     #Public = True
     Centered = True
-    { Spring9 Spring
+    { Button11 Button
       MoveScaled(6,1,4,4)
+      Background = Color.Transparent
+      NoTabFocus = True
+      ToolTip = ("Eingebundene Datenträger anzeigen")
+      Text = ("Datenträger ")
+      Picture = Picture["icon:/medium/usb"]
+      Border = False
     }
     { Button1 Button
       MoveScaled(11,1,4,4)
@@ -395,7 +401,7 @@
       { Button10 Button
         MoveScaled(1,48,16,6)
         Background = Color.Transparent
-        ToolTip = ("Externe Datenträger anzeigen")
+        ToolTip = ("Datenträger anzeigen")
         Text = ("F12")
         Picture = Picture["icon:/medium/usb"]
       }
