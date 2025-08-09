@@ -33,49 +33,53 @@ Public Sub Form_Open()
     Dim sLine6 As String
     Dim sLine7 As String
     Dim sLine8 As String
+    Dim sLine9 As String
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
     ''hier wird geladen und in Variablen gefüllt
     hFile = Open "~/.lc_config.txt" For Read
-    Line Input #hFile, sLine1   'Hintergrund
-    Line Input #hFile, sLine2   'Vordergrund
-    Line Input #hFile, sLine3   'TabStop
-    Line Input #hFile, sLine4   'Vorschau
-    Line Input #hFile, sLine5   'Listen
-    Line Input #hFile, sLine6   'Fullscreen
-    Line Input #hFile, sLine7   'Ränder
-    Line Input #hFile, sLine8   'Verzeichnisbaum
+    Line Input #hFile, sLine1   'Standardfarbe
+    Line Input #hFile, sLine2   'Hintergrund
+    Line Input #hFile, sLine3   'Vordergrund
+    Line Input #hFile, sLine4   'TabStop
+    Line Input #hFile, sLine5   'Vorschau
+    Line Input #hFile, sLine6   'Listen
+    Line Input #hFile, sLine7   'Fullscreen
+    Line Input #hFile, sLine8   'Ränder
+    Line Input #hFile, sLine9   'Verzeichnisbaum
     
-    If sLine1 = "" Then sLine1 = &HDFF7FF
-    If sLine2 = "" Then sLine2 = &H000000
-    If sLine3 = "" Then sLine3 = 0
+    If sLine1 = "" Then sLine1 = &HBFFFFF
+    If sLine2 = "" Then sLine2 = &HDFF7FF
+    If sLine3 = "" Then sLine3 = &H000000
     If sLine4 = "" Then sLine4 = 0
     If sLine5 = "" Then sLine5 = 0
     If sLine6 = "" Then sLine6 = 0
     If sLine7 = "" Then sLine7 = 0
     If sLine8 = "" Then sLine8 = 0
-    iHindergrund = sLine1
-    iVordergrund = sLine2
-    Einstellungen.CheckBox1.Value = sLine3
-    Einstellungen.CheckBox2.Value = sLine4
-    Einstellungen.CheckBox3.Value = sLine5
-    Einstellungen.CheckBox4.Value = sLine6
-    Einstellungen.CheckBox5.Value = sLine7
-    Einstellungen.CheckBox6.Value = sLine8
+    If sLine9 = "" Then sLine9 = 0
+    iStandardfarbe = sLine1
+    iHindergrund = sLine2
+    iVordergrund = sLine3
+    Einstellungen.CheckBox1.Value = sLine4
+    Einstellungen.CheckBox2.Value = sLine5
+    Einstellungen.CheckBox3.Value = sLine6
+    Einstellungen.CheckBox4.Value = sLine7
+    Einstellungen.CheckBox5.Value = sLine8
+    Einstellungen.CheckBox6.Value = sLine9
     ''Laden Ende
 
-    If sLine3 = -1 Then TextBox1.NoTabFocus = False
-    If sLine3 = -1 Then TextBox2.NoTabFocus = False
-    If sLine4 = -1 Then FileView1.View = 3
-    If sLine4 = -1 Then FileView2.View = 3
-    If sLine5 = -1 Then FileView1.View = 1
-    If sLine5 = -1 Then FileView2.View = 1
-    If sLine5 = -1 Then FileView1.IconSize = 28
-    If sLine5 = -1 Then FileView2.IconSize = 28
-    If sLine6 = -1 Then FMain.Maximized = True
-    If sLine7 = -1 Then bRand = -1 Else bRand = 0
-    If sLine8 = -1 Then bBaum = -1 Else bBaum = 0
+    If sLine4 = -1 Then TextBox1.NoTabFocus = False
+    If sLine4 = -1 Then TextBox2.NoTabFocus = False
+    If sLine5 = -1 Then FileView1.View = 3
+    If sLine5 = -1 Then FileView2.View = 3
+    If sLine6 = -1 Then FileView1.View = 1
+    If sLine6 = -1 Then FileView2.View = 1
+    If sLine6 = -1 Then FileView1.IconSize = 28
+    If sLine6 = -1 Then FileView2.IconSize = 28
+    If sLine7 = -1 Then FMain.Maximized = True
+    If sLine8 = -1 Then bRand = -1 Else bRand = 0
+    If sLine9 = -1 Then bBaum = -1 Else bBaum = 0
 
     Splitter1.Layout = [0, 48, 4, 48]
     Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
@@ -92,6 +96,11 @@ Public Sub Form_Open()
     rOrdner = FileView2.Dir
     Print lOrdner & "  |  " & rOrdner
     LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
+    If FMain.iHindergrund = &H000000 Then
+        LCDLabel2.Foreground = iVordergrund
+        Button8.Foreground = iVordergrund
+        Button9.Foreground = iVordergrund
+    Endif 
     
     Wait 
    
@@ -418,7 +427,7 @@ End
 Public Sub FileView1_GotFocus()
     ' Farbe bei Focus ändern
     FileView1.Background = iStandardfarbe
-    FileView1.Foreground = &H000000
+    FileView1.Foreground = iVordergrund
     TextBox1.Background = &HFFFFBF
    
     FileView2.UnselectAll
@@ -431,7 +440,7 @@ End
 Public Sub FileView2_GotFocus()
     ' Farbe bei Focus ändern
     FileView2.Background = iStandardfarbe
-    FileView2.Foreground = &H000000
+    FileView2.Foreground = iVordergrund
     TextBox2.Background = &HFFFFBF
     
     FileView1.UnselectAll

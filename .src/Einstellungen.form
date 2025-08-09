@@ -16,7 +16,7 @@
   }
   { ComboBox1 ComboBox
     MoveScaled(66,4,32,5)
-    List = [("Blau"), ("Rot"), ("Grün"), ("Gelb"), ("Grau"), ("Retroblau")]
+    List = [("Blau"), ("Rot"), ("Grün"), ("Gelb"), ("Grau"), ("Dunkelgrau"), ("Retroblau"), ("Schwarz"), ("Weiss")]
   }
   { Frame2 Frame
     MoveScaled(1,12,98,44)
