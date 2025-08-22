@@ -3,9 +3,23 @@
 Public sInfotext As String
 
 Public Sub Anzeige()
-    
-  Message.Info("Die ausgelagerte Funktion wurde aufgerufen", "OK")  'eine Testfunktion
-    
+    'Testfunktion
+    Message.Info("Die ausgelagerte Funktion wurde aufgerufen", "OK")  'eine Testfunktion
+End
+
+Public Sub Einpacken()
+    ''Packfunktion um Daten in ein Archiv zu speichern
+    If FMain.iLR = 1 Then
+        If Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Datei / Ordner wurde dem Archiv im Home-Ordner hinzugefügt." 
+        If Not Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt."
+        Try Shell "zip -r ARCHIV.zip " & Quote(FMain.FileView1.Path) Wait 
+    Endif
+    If FMain.iLR = 2 Then
+        If Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Datei / Ordner wurde dem Archiv im Home-Ordner hinzugefügt." 
+        If Not Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt."
+        Try Shell "zip -r ARCHIV.zip " & Quote(FMain.FileView2.Path) Wait 
+    Endif
+
 End
 
 Public Sub Verschieben()
@@ -18,7 +32,7 @@ Public Sub Baum()
     'Baum anzeigen
     Dim hFont As Font
     hFont = Font[", Bold,11"]
-    
+
     If FMain.bBaum = -1 Then 
         FMain.DirView1.Font = hFont
         FMain.DirView1.Background = FMain.iHindergrund
@@ -27,7 +41,32 @@ Public Sub Baum()
         FMain.Splitter1.Layout = [18, 50, 4, 30]
         FMain.Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3]
     Endif 
-    
+End
+
+Public Sub Killen()
+    ''Eine Datei endgültig löschen
+    Dim iFrage As Integer
+
+    If FMain.iLR = 1 Then 
+         iFrage = Message.Delete("Soll " & FMain.FileView1.Path & " wirklich gelöscht und endgültig zerstört werden?", "JA", "NEIN")
+         If iFrage = 1 Then 
+             If IsDir(FMain.FileView1.Path) Then Try Rmdir FMain.FileView1.Path Else Try Kill FMain.FileView1.Path
+         Else 
+             Print "Nix passiert!"
+         Endif
+    Endif
+       'Try Kill FMain.FileView1.Path
+    If FMain.iLR = 2 Then
+         iFrage = Message.Delete("Soll " & FMain.FileView2.Path & " wirklich gelöscht und endgültig zerstört werden?", "JA", "NEIN")
+         If iFrage = 1 Then
+             If IsDir(FMain.FileView2.Path) Then Try Rmdir FMain.FileView2.Path Else Try Kill FMain.FileView2.Path
+         Else 
+             Print "Nix passiert!"
+         Endif
+    Endif 
+    If Error Then Message("Es ist ein Fehler aufgetreten\n oder das Verzeichnis ist nicht leer!")
+    FMain.FileView1.Reload 
+    FMain.FileView2.Reload
 End
 
 
@@ -56,30 +95,4 @@ Public Sub Spruch()
     If x = 18 Then FMain.Label1.Text = "Allen Leuten recht getan, ist eine Kunst, die niemand kann."
     If x = 19 Then FMain.Label1.Text = "Besser stumm als dumm."
     If x = 20 Then FMain.Label1.Text = "Ein gebranntes Kind scheut das Feuer."    
-End
-
-Public Sub Killen()
-    ''Eine Datei endgültig löschen
-    Dim iFrage As Integer
-    
-    If FMain.iLR = 1 Then 
-         iFrage = Message.Delete("Soll " & FMain.FileView1.Path & " wirklich gelöscht und endgültig zerstört werden?", "JA", "NEIN")
-         If iFrage = 1 Then 
-             If IsDir(FMain.FileView1.Path) Then Try Rmdir FMain.FileView1.Path Else Try Kill FMain.FileView1.Path
-         Else 
-             Print "Nix passiert!"
-         Endif
-    Endif
-       'Try Kill FMain.FileView1.Path
-    If FMain.iLR = 2 Then
-         iFrage = Message.Delete("Soll " & FMain.FileView2.Path & " wirklich gelöscht und endgültig zerstört werden?", "JA", "NEIN")
-         If iFrage = 1 Then
-             If IsDir(FMain.FileView2.Path) Then Try Rmdir FMain.FileView2.Path Else Try Kill FMain.FileView2.Path
-         Else 
-             Print "Nix passiert!"
-         Endif
-    Endif 
-    If Error Then Message("Es ist ein Fehler aufgetreten\n oder das Verzeichnis ist nicht leer!")
-    FMain.FileView1.Reload 
-    FMain.FileView2.Reload
 End

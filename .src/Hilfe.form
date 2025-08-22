@@ -1,12 +1,12 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,92,75)
+  MoveScaled(0,0,74,119)
   Background = &HDFFFFF
   { TextArea1 TextArea
-    MoveScaled(1,1,90,73)
+    MoveScaled(2,2,70,115)
     Font = Font["11"]
-    Text = ("F1\t\t=\tHilfefenster\t\t\t\t\t\tReturn\t\t=\tDoppelklick\nF2\t\t=\tDetails anzeigen\t\t\t\t\tEsc\t\t\t=\tZurück\nF3\t\t=\tBildvorschau\t\t\t\t\t\t\t\t\tEntf\t\t=\tDatei/Ordner löschen\t\nF4\t\t=\t\t\t\t\t\t\t\t\t\tH\t\t\t=\tVersteckte Dateien anzeigen\nF5\t\t=\tDatei kopieren\t\t\t\t\tR\t\t\t=\tAnsicht aktualisieren\t\nF6\t\t=\tDatei verschieben\t\t\t\tPgUp\t\t=\tSymbole vergrößern\t\nF7\t\t=\tVerzeichnis erstellen\t\t\t\tPgDown\t=\tSymbole verkleinern\t\nF8\t\t=\tDatei/Ordner umbenennen\t\tT\t\t\t=\tPapierkorb durchsuchen\t\nF9\t\t=\tVerzeichnisbaum anzeigen\t\t\t\t\t\t\t\t\tV\t\t\t=\tVersionsinfo\nF10\t=\tProgramm beenden\t\t\t\tAlt\t\t\t=\tMenü\nF11\t=\tSchriftvorschau\nF12\t=\tZugriff USB/Ext. Datenträger\t\n\nStrg F1\t\t=\t\nStrg F2\t\t=\t\nStrg F3\t\t=\t\nStrg F4\t\t=\t\nStrg F5\t\t=\t\nStrg F6\t\t=\t\nStrg F7\t\t=\t\nStrg F8\t\t=\tDatei/Ordner endgültig und unwiderruflich löschen\nStrg F9\t\t=\tARCHIV.zip anlegen und Datei/Ordner in Archiv kopieren  \nStrg F10\t\t=\nStrg F11\t\t=\t\nStrg F12\t\t=\n")
+    Text = ("Funktionstasten\n----------------------------------------------------------------------------------------------------------------\nF1\t\t=\tHilfefenster\nF2\t\t=\tDetails anzeigen\nF3\t\t=\tBildvorschau\t\t\nF4\t\t=\tVerzeichnisbaum anzeigen\n\nF5\t\t=\tDatei kopieren\t\t\t\t\t\nF6\t\t=\tDatei verschieben\t\t\t\t\nF7\t\t=\tVerzeichnis erstellen\t\t\nF8\t\t=\tDatei/Ordner umbenennen\t\n\nF9\t\t=\tTextdatei anlegen\t\t\t\nF10\t=\tProgramm beenden\t\t\nF11\t=\tARCHIV.zip anlegen und Datei/Ordner in Archiv kopieren\t*\nF12\t=\tZugriff USB/Ext. Datenträger\t*\t\n\n\nTastenkombinationen\n----------------------------------------------------------------------------------------------------------------\nStrg Entf\t=\tDatei/Ordner endgültig und unwiderruflich löschen\nStrg +\t\t=\tBaumansicht vergrößern\nStrg -\t\t=\tBaumansicht verkleinern\n\nAlt C\t\t=\tComputer\t\t\t*\nAlt N\t\t=\tNetzwerk\t\t\t*\nAlt R\t\t=\tRouter/FritzNAS\t*\n\n\nTastencodierung\n----------------------------------------------------------------------------------------------------------------\nReturn\t\t=\tDoppelklick\nEsc\t\t\t=\tZurück\nEntf\t\t=\tDatei/Ordner löschen\nH\t\t\t=\tVersteckte Dateien anzeigen\nR\t\t\t=\tAnsicht aktualisieren\nT\t\t\t=\tPapierkorb durchsuchen\nV\t\t\t=\tVersionsinfo\nAlt\t\t\t=\tMenüleiste\nPgUp\t\t=\tSymbole vergrößern\nPgDown\t=\tSymbole verkleinern\n\n\n\n\n* (einige Funktionen nur eingeschränkt verfügbar)")
     ReadOnly = True
     Border = False
   }

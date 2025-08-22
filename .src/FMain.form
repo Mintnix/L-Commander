@@ -114,13 +114,13 @@
       Text = ("Baum anzeigen")
       Picture = Picture["icon:/medium/view-tree"]
       Toggle = True
-      Shortcut = "F9"
+      Shortcut = "F4"
     }
     { Menu45 Menu
       Text = ("Schriftvorschau")
       Picture = Picture["icon:/medium/font"]
       Toggle = True
-      Shortcut = "F11"
+      Shortcut = "F"
     }
     { Menu20 Menu
       Text = ("Icons vergrößern")
@@ -155,10 +155,15 @@
       Picture = Picture["icon:/medium/rename"]
       Shortcut = "F8"
     }
+    { Menu31 Menu
+      Text = ("Textdatei erstellen")
+      Picture = Picture["icon:/medium/text"]
+      Shortcut = "F9"
+    }
     { Menu50 Menu
       Text = ("Datei oder Verzeichnis einpacken")
       Picture = Picture["icon:/medium/compress"]
-      Shortcut = "Ctrl+F9"
+      Shortcut = "F11"
     }
     { Menu49 Menu
       Text = ("Zugriff auf externe Datenträger")
@@ -173,7 +178,7 @@
     { Menu51 Menu
       Text = ("Endgültig Löschen")
       Picture = Picture["icon:/medium/delete"]
-      Shortcut = "Ctrl+F8"
+      Shortcut = "Ctrl+Del"
     }
     { Menu35 Menu
       Text = ("Löschen")
@@ -191,7 +196,7 @@
     { Menu56 Menu
       Text = ("Fritzbox NAS")
       Picture = Picture["icon:/medium/folder-network"]
-      Shortcut = "Alt+B"
+      Shortcut = "Alt+R"
     }
     { Menu57 Menu
       Text = ("Netzwerk")
@@ -339,7 +344,7 @@
       #Public = True
       Visible = False
       NoTabFocus = True
-      ToolTip = ("F9 beendet die Funktion.")
+      ToolTip = ("F4 beendet die Funktion.")
     }
     { !FileView1 FileView
       MoveScaled(42,3,28,64)
@@ -432,7 +437,7 @@
       MoveScaled(131,36,35,11)
       Visible = False
       NoTabFocus = True
-      ToolTip = ("F11 beendet die Funktion.")
+      ToolTip = ("F beendet die Funktion.")
       Text = ("Dies ist ein Text, der hier angezeigt wird.")
     }
     { PictureBox1 PictureBox

@@ -101,16 +101,10 @@ Public Sub Form_Open()
         Button8.Foreground = iVordergrund
         Button9.Foreground = iVordergrund
     Endif 
-    
-    Wait 
-   
-    Funktionen.Spruch()
     Menu2.Visible = False
     Menu15.Visible = False
-    
-    NoBorder()
-    Funktionen.Baum()
-    
+    Wait 
+
     If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
     If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
     
@@ -118,10 +112,20 @@ Public Sub Form_Open()
         Menu34.Checked = True
         Menu33.Visible = False
         Menu45.Visible = False
-        Menu19.Visible = False
+        'Menu19.Visible = False
         Button10.Enabled = False
     Endif 
+
+    Funktionen.Spruch()
+    NoBorder()
+    Funktionen.Baum()
+    
+    If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
+    If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
+    If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
+    
 End
+
 
 Public Sub Menu5_Click()
     'beenden
@@ -586,9 +590,9 @@ End
 
 Public Sub Menu14_Click()
   'Ansicht Aktualisieren
-  DirView1.Reload
   FileView1.Reload
   FileView2.Reload
+  'DirView1.Reload
 End
 
 Public Sub Menu18_Click()
@@ -709,6 +713,7 @@ Public Sub Menu33_Click()
     If Menu33.Checked = True Then FileView1.Filter = ["*.png", "*.bmp", "*.jpg"] Else FileView1.Filter = Null
     If Menu33.Checked = True Then FileView1.ShowDirectory = False Else FileView1.ShowDirectory = True
     If Menu33.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
+    PictureBox1.Mode = 3    'Ansichtsgröße auf Bildfenster angepasst
 End
 
 Public Sub Menu19_Click()
@@ -717,11 +722,11 @@ Public Sub Menu19_Click()
     hFont = Font[", Bold,12"]
     FileProperties1.Font = hFont
     If Menu19.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
-    If Menu19.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
+    'If Menu19.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
     If Menu19.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True 
     If Menu19.Checked = True Then FileProperties1.Visible = True Else FileProperties1.Visible = False
     If Menu19.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
-
+    If Menu34.Checked = True Then Menu33.Visible = False
 End
 
 Public Sub Menu34_Click()
@@ -733,11 +738,12 @@ Public Sub Menu34_Click()
     DirView1.Current = FileView1.Dir
     If Menu34.Checked = True Then Splitter1.Layout = [18, 50, 4, 30] Else Splitter1.Layout = [0, 48, 4, 48]
     If Menu34.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
-    If Menu34.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
+    'If Menu34.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
     If Menu34.Checked = True Then Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3] Else Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
     If Menu34.Checked = True Then DirView1.Visible = True Else DirView1.Visible = False
     If Menu34.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
     If Menu34.Checked = True Then Button10.Enabled = False Else Button10.Enabled = True
+    If Menu19.Checked = True Then Menu19.Checked = False
     
 End
 
@@ -1074,13 +1080,13 @@ Public Sub Menu46_Click()
 End 
 
 Public Sub FileView1_KeyPress()
-    'Tastenabfrage
+    'Tastenabfrage im linken Feld
     If Key.Code = Key.Return Then FileView1_DblClick()
     If Key.Code = Key.Esc Then Button8_Click()
 End
 
 Public Sub FileView2_KeyPress()
-    'Tastenabfrage
+    'Tastenabfrage im rechten Feld
     If Key.Code = Key.Return Then FileView2_DblClick()
     If Key.Code = Key.Esc Then Button9_Click()
 End
@@ -1109,20 +1115,17 @@ Public Sub TextBox2_KeyPress()
     Endif
     If Key.Code = Key.Return Then TextLabel3.Text = FileView2.Dir
     'FileView2.Refresh
-
 End
 
 Public Sub Menu49_Click()
     'Zugriff auf externe Datenträger
     If FileView1.HasFocus Then FileView1.Dir = "/media/" & User.Name
     If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
-    
 End
 
 Public Sub Button10_Click()
     'Externe Datenträger anzeigen
     Menu49_Click
-
 End
 
 Public Sub TextBox1_KeyPress()
@@ -1135,7 +1138,6 @@ Public Sub TextBox1_KeyPress()
         FileView1.Dir = FileView1.Dir &/ TextBox1.Text
     Endif
     If Key.Code = Key.Return Then TextLabel4.Text = FileView1.Dir
-
 End
 
 Public Sub TextLabel4_Menu()
@@ -1147,7 +1149,6 @@ Public Sub TextLabel3_Menu()
     'Terminal mit Pfad öffnen
     Desktop.OpenTerminal(TextLabel3.Text)
 End
-
 
 
 Public Sub TextBox1_GotFocus()
@@ -1172,18 +1173,10 @@ End
 
 Public Sub Menu50_Click()
     'Zip Archiv erstellen
-    If iLR = 1 Then
-        Shell "zip -r ARCHIV.zip " & Quote(FileView1.Path)
-        TextLabel1.Text = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt, oder Daten wurden dem bestehenden ARCHIV.zip hinzugefügt."
-        FileView1.Reload
-        FileView2.Reload
-    Endif
-    If iLR = 2 Then
-        Shell "zip -r ARCHIV.zip " & Quote(FileView2.Path)
-        TextLabel1.Text = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt, oder Daten wurden dem bestehenden ARCHIV.zip hinzugefügt."
-        FileView2.Reload
-        FileView1.Reload
-    Endif
+    Funktionen.Einpacken()
+    TextLabel1.Text = Funktionen.sInfotext
+    FileView1.Reload
+    FileView2.Reload
 End
 
 Public Sub Menu51_Click()
@@ -1218,15 +1211,46 @@ Public Sub Menu54_Click()
     Desktop.Open("https://openyourlinux.blogspot.com/p/lc-der-linux-commander.html")
 End
 
-
 Public Sub Menu31_Click()
-    'Rechner öffnen
-    Desktop.Open()
-
+    'Textdatei erstellen
+    If FileView1.HasFocus Then 
+        If Not Exist(FileView1.Dir &/ "text.txt") Then 
+            Try Shell "touch " & FileView1.Dir &/ "text.txt" Wait
+            TextLabel1.Text = "Eine Datei → text.txt ← wurde erstellt."
+        Else
+            TextLabel1.Text = "Die Datei → text.txt ← existiert leider schon und wird daher nicht angelegt."
+        Endif 
+    Endif 
+    FileView1.Reload 
+    
+    If FileView2.HasFocus Then 
+        If Not Exist(FileView2.Dir &/ "text.txt") Then 
+            Try Shell "touch " & FileView2.Dir &/ "text.txt" Wait
+            TextLabel1.Text = "Eine Datei → text.txt ← wurde erstellt."
+        Else
+            TextLabel1.Text = "Die Datei → text.txt ← existiert leider schon und wird daher nicht angelegt."
+        Endif 
+    Endif 
+    FileView2.Reload
 End
 
 Public Sub Button11_Click()
-
+    'Datenträger Button wird nur bei "TreeView aktiv" eingeblendet
     Menu49_Click()
+End 
 
+Public Sub Form_State()
+    '' Form_State bei Änderung des Zustands
+     ' größere Symbole bei Max-Darstellung
+    If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
+    If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
+    If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
+End
+
+Public Sub Form_KeyPress()
+    'Versuch die Schriftgröße im Baum anzupassen
+     If Key.Code = Key["+"] And If Key.Control Then DirView1.Font.Grade += 1
+     If Key.Code = Key["-"] Then DirView1.Font.Grade -= 1
+     Print DirView1.Font.Grade
+     DirView1.Refresh
 End
