@@ -193,15 +193,45 @@
       Picture = Picture["icon:/medium/computer"]
       Shortcut = "Alt+C"
     }
+    { Menu57 Menu
+      Text = ("Netzwerk")
+      Picture = Picture["icon:/medium/network"]
+      Shortcut = "Alt+N"
+    }
     { Menu56 Menu
       Text = ("Fritzbox NAS")
       Picture = Picture["icon:/medium/folder-network"]
       Shortcut = "Alt+R"
     }
-    { Menu57 Menu
-      Text = ("Netzwerk")
-      Picture = Picture["icon:/medium/network"]
-      Shortcut = "Alt+N"
+    { Menu32 Menu
+      Text = ("Bilder")
+      Picture = Picture["icon:/medium/folder-image"]
+    }
+    { Menu58 Menu
+      Text = ("Dokumente")
+      Picture = Picture["icon:/medium/folder-document"]
+    }
+    { Menu59 Menu
+      Text = ("Downloads")
+      Picture = Picture["icon:/medium/folder-download"]
+    }
+    { Menu60 Menu
+      Text = ("Musik")
+      Picture = Picture["icon:/medium/folder-music"]
+    }
+    { Menu61 Menu
+      Text = ("Videos")
+      Picture = Picture["icon:/medium/folder-video"]
+    }
+    { Menu62 Menu
+      Text = ("Liebling")
+      Picture = Picture["icon:/medium/card-heart"]
+      Shortcut = "1"
+    }
+    { Menu63 Menu
+      Text = ("Liebling")
+      Picture = Picture["icon:/medium/card-heart"]
+      Shortcut = "2"
     }
   }
   { Menu53 Menu

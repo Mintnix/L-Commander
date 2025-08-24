@@ -20,6 +20,8 @@ Public sEditfile As String
 Public iLR As Integer = 0                   'linkes oder rechtes Feld zuletzt gewählt
 Public bRand As Boolean                     'Ränder anzeigen ja oder nein
 Static Public bBaum As Boolean              'Baum anzeigen
+Public sLiebling1 As String
+Public sLiebling2 As String
 
 
 Public Sub Form_Open()
@@ -37,6 +39,7 @@ Public Sub Form_Open()
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
+   
     ''hier wird geladen und in Variablen gefüllt
     hFile = Open "~/.lc_config.txt" For Read
     Line Input #hFile, sLine1   'Standardfarbe
@@ -48,7 +51,8 @@ Public Sub Form_Open()
     Line Input #hFile, sLine7   'Fullscreen
     Line Input #hFile, sLine8   'Ränder
     Line Input #hFile, sLine9   'Verzeichnisbaum
-    
+    ''Laden Ende
+    ' Zuweisungen
     If sLine1 = "" Then sLine1 = &HBFFFFF
     If sLine2 = "" Then sLine2 = &HDFF7FF
     If sLine3 = "" Then sLine3 = &H000000
@@ -67,7 +71,6 @@ Public Sub Form_Open()
     Einstellungen.CheckBox4.Value = sLine7
     Einstellungen.CheckBox5.Value = sLine8
     Einstellungen.CheckBox6.Value = sLine9
-    ''Laden Ende
 
     If sLine4 = -1 Then TextBox1.NoTabFocus = False
     If sLine4 = -1 Then TextBox2.NoTabFocus = False
@@ -348,6 +351,7 @@ Public Sub FileView1_DblClick()
     Menu17.Enabled = False
     'FileView1.Reload    
     'If Menu33.Checked = True Then Desktop.Open(FileView1.Path)
+    DirView1.Current = FileView1.Dir
 End
 
 Public Sub FileView1_Click()
@@ -363,6 +367,7 @@ Public Sub FileView1_Click()
     TextBox1.Text = FileView1.Current
     FileView1.Refresh
     Wait 
+
 End
 
 Public Sub FileView2_Click()
@@ -412,6 +417,7 @@ Public Sub FileView1_Select()
     FileProperties1.Path = FileView1.Path
     If Menu33.Checked = True Then Try PictureBox1.Picture = Picture.Load(FileView1.Path) Else PictureBox1.Picture = Null
     If Error Then Return 
+
 End
 
 Public Sub FileView2_Select()
@@ -592,7 +598,7 @@ Public Sub Menu14_Click()
   'Ansicht Aktualisieren
   FileView1.Reload
   FileView2.Reload
-  'DirView1.Reload
+  DirView1.Reload
 End
 
 Public Sub Menu18_Click()
@@ -633,10 +639,11 @@ Public Sub Menu17_Click()
     '' Alle Dateien in den Papierkorb löschen >>> Linke Seite FileView1
     Dim i As Integer
     If FileView1.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
-    If FileView1.Dir <> User.Home Then
-        Print "Auswahl erlaubt, da nicht im Home-Ordner."
-        FileView1.SelectAll
-        For i = 0 To FileView1.Count - 1
+    If FileView1.Selected = True Then
+        If FileView1.Dir <> User.Home Then
+            Print "Auswahl erlaubt, da nicht im Home-Ordner."
+            FileView1.SelectAll
+            For i = 0 To FileView1.Count - 1
             Print i
             Print FileView1.Selection[i]
             QUELLPFAD = FileView1.Dir
@@ -647,9 +654,11 @@ Public Sub Menu17_Click()
         Next
             FileView1.Reload
             Menu17.Enabled = False
-        Else 
-            Menu17.Enabled = False
-    Endif 
+        Endif
+    Else
+        Menu17.Enabled = False 
+    Endif
+
 End
 
 Public Sub Menu8_Click()
@@ -661,8 +670,6 @@ End
 Public Sub Menu6_Click()
     'Einstellungsmenü
     Einstellungen.Show
-    'Message.Info("Demnächst weitere Funktionen\nund individuelle Programmeinstellungen.", "Okay")
-    
 End
 
 Public Sub Menu22_Click()
@@ -717,7 +724,7 @@ Public Sub Menu33_Click()
 End
 
 Public Sub Menu19_Click()
-    'Details rechts anzeigen
+    ''Details rechts anzeigen
     Dim hFont As Font
     hFont = Font[", Bold,12"]
     FileProperties1.Font = hFont
@@ -727,10 +734,11 @@ Public Sub Menu19_Click()
     If Menu19.Checked = True Then FileProperties1.Visible = True Else FileProperties1.Visible = False
     If Menu19.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
     If Menu34.Checked = True Then Menu33.Visible = False
+    If FMain.Maximized = False Then FileProperties1.Font.Size = 10
 End
 
 Public Sub Menu34_Click()
-    'Baum anzeigen
+    ''Baum anzeigen
     Dim hFont As Font
     hFont = Font[", Bold,11"]
     DirView1.Font = hFont
@@ -744,7 +752,7 @@ Public Sub Menu34_Click()
     If Menu34.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
     If Menu34.Checked = True Then Button10.Enabled = False Else Button10.Enabled = True
     If Menu19.Checked = True Then Menu19.Checked = False
-    
+    If FMain.Maximized = True Then DirView1.Font.Grade = 2
 End
 
 
@@ -868,10 +876,11 @@ Public Sub Menu37_Click()
     '' Alle Dateien in den Papierkorb löschen >>> Rechte Seite FileView2
     Dim i As Integer
     If FileView2.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
-    If FileView2.Dir <> User.Home Then
+    If FileView2.Selected = True Then
+        If FileView2.Dir <> User.Home Then
         Print "Auswahl erlaubt, da nicht im Home-Ordner."
-        FileView2.SelectAll
-        For i = 0 To FileView2.Count - 1
+            FileView2.SelectAll
+            For i = 0 To FileView2.Count - 1
             Print i
             Print FileView2.Selection[i]
             QUELLPFAD = FileView2.Dir
@@ -883,8 +892,9 @@ Public Sub Menu37_Click()
         Next
             FileView2.Reload
             Menu37.Enabled = False
-        Else 
-            Menu37.Enabled = False
+        Endif
+    Else 
+        Menu37.Enabled = False
     Endif 
 End
 
@@ -893,12 +903,11 @@ Public Sub Button8_Click()
     Dim Zeile As String
     Dim Liste As String[]
     Dim Wort As String
-        
+
     Zeile = FileView1.Dir
     TextLabel1.Text = "Zurück"
-       
-    If Zeile <> User.Home Then
 
+    If Zeile <> User.Home Then
         Print Zeile
         Liste = Split(Zeile, "/")
         For Each Wort In Liste
@@ -919,6 +928,7 @@ Public Sub Button8_Click()
     FileView1.Current = ""
     TextBox1.Text = FileView1.Current
     QUELLE = ""
+    DirView1.Current = FileView1.Dir
 End
 
 Public Sub Button9_Click()
@@ -1241,7 +1251,7 @@ End
 
 Public Sub Form_State()
     '' Form_State bei Änderung des Zustands
-     ' größere Symbole bei Max-Darstellung
+    ' größere Symbole bei Max-Darstellung
     If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
     If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
@@ -1249,8 +1259,98 @@ End
 
 Public Sub Form_KeyPress()
     'Versuch die Schriftgröße im Baum anzupassen
-     If Key.Code = Key["+"] And If Key.Control Then DirView1.Font.Grade += 1
-     If Key.Code = Key["-"] Then DirView1.Font.Grade -= 1
-     Print DirView1.Font.Grade
-     DirView1.Refresh
+    If Key.Code = Key["L"] Then 
+        sLiebling1 = ""
+        Menu62.Text = "Liebling"
+        sLiebling2 = ""
+        Menu63.Text = "Liebling"
+        TextLabel1.Text = "Alle Liebling- bzw. Favorit- Belegungen entfernt."
+    Endif
+    If Key.Code = Key["+"] And If Key.Control Then DirView1.Font.Grade += 1
+    If Key.Code = Key["-"] Then DirView1.Font.Grade -= 1
+    Print DirView1.Font.Grade
+    DirView1.Refresh
+End
+
+'' Orte hinzugefügt -------------------------------------------
+Public Sub Menu32_Click()
+    ' Bilder Ordner
+    FileView1.Dir = User.Home &/ "Bilder"
+    DirView1.Current = FileView1.Dir
+    DirView1.Reload()
+End
+
+Public Sub Menu58_Click()
+    ' Dokumente Ordner
+    FileView1.Dir = User.Home &/ "Dokumente"
+    DirView1.Current = FileView1.Dir
+    DirView1.Reload()
+End
+
+Public Sub Menu59_Click()
+    ' Download Ordner
+    FileView1.Dir = User.Home &/ "Downloads"
+    DirView1.Current = FileView1.Dir
+    DirView1.Reload()
+End
+
+Public Sub Menu60_Click()
+    ' Musik Ordner
+    FileView1.Dir = User.Home &/ "Musik"
+    DirView1.Current = FileView1.Dir
+    DirView1.Reload()
+End
+
+Public Sub Menu61_Click()
+    ' Video Ordner
+    FileView1.Dir = User.Home &/ "Videos"
+    DirView1.Current = FileView1.Dir
+    DirView1.Reload()
+End
+''---------------------------------------------------------------
+
+Public Sub DirView1_DblClick()
+    ' Favotitenordner als Liebling hinzufügen
+    Dim sAuswahl As String
+    sAuswahl = DirView1.Current
+    Print sAuswahl
+    If Exist(sLiebling1) = True Then 
+        If Exist(sLiebling2) = False Then 
+            sLiebling2 = sAuswahl 
+            Menu63.Text = "Liebling 2: " & sLiebling2
+            TextLabel1.Text = "Favorit 2 wurde angelegt."
+        Else 
+            Select Message.Question("Favoriten 1 & 2 sind bereits vergeben. \nMöchten Sie einen Liebling neu belegen? \n Wählen Sie zum Löschen den entsprechenden Knopf, \nund versuchen Sie Ihre Auswahl noch einmal.", "Lösche Liebling 1", "Lösche Liebling 2", "Abbrechen")
+                Case 1
+                    sLiebling1 = ""
+                    Menu62.Text = "Liebling"
+                    TextLabel1.Text = "Favotit 1 gelöscht."
+                Case 2
+                    sLiebling2 = ""
+                    Menu63.Text = "Liebling"
+                    TextLabel1.Text = "Favotit 2 gelöscht."
+                Case 3
+                    Return 
+            End Select
+        Endif
+    Else 
+        sLiebling1 = sAuswahl
+        FileView1.Dir = sAuswahl 
+        Menu62.Text = "Liebling 1: " & sLiebling1
+        TextLabel1.Text = "Favorit 1 wurde angelegt."
+    Endif 
+End
+
+Public Sub Menu62_Click()
+    ' gehe zu Favorit 1
+    FileView1.Dir = sLiebling1
+    DirView1.Current = sLiebling1
+    DirView1.Reload()
+End
+
+Public Sub Menu63_Click()
+    ' gehe zu Favorit 2
+    FileView1.Dir = sLiebling2
+    DirView1.Current = sLiebling2
+    DirView1.Reload
 End

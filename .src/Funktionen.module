@@ -24,7 +24,7 @@ End
 
 Public Sub Verschieben()
     ''Verschieben Funktion
-    Shell "mv " & Quote(FMain.QUELLE) & " " & Quote(FMain.ZIEL) Wait 
+    Try Shell "mv " & Quote(FMain.QUELLE) & " " & Quote(FMain.ZIEL) Wait 
     If Error Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
 End
 
