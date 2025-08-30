@@ -374,7 +374,7 @@
       #Public = True
       Visible = False
       NoTabFocus = True
-      ToolTip = ("F4 beendet die Funktion.")
+      ToolTip = ("F4 beendet die Funktion.\n\nDoppelklick um Ordner als \nFavorit 1 bzw. Favorit 2\nfür Schnellzugriff zu \nmarkieren.")
     }
     { !FileView1 FileView
       MoveScaled(42,3,28,64)
@@ -489,8 +489,15 @@
     MoveScaled(1,83,169,6)
     Centered = True
     Padding = 5
+    { Spinner1 Spinner
+      MoveScaled(1,0,6,6)
+      Visible = False
+      Foreground = Color.Red
+      ToolTip = ("Warten Sie, bis die Aktion fertig ist.")
+      Type = Spinner.Dot
+    }
     { TextLabel1 TextLabel
-      MoveScaled(3,0,161,6)
+      MoveScaled(8,0,161,6)
       Font = Font["Bold"]
       NoTabFocus = True
       Padding = 5

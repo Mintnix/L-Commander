@@ -20,8 +20,8 @@ Public sEditfile As String
 Public iLR As Integer = 0                   'linkes oder rechtes Feld zuletzt gewählt
 Public bRand As Boolean                     'Ränder anzeigen ja oder nein
 Static Public bBaum As Boolean              'Baum anzeigen
-Public sLiebling1 As String
-Public sLiebling2 As String
+Public sLiebling1 As String                 'Favorit 1
+Public sLiebling2 As String                 'Favorit 2
 
 
 Public Sub Form_Open()
@@ -36,6 +36,8 @@ Public Sub Form_Open()
     Dim sLine7 As String
     Dim sLine8 As String
     Dim sLine9 As String
+    Dim sLine10 As String
+    Dim sLine11 As String
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
@@ -51,17 +53,21 @@ Public Sub Form_Open()
     Line Input #hFile, sLine7   'Fullscreen
     Line Input #hFile, sLine8   'Ränder
     Line Input #hFile, sLine9   'Verzeichnisbaum
+    Line Input #hFile, sLine10  'Fav 1
+    Line Input #hFile, sLine11  'Fav 2
+    Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
     ''Laden Ende
     ' Zuweisungen
     If sLine1 = "" Then sLine1 = &HBFFFFF
     If sLine2 = "" Then sLine2 = &HDFF7FF
     If sLine3 = "" Then sLine3 = &H000000
-    If sLine4 = "" Then sLine4 = 0
-    If sLine5 = "" Then sLine5 = 0
-    If sLine6 = "" Then sLine6 = 0
-    If sLine7 = "" Then sLine7 = 0
-    If sLine8 = "" Then sLine8 = 0
-    If sLine9 = "" Then sLine9 = 0
+    If sLine4 = "" Then sLine4 = "0"
+    If sLine5 = "" Then sLine5 = "0"
+    If sLine6 = "" Then sLine6 = "0"
+    If sLine7 = "" Then sLine7 = "0"
+    If sLine8 = "" Then sLine8 = "0"
+    If sLine9 = "" Then sLine9 = "0"
+
     iStandardfarbe = sLine1
     iHindergrund = sLine2
     iVordergrund = sLine3
@@ -71,6 +77,8 @@ Public Sub Form_Open()
     Einstellungen.CheckBox4.Value = sLine7
     Einstellungen.CheckBox5.Value = sLine8
     Einstellungen.CheckBox6.Value = sLine9
+    sLiebling1 = sLine10
+    sLiebling2 = sLine11
 
     If sLine4 = -1 Then TextBox1.NoTabFocus = False
     If sLine4 = -1 Then TextBox2.NoTabFocus = False
@@ -83,6 +91,7 @@ Public Sub Form_Open()
     If sLine7 = -1 Then FMain.Maximized = True
     If sLine8 = -1 Then bRand = -1 Else bRand = 0
     If sLine9 = -1 Then bBaum = -1 Else bBaum = 0
+     Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
 
     Splitter1.Layout = [0, 48, 4, 48]
     Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
@@ -106,6 +115,8 @@ Public Sub Form_Open()
     Endif 
     Menu2.Visible = False
     Menu15.Visible = False
+    Menu63.Text = "Liebling 2: " & sLiebling2
+    Menu62.Text = "Liebling 1: " & sLiebling1
     Wait 
 
     If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
@@ -131,7 +142,7 @@ End
 
 
 Public Sub Menu5_Click()
-    'beenden
+    'speichern & beenden
     Me.Close
 End
 
@@ -151,6 +162,28 @@ Public Sub NoBorder()
         Splitter3.Border = False
         LCDLabel2.Border = False
     Endif
+End
+
+Public Sub InAction()
+    'Funktionsanzeige, das etwas gerade in Arbeit ist
+    Dim iTextfarbe As Integer
+    Dim sTextnachricht As String
+    
+    If Spinner1.Visible = False Then 
+        sTextnachricht = Label1.Text
+        iTextfarbe = Label1.Foreground
+        Spinner1.Visible = True 
+        Spinner1.Start()
+        Label1.Text = "Bitte warten! Dies kann eine Weile dauern, auch wenn sich die Anzeige scheinbar nicht bewegt."
+        Label1.Foreground = &HFF003F
+        Wait 1
+    Else 
+        Wait 1
+        Spinner1.Stop()
+        Spinner1.Visible = False
+        Label1.Text = sTextnachricht
+        Label1.Foreground = iTextfarbe
+    Endif 
 End
 
 
@@ -255,7 +288,7 @@ Public Sub Kopieren()
     ' Alle Dateien kopieren
     Dim i As Integer
     'Dim x As String
-
+    InAction()
     Print iLR
     If iLR = 1 Then QUELLPFAD = FileView1.Dir
     If iLR = 2 Then QUELLPFAD = FileView2.Dir
@@ -269,9 +302,9 @@ Public Sub Kopieren()
                 Print QUELLE & " MEHRERE DATEN"
                 If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
                 If Error Then TextLabel1.Text = "Sind die selbe Datei."
-                If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait
+                If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
                 If Error Then TextLabel1.Text = "Kopie Ordner fehlgeschlagen."
-                If IsDir(QUELLE) = False Then Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait
+                If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
                 If Error Then TextLabel1.Text = "Kopie Datei fehlgeschlagen." 
                 TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 If Error Then TextLabel1.Text = "Das funktioniert nicht."
@@ -283,7 +316,7 @@ Public Sub Kopieren()
             'Standardfunktion
              Print QUELLE & " - EINZEL DATEI"
              If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-             If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait Else Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+             If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
              If QUELLE = "" Then QUELLE = "NICHTS"
              TextLabel1.Text = QUELLE & " <=> wurde kopiert."
              If Error Then TextLabel1.Text = "Das funktioniert nicht."
@@ -297,8 +330,8 @@ Public Sub Kopieren()
                 QUELLE = QUELLPFAD &/ FileView2.Selection[i]
                 Print QUELLE & " MEHRERE DATEN"
                 If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-                If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait
-                If IsDir(QUELLE) = False Then Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+                If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
                 TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 If Error Then TextLabel1.Text = "Das funktioniert nicht."
                 Wait 0.1
@@ -308,12 +341,13 @@ Public Sub Kopieren()
             'Standardfunktion
              Print QUELLE & " - EINZEL DATEI"
              If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-             If IsDir(QUELLE) = True Then Shell "cp -r " & Quote(QUELLE) & " " & Quote(ZIEL) Wait Else Shell "cp " & Quote(QUELLE) & " " & Quote(ZIEL) Wait 
+             If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
              If QUELLE = "" Then QUELLE = "NICHTS"
              TextLabel1.Text = QUELLE & " <=> wurde kopiert."
              If Error Then TextLabel1.Text = "Das funktioniert nicht."
         Endif 
     Endif 
+    InAction()
 End
 '' --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -793,13 +827,13 @@ End
 Public Sub Button4_Click()
     ''Verschiebefunktion mit den Testroutinen für die jeweilige Seite
     Dim i As Integer
-
+    
     If iLR = 1 Then QUELLPFAD = FileView1.Dir 'links
     If iLR = 2 Then QUELLPFAD = FileView2.Dir 'rechts
-    
+    InAction()
     'Verschieben von mehreren Dateien 
-    If iLR = 1 Then                                                             'linke Auswahl nach rechts verschieben
-       If FileView1.Selection.Count > 1 Then 
+    If iLR = 1 Then                                                                  'linke Auswahl nach rechts verschieben
+        If FileView1.Selection.Count > 1 Then 
             For i = 0 To FileView1.Selection.Count - 1
                 Print i
                 Print FileView1.Selection[i]
@@ -830,7 +864,6 @@ Public Sub Button4_Click()
         Endif 
         FileView1.Reload
     Endif 
-    
     'Verschieben von mehreren Dateien 
     If iLR = 2 Then                                                             'rechte Auswahl nach links verschieben
        If FileView2.Selection.Count > 1 Then 
@@ -863,7 +896,8 @@ Public Sub Button4_Click()
             If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
         Endif 
         FileView2.Reload
-    Endif 
+    Endif
+    InAction()
 End
 ''<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -1259,7 +1293,7 @@ End
 
 Public Sub Form_KeyPress()
     'Versuch die Schriftgröße im Baum anzupassen
-    If Key.Code = Key["L"] Then 
+    If Key.Code = Key["L"] And If Key.Control Then 
         sLiebling1 = ""
         Menu62.Text = "Liebling"
         sLiebling2 = ""
@@ -1267,7 +1301,7 @@ Public Sub Form_KeyPress()
         TextLabel1.Text = "Alle Liebling- bzw. Favorit- Belegungen entfernt."
     Endif
     If Key.Code = Key["+"] And If Key.Control Then DirView1.Font.Grade += 1
-    If Key.Code = Key["-"] Then DirView1.Font.Grade -= 1
+    If Key.Code = Key["-"] And If Key.Control Then DirView1.Font.Grade -= 1
     Print DirView1.Font.Grade
     DirView1.Refresh
 End

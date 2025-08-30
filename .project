@@ -2,7 +2,7 @@
 Title=L-Commander
 Startup=FMain
 Icon=LC_Icon.png
-Version=0.1.1
+Version=0.1.2
 Component=gb.image
 Component=gb.gtk3
 Component=gb.form
@@ -17,7 +17,7 @@ Maintainer=Mintnix
 Address=pcspezialist@arcor.de
 Url=www.openyourlinux.blogspot.de
 License=General Public License V3
-PackageName=l-commander-0.1.1
+PackageName=l-commander-0.1.2
 Packager=1
 Systems=ubuntu
 Menus=ubuntu:"Applications/File Management"

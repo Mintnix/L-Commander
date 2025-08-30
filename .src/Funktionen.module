@@ -2,6 +2,33 @@
 
 Public sInfotext As String
 
+'' Hier muss vorher noch ausgiebig getestet werden
+' Private $hProc As Process
+'  
+' Public Sub Verschieben()
+'     ''Verschieben Funktion
+'     Try $hProc = Shell "mv " & Shell(FMain.QUELLE) & " " & Shell(FMain.ZIEL) For Input Output As "Proc"
+'     If Error Then 
+'          sInfotext = "Das funktioniert nicht." 
+'     Else 
+'         FMain.FileView1.Reload()
+'         sInfotext = FMain.QUELLE & " >=> wurde verschoben."
+'     Endif 
+' End
+'  
+' Public Sub Proc_Read() ' Wenn der Prozess Text ausgibt, können Sie dies für Ihre LED überwachen
+'      
+' End
+'  
+' Public Sub Proc_Kill() ' Wenn der Prozess endet
+'     'FMain.Spinner1.Stop()
+'     
+' End
+ 
+' Public Sub Proc_Error(ErrorTxt As String) ' Wenn der Prozess fehlerhaft ist
+'     'sInfotext = "Das funktioniert nicht, ein Process Error."
+' End
+
 Public Sub Anzeige()
     'Testfunktion
     Message.Info("Die ausgelagerte Funktion wurde aufgerufen", "OK")  'eine Testfunktion
@@ -12,20 +39,21 @@ Public Sub Einpacken()
     If FMain.iLR = 1 Then
         If Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Datei / Ordner wurde dem Archiv im Home-Ordner hinzugefügt." 
         If Not Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt."
-        Try Shell "zip -r ARCHIV.zip " & Quote(FMain.FileView1.Path) Wait 
+        Try Shell "zip -r ARCHIV.zip " & Shell(FMain.FileView1.Path) Wait 
     Endif
     If FMain.iLR = 2 Then
         If Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Datei / Ordner wurde dem Archiv im Home-Ordner hinzugefügt." 
         If Not Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt."
-        Try Shell "zip -r ARCHIV.zip " & Quote(FMain.FileView2.Path) Wait 
+        Try Shell "zip -r ARCHIV.zip " & Shell(FMain.FileView2.Path) Wait 
     Endif
 
 End
 
 Public Sub Verschieben()
     ''Verschieben Funktion
-    Try Shell "mv " & Quote(FMain.QUELLE) & " " & Quote(FMain.ZIEL) Wait 
-    If Error Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
+    Try Shell "mv " & Shell(FMain.QUELLE) & " " & Shell(FMain.ZIEL) Wait 
+    If Error Or If Process.LastValue <> 0 Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
+    ' Die überarbeitete Funktion statt Quote Shell zu nutzen.
 End
 
 Public Sub Baum()
