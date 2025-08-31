@@ -1,3 +1,9 @@
+* Sun Aug 31 2025 Mintnix <pcspezialist@arcor.de> 0.1.2
+- USB Datenträgerzugriff im Menü Orte hinzugefügt (max. 3 Stück)
+- Schnellzugriff auf USB nachdem diese mittels F12 eingebunden werden
+- Datei-Vorschau erzeugt bei Start immernoch Probleme
+- Vorschaugröße auf 20MB erhöht
+
 * Sat Aug 30 2025 Mintnix <pcspezialist@arcor.de> 0.1.2
 - Kopier- und Verschiebefunktion nachgebessert
 - minimale optische Anzeige für Kopier- und Verschiebefunktion eingebaut

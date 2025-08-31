@@ -167,7 +167,7 @@
     }
     { Menu49 Menu
       Text = ("Zugriff auf externe Datenträger")
-      Picture = Picture["icon:/medium/usb"]
+      Picture = Picture["icon:/medium/harddisk"]
       Shortcut = "F12"
     }
     { Menu44 Menu
@@ -232,6 +232,24 @@
       Text = ("Liebling")
       Picture = Picture["icon:/medium/card-heart"]
       Shortcut = "2"
+    }
+    { Menu64 Menu
+      Text = ("USB")
+      Picture = Picture["icon:/medium/usb"]
+      Visible = False
+      Shortcut = "3"
+    }
+    { Menu65 Menu
+      Text = ("USB")
+      Picture = Picture["icon:/medium/usb"]
+      Visible = False
+      Shortcut = "4"
+    }
+    { Menu66 Menu
+      Text = ("USB")
+      Picture = Picture["icon:/medium/usb"]
+      Visible = False
+      Shortcut = "5"
     }
   }
   { Menu53 Menu
@@ -514,7 +532,7 @@
       MoveScaled(2,0,91,5)
       #Public = True
       Font = Font["10"]
-      Foreground = Color.Gray
+      Foreground = &H808080
       Alignment = Align.Center
       Text = ("Spruch des Tages")
     }

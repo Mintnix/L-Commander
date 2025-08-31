@@ -9,10 +9,10 @@ Public QUELLE As String
 Public ZIELDATEI As String
 Public ZIELPFAD As String
 Public ZIEL As String
-Public sTDatei As String
+Public sTDatei As String                    'eine Trashvariable
 Public lOrdner As String
 Public rOrdner As String
-Public dTimeDate As Date
+'Public dTimeDate As Date
 Public iStandardfarbe As Integer = &HBFFFFF 'Standardfarbe
 Public iHindergrund As Integer = &HDFF7FF   
 Public iVordergrund As Integer
@@ -41,7 +41,11 @@ Public Sub Form_Open()
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
-   
+
+    'Begrenzung der Vorschau auf 0,5 MB (500000 Bytes)
+    FileView1.MaxPreviewSize = 500000
+    FileView2.MaxPreviewSize = 500000
+    
     ''hier wird geladen und in Variablen gefüllt
     hFile = Open "~/.lc_config.txt" For Read
     Line Input #hFile, sLine1   'Standardfarbe
@@ -55,18 +59,19 @@ Public Sub Form_Open()
     Line Input #hFile, sLine9   'Verzeichnisbaum
     Line Input #hFile, sLine10  'Fav 1
     Line Input #hFile, sLine11  'Fav 2
+    Close #hFile
     Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
     ''Laden Ende
     ' Zuweisungen
     If sLine1 = "" Then sLine1 = &HBFFFFF
     If sLine2 = "" Then sLine2 = &HDFF7FF
     If sLine3 = "" Then sLine3 = &H000000
-    If sLine4 = "" Then sLine4 = "0"
-    If sLine5 = "" Then sLine5 = "0"
-    If sLine6 = "" Then sLine6 = "0"
-    If sLine7 = "" Then sLine7 = "0"
-    If sLine8 = "" Then sLine8 = "0"
-    If sLine9 = "" Then sLine9 = "0"
+    If sLine4 = "" Then sLine4 = 0
+    If sLine5 = "" Then sLine5 = 0
+    If sLine6 = "" Then sLine6 = 0
+    If sLine7 = "" Then sLine7 = 0
+    If sLine8 = "" Then sLine8 = 0
+    If sLine9 = "" Then sLine9 = 0
 
     iStandardfarbe = sLine1
     iHindergrund = sLine2
@@ -79,19 +84,7 @@ Public Sub Form_Open()
     Einstellungen.CheckBox6.Value = sLine9
     sLiebling1 = sLine10
     sLiebling2 = sLine11
-
-    If sLine4 = -1 Then TextBox1.NoTabFocus = False
-    If sLine4 = -1 Then TextBox2.NoTabFocus = False
-    If sLine5 = -1 Then FileView1.View = 3
-    If sLine5 = -1 Then FileView2.View = 3
-    If sLine6 = -1 Then FileView1.View = 1
-    If sLine6 = -1 Then FileView2.View = 1
-    If sLine6 = -1 Then FileView1.IconSize = 28
-    If sLine6 = -1 Then FileView2.IconSize = 28
-    If sLine7 = -1 Then FMain.Maximized = True
-    If sLine8 = -1 Then bRand = -1 Else bRand = 0
-    If sLine9 = -1 Then bBaum = -1 Else bBaum = 0
-     Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
+    Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
 
     Splitter1.Layout = [0, 48, 4, 48]
     Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
@@ -107,18 +100,27 @@ Public Sub Form_Open()
     lOrdner = FileView1.Dir
     rOrdner = FileView2.Dir
     Print lOrdner & "  |  " & rOrdner
-    LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
-    If FMain.iHindergrund = &H000000 Then
-        LCDLabel2.Foreground = iVordergrund
-        Button8.Foreground = iVordergrund
-        Button9.Foreground = iVordergrund
-    Endif 
+
+    If sLine4 = -1 Then TextBox1.NoTabFocus = False
+    If sLine4 = -1 Then TextBox2.NoTabFocus = False
+    If sLine6 = -1 Then FileView1.View = 1
+    If sLine6 = -1 Then FileView2.View = 1
+    If sLine6 = -1 Then FileView1.IconSize = 28
+    If sLine6 = -1 Then FileView2.IconSize = 28
+    If sLine7 = -1 Then FMain.Maximized = True
+    If sLine8 = -1 Then bRand = -1 Else bRand = 0
+    If sLine9 = -1 Then bBaum = -1 Else bBaum = 0
+    If sLine5 = -1 Then Vorschau()
+    Wait 0.1
+    
+    Funktionen.Baum()
+    Funktionen.Spruch()
+    NoBorder()
+
     Menu2.Visible = False
     Menu15.Visible = False
     Menu63.Text = "Liebling 2: " & sLiebling2
     Menu62.Text = "Liebling 1: " & sLiebling1
-    Wait 
-
     If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
     If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
     
@@ -129,20 +131,22 @@ Public Sub Form_Open()
         'Menu19.Visible = False
         Button10.Enabled = False
     Endif 
-
-    Funktionen.Spruch()
-    NoBorder()
-    Funktionen.Baum()
     
     If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
     If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
     
+    LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
+    If FMain.iHindergrund = &H000000 Then
+        LCDLabel2.Foreground = iVordergrund
+        Button8.Foreground = iVordergrund
+        Button9.Foreground = iVordergrund
+    Endif 
 End
 
 
 Public Sub Menu5_Click()
-    'speichern & beenden
+    'beenden
     Me.Close
 End
 
@@ -166,12 +170,8 @@ End
 
 Public Sub InAction()
     'Funktionsanzeige, das etwas gerade in Arbeit ist
-    Dim iTextfarbe As Integer
-    Dim sTextnachricht As String
     
     If Spinner1.Visible = False Then 
-        sTextnachricht = Label1.Text
-        iTextfarbe = Label1.Foreground
         Spinner1.Visible = True 
         Spinner1.Start()
         Label1.Text = "Bitte warten! Dies kann eine Weile dauern, auch wenn sich die Anzeige scheinbar nicht bewegt."
@@ -181,9 +181,20 @@ Public Sub InAction()
         Wait 1
         Spinner1.Stop()
         Spinner1.Visible = False
-        Label1.Text = sTextnachricht
-        Label1.Foreground = iTextfarbe
+        'Label1.Text = sTextnachricht
+        Label1.Foreground = &H808080
+        Funktionen.Spruch()
     Endif 
+End
+
+Public Sub Vorschau()
+    'Vorschau aktivieren
+    FileView1.MaxPreviewSize = 20000000
+    FileView2.MaxPreviewSize = 20000000
+    Print FileView1.MaxPreviewSize
+    FileView1.View = 3
+    FileView2.View = 3
+    Wait 
 End
 
 
@@ -289,7 +300,7 @@ Public Sub Kopieren()
     Dim i As Integer
     'Dim x As String
     InAction()
-    Print iLR
+    Print "Kopiervorgang"
     If iLR = 1 Then QUELLPFAD = FileView1.Dir
     If iLR = 2 Then QUELLPFAD = FileView2.Dir
     
@@ -301,25 +312,24 @@ Public Sub Kopieren()
                 QUELLE = QUELLPFAD &/ FileView1.Selection[i]
                 Print QUELLE & " MEHRERE DATEN"
                 If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-                If Error Then TextLabel1.Text = "Sind die selbe Datei."
                 If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
-                If Error Then TextLabel1.Text = "Kopie Ordner fehlgeschlagen."
+                If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
+                If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
-                If Error Then TextLabel1.Text = "Kopie Datei fehlgeschlagen." 
-                TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-                If Error Then TextLabel1.Text = "Das funktioniert nicht."
+                If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
+                If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+                FileView2.Reload
                 Wait 0.1
             Next
-                FileView1.Reload
                 'Print "neu geladen"
-            Else 
+        Else 
             'Standardfunktion
-             Print QUELLE & " - EINZEL DATEI"
-             If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-             If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
-             If QUELLE = "" Then QUELLE = "NICHTS"
-             TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-             If Error Then TextLabel1.Text = "Das funktioniert nicht."
+            Print QUELLE & " - EINZEL DATEI"
+            If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
+            If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
+            If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
+            If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+            FileView2.Reload
         Endif 
     Endif 
     If iLR = 2 Then 
@@ -334,17 +344,19 @@ Public Sub Kopieren()
                 If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
                 TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 If Error Then TextLabel1.Text = "Das funktioniert nicht."
+                FileView1.Reload
                 Wait 0.1
             Next
-                FileView2.Reload
-            Else 
+            
+        Else 
             'Standardfunktion
              Print QUELLE & " - EINZEL DATEI"
              If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
              If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
-             If QUELLE = "" Then QUELLE = "NICHTS"
-             TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-             If Error Then TextLabel1.Text = "Das funktioniert nicht."
+             Print Process.LastValue
+             If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
+             If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+             FileView1.Reload
         Endif 
     Endif 
     InAction()
@@ -655,7 +667,7 @@ Public Sub Menu16_Click()
             QUELLDATEI = FileView1.Selection[i]
             Print QUELLDATEI & "  " & QUELLPFAD
             Try Loeschen 
-            Wait 0.5
+            Wait 0.3
         Next
     Else 
     'eine Datei löschen
@@ -746,6 +758,7 @@ End
 
 Public Sub Menu33_Click()
     'Bildvorschau
+    If Menu33.Checked = True Then FileView1.MaxPreviewSize = 15000000 Else FileView1.MaxPreviewSize = 3000000
     If Menu33.Checked = True Then Splitter1.Layout = [0, 20, 4, 76] Else Splitter1.Layout = [0, 48, 4, 48]
     If Menu33.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
     If Menu33.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
@@ -817,10 +830,6 @@ End
 Public Sub Button3_Click()
     ' Kopieren über Knopf - F5
     Kopieren()
-    Wait 
-    'Ansicht Aktualisieren
-    FileView2.Reload
-    FileView1.Reload
 End
 
 ''<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -842,7 +851,7 @@ Public Sub Button4_Click()
                 If Not Exist(ZIEL &/ FileView1.Selection[i]) Then 
                     Funktionen.Verschieben()
                     TextLabel1.Text = Funktionen.sInfotext
-                    Wait 0.3
+                    Wait 0.2
                     FileView2.Reload
                 Else 
                     TextLabel1.Text = "Die Datei " & FileView1.Selection[i] & " existiert schon und wird nicht verschoben."
@@ -875,7 +884,7 @@ Public Sub Button4_Click()
                 If Not Exist(ZIEL &/ FileView2.Selection[i]) Then 
                     Funktionen.Verschieben()
                     TextLabel1.Text = Funktionen.sInfotext
-                    Wait 0.3
+                    Wait 0.2
                     FileView1.Reload
                 Else 
                     TextLabel1.Text = "Die Datei " & FileView2.Selection[i] & " existiert schon und wird nicht verschoben."
@@ -1107,8 +1116,7 @@ Public Sub Menu46_Click()
             QUELLDATEI = FileView2.Selection[i]
             Print QUELLDATEI & "  " & QUELLPFAD
             Try Loeschen 
-            Wait 1
-                'FileView2.Reload
+            Wait 0.3
         Next
     
     Else 
@@ -1161,9 +1169,42 @@ Public Sub TextBox2_KeyPress()
     'FileView2.Refresh
 End
 
+Public Sub USB()
+    'externe Datenträger anzeigen
+    Dim Verzeichnisse As String = "/media" &/ User.Name
+    Dim Eintrag As String
+    For Each Eintrag In Dir(Verzeichnisse)
+        If Eintrag Then 
+            Print Eintrag
+            If Eintrag > "" Then 
+                If Menu64.Visible = False Then
+                    Menu64.Text = Verzeichnisse &/ Eintrag
+                    Menu64.Visible = True
+                Else 
+                    If Menu65.Visible = False Then
+                    Menu65.Text = Verzeichnisse &/ Eintrag
+                    Menu65.Visible = True
+                Else 
+                    If Menu66.Visible = False Then
+                    Menu66.Text = Verzeichnisse &/ Eintrag
+                    Menu66.Visible = True
+                Endif
+                Endif 
+                Endif 
+            Endif
+        Endif
+    Next
+End
 Public Sub Menu49_Click()
-    'Zugriff auf externe Datenträger
-    If FileView1.HasFocus Then FileView1.Dir = "/media/" & User.Name
+    ''Zugriff auf externe Datenträger
+    Menu64.Text = "USB"
+    Menu64.Visible = False
+    Menu65.Text = "USB"
+    Menu65.Visible = False
+    Menu66.Text = "USB"
+    Menu66.Visible = False
+    USB()
+    If FileView1.HasFocus Then FileView1.Dir = "/media/" & User.Name 
     If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
 End
 
@@ -1387,4 +1428,43 @@ Public Sub Menu63_Click()
     FileView1.Dir = sLiebling2
     DirView1.Current = sLiebling2
     DirView1.Reload
+End
+
+Public Sub Menu64_Click()
+    'USB 1
+    If Exist(Menu64.Text) Then 
+        FileView1.Dir = Menu64.Text
+        TextLabel4.Text = FileView1.Dir
+    Else 
+        Menu64.Text = "USB"
+        Menu64.Visible = False
+        TextLabel1.Text = "Der Datenträger ist nicht mehr verfügbar."
+        FileView1.Dir = User.Home
+    Endif 
+End
+
+Public Sub Menu65_Click()
+    'USB 2
+    If Exist(Menu65.Text) Then 
+        FileView1.Dir = Menu65.Text
+        TextLabel4.Text = FileView1.Dir
+    Else 
+        Menu65.Text = "USB"
+        Menu65.Visible = False
+        TextLabel1.Text = "Der Datenträger ist nicht mehr verfügbar."
+        FileView1.Dir = User.Home
+    Endif 
+End
+
+Public Sub Menu66_Click()
+    'USB 3
+    If Exist(Menu66.Text) Then 
+        FileView1.Dir = Menu66.Text
+        TextLabel4.Text = FileView1.Dir
+    Else 
+        Menu66.Text = "USB"
+        Menu66.Visible = False
+        TextLabel1.Text = "Der Datenträger ist nicht mehr verfügbar."
+        FileView1.Dir = User.Home
+    Endif 
 End
