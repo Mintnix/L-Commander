@@ -12,7 +12,6 @@ Public ZIEL As String
 Public sTDatei As String                    'eine Trashvariable
 Public lOrdner As String
 Public rOrdner As String
-'Public dTimeDate As Date
 Public iStandardfarbe As Integer = &HBFFFFF 'Standardfarbe
 Public iHindergrund As Integer = &HDFF7FF   
 Public iVordergrund As Integer
@@ -22,6 +21,17 @@ Public bRand As Boolean                     'Ränder anzeigen ja oder nein
 Static Public bBaum As Boolean              'Baum anzeigen
 Public sLiebling1 As String                 'Favorit 1
 Public sLiebling2 As String                 'Favorit 2
+Public sBefehl As String
+Private sResultRoot As String               'Rootpartitionsname
+Private sResultHome As String               'Homepartitionsname
+Private sResultUSB1 As String               'USB Partitionsname
+Public sUSB1 As String
+Public sUSB2 As String
+Public sUSB3 As String
+Private pLED_ROT As Picture = Picture["led_rot.png"]
+Private pLED_GRAU As Picture = Picture["led_grau.png"]
+Private pLED_BLAU As Picture = Picture["led_blau.png"]
+
 
 
 Public Sub Form_Open()
@@ -45,6 +55,7 @@ Public Sub Form_Open()
     'Begrenzung der Vorschau auf 0,5 MB (500000 Bytes)
     FileView1.MaxPreviewSize = 500000
     FileView2.MaxPreviewSize = 500000
+    
     
     ''hier wird geladen und in Variablen gefüllt
     hFile = Open "~/.lc_config.txt" For Read
@@ -72,7 +83,7 @@ Public Sub Form_Open()
     If sLine7 = "" Then sLine7 = 0
     If sLine8 = "" Then sLine8 = 0
     If sLine9 = "" Then sLine9 = 0
-
+    
     iStandardfarbe = sLine1
     iHindergrund = sLine2
     iVordergrund = sLine3
@@ -101,6 +112,7 @@ Public Sub Form_Open()
     rOrdner = FileView2.Dir
     Print lOrdner & "  |  " & rOrdner
 
+
     If sLine4 = -1 Then TextBox1.NoTabFocus = False
     If sLine4 = -1 Then TextBox2.NoTabFocus = False
     If sLine6 = -1 Then FileView1.View = 1
@@ -110,19 +122,13 @@ Public Sub Form_Open()
     If sLine7 = -1 Then FMain.Maximized = True
     If sLine8 = -1 Then bRand = -1 Else bRand = 0
     If sLine9 = -1 Then bBaum = -1 Else bBaum = 0
-    If sLine5 = -1 Then Vorschau()
     Wait 0.1
-    
-    Funktionen.Baum()
-    Funktionen.Spruch()
-    NoBorder()
 
     Menu2.Visible = False
     Menu15.Visible = False
     Menu63.Text = "Liebling 2: " & sLiebling2
     Menu62.Text = "Liebling 1: " & sLiebling1
-    If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
-    If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
+
     
     If bBaum = -1 Then
         Menu34.Checked = True
@@ -131,25 +137,92 @@ Public Sub Form_Open()
         'Menu19.Visible = False
         Button10.Enabled = False
     Endif 
+
+    Funktionen.Baum()
+    Funktionen.Spruch()
+    NoBorder()
+    Vorschau()
     
     If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
     If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
-    
+
     LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
     If FMain.iHindergrund = &H000000 Then
         LCDLabel2.Foreground = iVordergrund
         Button8.Foreground = iVordergrund
         Button9.Foreground = iVordergrund
     Endif 
+    If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
+    If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
+    
+
+    ''Mountpoint Befehle zum Auffinden der Partitionen
+    sBefehl = "lsblk -r -o NAME,MOUNTPOINT | awk '$2==\"/\"{print $1}'"             'Diese fucking Leerzeichen, die manchmal entstehen, wenn man den Befehl nicht gleich in richtiger Sysntax übergibt, lassen mir graue Haare wachsen!!! 
+    Print sBefehl
+    Shell "lsblk -r -o NAME,MOUNTPOINT | awk '$2==\"/\"{print $1}'" To sResultRoot 
+    sResultRoot = Trim(sResultRoot)
+    Print "Root-Gerät: "; sResultRoot
+    'Timer1.Enabled = True
+    PictureBox2.Picture = pLED_GRAU
 End
 
 
 Public Sub Menu5_Click()
     'beenden
+    Wait 0.3
     Me.Close
 End
 
+''Timerfunktion
+Public Sub Timer1_Timer()
+  Dim device As String = Me.Tag
+  Dim res As String
+  Dim parts As String[]
+  Static lastRead As Long
+  Static lastWrite As Long
+
+  ' Eintrag aus /proc/diskstats holen
+  'Print sResultRoot
+  Shell "grep ' " & sResultRoot & " ' /proc/diskstats" To res
+    res = Trim(res)
+    'Print res
+  If res = "" Then
+    Message("ROOT - Gerät nicht gefunden!")
+    Return
+  Endif
+
+  ' Split mit True, damit keine leeren Felder entstehen
+  parts = Split(res, " ", "\n", True)
+  'Print res
+
+  ' Sicherheit: Prüfen, ob genug Felder vorhanden sind
+  If parts.Count < 10 Then
+    TextLabel1.Text = "Fehler: Ungültige /proc/diskstats Daten!"
+    Return
+  Endif
+
+  ' Felder laut Kernel-Dokumentation:
+  ' parts[5] = sectors read
+  ' parts[9] = sectors written
+  Dim readNow As Long = Val(parts[5])
+  'Print "Read " & readNow
+  Dim writeNow As Long = Val(parts[9])
+  'Print "Write " & writeNow
+
+  ' Vergleichen mit vorherigen Werten
+  'If readNow <> lastRead Then 
+   ' PictureBox2.Picture = pLED_ROT
+  'Endif 
+  If writeNow <> lastWrite Then
+    PictureBox2.Picture = pLED_GRAU 'LED Farbe getauscht, da sonst weniger Rot erscheint
+  Else
+    PictureBox2.Picture = pLED_ROT  'LED Farbe getauscht
+  Endif 
+  ' Aktuelle Werte speichern
+  lastRead = readNow
+  lastWrite = writeNow
+End
 ''____________________________________________
 Public Sub NoBorder()
     ''Ränder ein- oder ausschalten
@@ -170,18 +243,16 @@ End
 
 Public Sub InAction()
     'Funktionsanzeige, das etwas gerade in Arbeit ist
-    
-    If Spinner1.Visible = False Then 
-        Spinner1.Visible = True 
-        Spinner1.Start()
+    If Timer1.Enabled = False Then 
+        Timer1.Start 
         Label1.Text = "Bitte warten! Dies kann eine Weile dauern, auch wenn sich die Anzeige scheinbar nicht bewegt."
         Label1.Foreground = &HFF003F
+        'PictureBox2.Picture = pLED_ROT
         Wait 1
     Else 
         Wait 1
-        Spinner1.Stop()
-        Spinner1.Visible = False
-        'Label1.Text = sTextnachricht
+        Timer1.Stop
+        PictureBox2.Picture = pLED_GRAU
         Label1.Foreground = &H808080
         Funktionen.Spruch()
     Endif 
@@ -189,12 +260,14 @@ End
 
 Public Sub Vorschau()
     'Vorschau aktivieren
-    FileView1.MaxPreviewSize = 20000000
-    FileView2.MaxPreviewSize = 20000000
-    Print FileView1.MaxPreviewSize
-    FileView1.View = 3
-    FileView2.View = 3
-    Wait 
+    If Einstellungen.CheckBox2.Value = True Then 
+        Print FileView1.MaxPreviewSize
+        FileView1.View = 3
+        FileView2.View = 3
+        FileView1.MaxPreviewSize = 20000000
+        FileView2.MaxPreviewSize = 20000000
+        Menu14_Click
+    Endif
 End
 
 
@@ -645,6 +718,9 @@ Public Sub Menu14_Click()
   FileView1.Reload
   FileView2.Reload
   DirView1.Reload
+  PictureBox2.Picture = pLED_BLAU 
+  Wait 0.2
+  If PictureBox2.Picture = pLED_BLAU Then PictureBox2.Picture = pLED_GRAU
 End
 
 Public Sub Menu18_Click()
@@ -1175,19 +1251,25 @@ Public Sub USB()
     Dim Eintrag As String
     For Each Eintrag In Dir(Verzeichnisse)
         If Eintrag Then 
-            Print Eintrag
+            Print "Der Eintrag ist: " & Eintrag
             If Eintrag > "" Then 
                 If Menu64.Visible = False Then
                     Menu64.Text = Verzeichnisse &/ Eintrag
                     Menu64.Visible = True
+                    sUSB1 = Menu64.Text
+                    Shell "lsblk -r -o NAME,MOUNTPOINT | awk '$2==" & "\"" & sUSB1 & "\" {print  $1}'" To sResultUSB1
+                    Print "USB1-Gerät: "; sResultUSB1
+                    Print sUSB1
                 Else 
                     If Menu65.Visible = False Then
                     Menu65.Text = Verzeichnisse &/ Eintrag
                     Menu65.Visible = True
+                    sUSB2 = Menu65.Text
                 Else 
                     If Menu66.Visible = False Then
                     Menu66.Text = Verzeichnisse &/ Eintrag
                     Menu66.Visible = True
+                    sUSB3 = Menu66.Text
                 Endif
                 Endif 
                 Endif 

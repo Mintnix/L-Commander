@@ -507,17 +507,14 @@
     MoveScaled(1,83,169,6)
     Centered = True
     Padding = 5
-    { Spinner1 Spinner
-      MoveScaled(1,0,6,6)
-      Visible = False
-      Foreground = Color.Red
-      ToolTip = ("Warten Sie, bis die Aktion fertig ist.")
-      Type = Spinner.Dot
+    { PictureBox2 PictureBox
+      MoveScaled(1,1,5,4)
     }
     { TextLabel1 TextLabel
-      MoveScaled(8,0,161,6)
+      MoveScaled(7,1,161,4)
       Font = Font["Bold"]
       NoTabFocus = True
+      Expand = True
       Padding = 5
       Text = ("Was kann denn hier für ein Text stehen?")
       Alignment = Align.Center
@@ -551,5 +548,9 @@
       Alignment = Align.Center
       Border = True
     }
+  }
+  { Timer1 #Timer
+    #MoveScaled(166,89)
+    Delay = 50
   }
 }
