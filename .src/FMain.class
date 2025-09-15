@@ -378,7 +378,10 @@ Public Sub Kopieren()
     If iLR = 2 Then QUELLPFAD = FileView2.Dir
     
     If iLR = 1 Then 
-       If FileView1.Selection.Count > 1 Then 
+        FileView2.Enabled = False
+        FileView1.Enabled = False
+        DirView1.Enabled = False
+        If FileView1.Selection.Count > 1 Then 
             For i = 0 To FileView1.Selection.Count - 1
                 Print i
                 Print FileView1.Selection[i]
@@ -404,9 +407,15 @@ Public Sub Kopieren()
             If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
             FileView2.Reload
         Endif 
+        FileView2.Enabled = True
+        FileView1.Enabled = True
+        DirView1.Enabled = True
     Endif 
-    If iLR = 2 Then 
-       If FileView2.Selection.Count > 1 Then 
+    If iLR = 2 Then
+        FileView1.Enabled = False
+        FileView2.Enabled = False 
+        DirView1.Enabled = False
+        If FileView2.Selection.Count > 1 Then 
             For i = 0 To FileView2.Selection.Count - 1
                 Print i
                 Print FileView2.Selection[i]
@@ -430,7 +439,10 @@ Public Sub Kopieren()
              If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
              If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
              FileView1.Reload
-        Endif 
+        Endif
+        FileView1.Enabled = True
+        FileView2.Enabled = True 
+        DirView1.Enabled = True
     Endif 
     InAction()
 End
@@ -735,6 +747,9 @@ Public Sub Menu16_Click()
     'Datei(en) links löschen
     Dim i As Integer
     'mehrere Dateien löschen
+    FileView2.Enabled = False
+    FileView1.Enabled = False
+    DirView1.Enabled = False
     If FileView1.Selection.Count > 1 Then 
         For i = 0 To FileView1.Selection.Count - 1
             Print i
@@ -753,6 +768,9 @@ Public Sub Menu16_Click()
         Print "Es würde gelöscht werden!"
     Endif 
     TextBox1.Text = ""
+    FileView2.Enabled = True
+    FileView1.Enabled = True
+    DirView1.Enabled = True
     FileView1.Reload
     FileView2.Reload
 End
@@ -760,6 +778,9 @@ End
 Public Sub Menu17_Click()
     '' Alle Dateien in den Papierkorb löschen >>> Linke Seite FileView1
     Dim i As Integer
+    FileView1.Enabled = False
+    FileView2.Enabled = False
+    DirView1.Enabled = False
     If FileView1.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
     If FileView1.Selected = True Then
         If FileView1.Dir <> User.Home Then
@@ -776,6 +797,9 @@ Public Sub Menu17_Click()
         Next
             FileView1.Reload
             Menu17.Enabled = False
+            FileView1.Enabled = True
+            FileView2.Enabled = True
+            DirView1.Enabled = True
         Endif
     Else
         Menu17.Enabled = False 
@@ -917,7 +941,10 @@ Public Sub Button4_Click()
     If iLR = 2 Then QUELLPFAD = FileView2.Dir 'rechts
     InAction()
     'Verschieben von mehreren Dateien 
-    If iLR = 1 Then                                                                  'linke Auswahl nach rechts verschieben
+    If iLR = 1 Then                                                       'linke Auswahl nach rechts verschieben
+        FileView2.Enabled = False
+        FileView1.Enabled = False
+        DirView1.Enabled = False
         If FileView1.Selection.Count > 1 Then 
             For i = 0 To FileView1.Selection.Count - 1
                 Print i
@@ -948,10 +975,16 @@ Public Sub Button4_Click()
             If QUELLE = "" Then TextLabel1.Text = "Das funktioniert nicht."
         Endif 
         FileView1.Reload
+        FileView2.Enabled = True
+        FileView1.Enabled = True
+        DirView1.Enabled = True
     Endif 
     'Verschieben von mehreren Dateien 
     If iLR = 2 Then                                                             'rechte Auswahl nach links verschieben
-       If FileView2.Selection.Count > 1 Then 
+        FileView1.Enabled = False
+        FileView2.Enabled = False
+        DirView1.Enabled = False
+        If FileView2.Selection.Count > 1 Then 
             For i = 0 To FileView2.Selection.Count - 1
                 Print i
                 Print FileView2.Selection[i]
@@ -981,6 +1014,9 @@ Public Sub Button4_Click()
             If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
         Endif 
         FileView2.Reload
+        FileView1.Enabled = True
+        FileView2.Enabled = True
+        DirView1.Enabled = True
     Endif
     InAction()
 End
@@ -994,6 +1030,9 @@ End
 Public Sub Menu37_Click()
     '' Alle Dateien in den Papierkorb löschen >>> Rechte Seite FileView2
     Dim i As Integer
+    FileView1.Enabled = False
+    FileView2.Enabled = False
+    DirView1.Enabled = False
     If FileView2.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
     If FileView2.Selected = True Then
         If FileView2.Dir <> User.Home Then
@@ -1011,6 +1050,9 @@ Public Sub Menu37_Click()
         Next
             FileView2.Reload
             Menu37.Enabled = False
+            FileView1.Enabled = True
+            FileView2.Enabled = True
+            DirView1.Enabled = True
         Endif
     Else 
         Menu37.Enabled = False
@@ -1184,6 +1226,9 @@ Public Sub Menu46_Click()
     'Datei(en) rechts löschen
     Dim i As Integer
     'mehrere Dateien löschen
+    FileView2.Enabled = False
+    FileView1.Enabled = False
+    DirView1.Enabled = False
     If FileView2.Selection.Count > 1 Then 
         For i = 0 To FileView2.Selection.Count - 1
             Print i
@@ -1203,6 +1248,9 @@ Public Sub Menu46_Click()
         Print "Es würde gelöscht werden!"
     Endif 
     TextBox2.Text = ""
+    FileView2.Enabled = True
+    FileView1.Enabled = True
+    DirView1.Enabled = True
     FileView1.Reload
     FileView2.Reload
 End 

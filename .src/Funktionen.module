@@ -74,7 +74,6 @@ End
 Public Sub Killen()
     ''Eine Datei endgültig löschen
     Dim iFrage As Integer
-
     If FMain.iLR = 1 Then 
          iFrage = Message.Delete("Soll " & FMain.FileView1.Path & " wirklich gelöscht und endgültig zerstört werden?", "JA", "NEIN")
          If iFrage = 1 Then 
