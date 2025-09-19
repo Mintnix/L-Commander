@@ -331,9 +331,8 @@ Public Sub create_trashinfo()
 
     dDate = Now()
     deletion_date = "DeletionDate=" & Format$(dDate, "yyyy-mm-ddThh:nn:ss")
-    If Trash_Dir Begins "/media" &/ User.Name Then Pfad = "Path=" & QUELLDATEI Else Pfad = "Path=" & QUELLPFAD &/ QUELLDATEI
+    Pfad = "Path=" & QUELLPFAD &/ QUELLDATEI
     Print Pfad & "  = traschinfopfad"
-
     If sTDatei = "" Then
         Message("Fehler, nichts ausgewählt.", "OK")
     Else If Exist(Trash_Info &/ sTDatei & ".trashinfo") Then 
