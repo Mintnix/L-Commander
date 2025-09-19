@@ -331,7 +331,8 @@ Public Sub create_trashinfo()
 
     dDate = Now()
     deletion_date = "DeletionDate=" & Format$(dDate, "yyyy-mm-ddThh:nn:ss")
-    Pfad = "Path=" & QUELLPFAD &/ QUELLDATEI
+    If Trash_Dir Begins "/media" &/ User.Name Then Pfad = "Path=" & QUELLDATEI Else Pfad = "Path=" & QUELLPFAD &/ QUELLDATEI
+    Print Pfad & "  = traschinfopfad"
 
     If sTDatei = "" Then
         Message("Fehler, nichts ausgewählt.", "OK")
@@ -610,6 +611,7 @@ End
 Public Sub Button1_Click()
     'zurück zu Home - Button links
     FileView1.Dir = lOrdner
+    DirView1.Root = User.Home
     DirView1.Current = User.Home
     DirView1.Reload
     Print lOrdner
@@ -765,7 +767,7 @@ Public Sub Menu16_Click()
         QUELLPFAD = FileView1.Dir
         QUELLDATEI = FileView1.Current
         Try Loeschen
-        Print "Es würde gelöscht werden!"
+        Print "Es wurde gelöscht!"
     Endif 
     TextBox1.Text = ""
     FileView2.Enabled = True
@@ -1083,6 +1085,7 @@ Public Sub Button8_Click()
         FileView1.Dir = Zeile
     Endif
     If Zeile = "" Then FileView1.Dir = User.Home
+    If Zeile = "" Then DirView1.Root = User.Home
      
     Menu17.Enabled = False
     TextLabel4.Text = FileView1.Dir
@@ -1245,7 +1248,7 @@ Public Sub Menu46_Click()
         QUELLPFAD = FileView2.Dir
         QUELLDATEI = FileView2.Current
         Try Loeschen
-        Print "Es würde gelöscht werden!"
+        Print "Es wurde gelöscht!"
     Endif 
     TextBox2.Text = ""
     FileView2.Enabled = True
@@ -1334,8 +1337,9 @@ Public Sub Menu49_Click()
     Menu66.Text = "USB"
     Menu66.Visible = False
     USB()
-    If FileView1.HasFocus Then FileView1.Dir = "/media/" & User.Name 
+    'If FileView1.HasFocus Then FileView1.Dir = "/media/" & User.Name 
     If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
+    If FileView1.Dir Begins "/media/" & User.Name Then DirView1.Root = FileView1.Dir Else DirView1.Current = User.Home
 End
 
 Public Sub Button10_Click()
