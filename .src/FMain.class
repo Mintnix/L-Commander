@@ -23,7 +23,7 @@ Public sLiebling1 As String                 'Favorit 1
 Public sLiebling2 As String                 'Favorit 2
 Public sBefehl As String
 Private sResultRoot As String               'Rootpartitionsname
-Private sResultHome As String               'Homepartitionsname
+'Private sResultHome As String               'Homepartitionsname
 Private sResultUSB1 As String               'USB Partitionsname
 Public sUSB1 As String
 Public sUSB2 As String
@@ -31,7 +31,6 @@ Public sUSB3 As String
 Private pLED_ROT As Picture = Picture["led_rot.png"]
 Private pLED_GRAU As Picture = Picture["led_grau.png"]
 Private pLED_BLAU As Picture = Picture["led_blau.png"]
-
 
 
 Public Sub Form_Open()
@@ -55,8 +54,7 @@ Public Sub Form_Open()
     'Begrenzung der Vorschau auf 0,5 MB (500000 Bytes)
     FileView1.MaxPreviewSize = 500000
     FileView2.MaxPreviewSize = 500000
-    
-    
+
     ''hier wird geladen und in Variablen gefüllt
     hFile = Open "~/.lc_config.txt" For Read
     Line Input #hFile, sLine1   'Standardfarbe
@@ -83,7 +81,7 @@ Public Sub Form_Open()
     If sLine7 = "" Then sLine7 = 0
     If sLine8 = "" Then sLine8 = 0
     If sLine9 = "" Then sLine9 = 0
-    
+
     iStandardfarbe = sLine1
     iHindergrund = sLine2
     iVordergrund = sLine3
@@ -112,7 +110,6 @@ Public Sub Form_Open()
     rOrdner = FileView2.Dir
     Print lOrdner & "  |  " & rOrdner
 
-
     If sLine4 = -1 Then TextBox1.NoTabFocus = False
     If sLine4 = -1 Then TextBox2.NoTabFocus = False
     If sLine6 = -1 Then FileView1.View = 1
@@ -129,7 +126,6 @@ Public Sub Form_Open()
     Menu63.Text = "Liebling 2: " & sLiebling2
     Menu62.Text = "Liebling 1: " & sLiebling1
 
-    
     If bBaum = -1 Then
         Menu34.Checked = True
         Menu33.Visible = False
@@ -142,7 +138,7 @@ Public Sub Form_Open()
     Funktionen.Spruch()
     NoBorder()
     Vorschau()
-    
+
     If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
     If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
@@ -155,7 +151,6 @@ Public Sub Form_Open()
     Endif 
     If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
     If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
-    
 
     ''Mountpoint Befehle zum Auffinden der Partitionen
     sBefehl = "lsblk -r -o NAME,MOUNTPOINT | awk '$2==\"/\"{print $1}'"             'Diese fucking Leerzeichen, die manchmal entstehen, wenn man den Befehl nicht gleich in richtiger Sysntax übergibt, lassen mir graue Haare wachsen!!! 
@@ -167,7 +162,6 @@ Public Sub Form_Open()
     PictureBox2.Picture = pLED_GRAU
 End
 
-
 Public Sub Menu5_Click()
     'beenden
     Wait 0.3
@@ -176,7 +170,7 @@ End
 
 ''Timerfunktion
 Public Sub Timer1_Timer()
-  Dim device As String = Me.Tag
+ ' Dim device As String = Me.Tag
   Dim res As String
   Dim parts As String[]
   Static lastRead As Long
@@ -269,7 +263,6 @@ Public Sub Vorschau()
         Menu14_Click
     Endif
 End
-
 
 ''###########################################################################################################################
 Public Sub Loeschen()
@@ -1299,34 +1292,39 @@ Public Sub USB()
     'externe Datenträger anzeigen
     Dim Verzeichnisse As String = "/media" &/ User.Name
     Dim Eintrag As String
-    For Each Eintrag In Dir(Verzeichnisse)
-        If Eintrag Then 
-            Print "Der Eintrag ist: " & Eintrag
-            If Eintrag > "" Then 
-                If Menu64.Visible = False Then
-                    Menu64.Text = Verzeichnisse &/ Eintrag
-                    Menu64.Visible = True
-                    sUSB1 = Menu64.Text
-                    Shell "lsblk -r -o NAME,MOUNTPOINT | awk '$2==" & "\"" & sUSB1 & "\" {print  $1}'" To sResultUSB1
-                    Print "USB1-Gerät: "; sResultUSB1
-                    Print sUSB1
-                Else 
-                    If Menu65.Visible = False Then
-                    Menu65.Text = Verzeichnisse &/ Eintrag
-                    Menu65.Visible = True
-                    sUSB2 = Menu65.Text
-                Else 
-                    If Menu66.Visible = False Then
-                    Menu66.Text = Verzeichnisse &/ Eintrag
-                    Menu66.Visible = True
-                    sUSB3 = Menu66.Text
+    If Exist("/media/" & User.Name) Then 
+        For Each Eintrag In Dir(Verzeichnisse)
+            If Eintrag Then 
+                Print "Der Eintrag ist: " & Eintrag
+                If Eintrag > "" Then 
+                    If Menu64.Visible = False Then
+                        Menu64.Text = Verzeichnisse &/ Eintrag
+                        Menu64.Visible = True
+                        sUSB1 = Menu64.Text
+                        Shell "lsblk -r -o NAME,MOUNTPOINT | awk '$2==" & "\"" & sUSB1 & "\" {print  $1}'" To sResultUSB1
+                        Print "USB1-Gerät: "; sResultUSB1
+                        Print sUSB1
+                    Else 
+                        If Menu65.Visible = False Then
+                        Menu65.Text = Verzeichnisse &/ Eintrag
+                        Menu65.Visible = True
+                        sUSB2 = Menu65.Text
+                    Else 
+                        If Menu66.Visible = False Then
+                        Menu66.Text = Verzeichnisse &/ Eintrag
+                        Menu66.Visible = True
+                        sUSB3 = Menu66.Text
+                    Endif
+                    Endif 
+                    Endif 
                 Endif
-                Endif 
-                Endif 
             Endif
-        Endif
-    Next
+        Next
+    Else 
+        Message.Info("Der Pfad /media/Benutzername/ zu externen Datenträgern\n existiert noch nicht. Dieser wird beim erstmaligen Einstecken\n von USB Datenträgern automatisch angelegt.", "OK")
+    Endif 
 End
+
 Public Sub Menu49_Click()
     ''Zugriff auf externe Datenträger
     Menu64.Text = "USB"
@@ -1336,9 +1334,12 @@ Public Sub Menu49_Click()
     Menu66.Text = "USB"
     Menu66.Visible = False
     USB()
-    'If FileView1.HasFocus Then FileView1.Dir = "/media/" & User.Name 
-    If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
-    If FileView1.Dir Begins "/media/" & User.Name Then DirView1.Root = FileView1.Dir Else DirView1.Current = User.Home
+    If Exist("/media/" & User.Name) Then 
+        If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
+        If FileView1.Dir Begins "/media/" & User.Name Then DirView1.Root = FileView1.Dir Else DirView1.Current = User.Home
+    Else 
+        Return 
+    Endif
 End
 
 Public Sub Button10_Click()
