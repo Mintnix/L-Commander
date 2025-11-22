@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,171.4286,100)
+  MoveScaled(0,0,171.375,100)
   Background = &HDFFFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
@@ -91,6 +91,11 @@
       Text = ("Ansicht Aktualisieren")
       Picture = Picture["icon:/medium/refresh"]
       Shortcut = "R"
+    }
+    { Menu67 Menu
+      Text = ("Speicherinfo")
+      Picture = Picture["icon:/medium/harddisk"]
+      Shortcut = "I"
     }
     { Menu8 Menu
       Text = ("Versteckte Dateien anzeigen")

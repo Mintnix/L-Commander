@@ -400,9 +400,10 @@ Public Sub Kopieren()
             If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
             FileView2.Reload
         Endif 
+        DirView1.Enabled = True
         FileView2.Enabled = True
         FileView1.Enabled = True
-        DirView1.Enabled = True
+        FileView1.SetFocus
     Endif 
     If iLR = 2 Then
         FileView1.Enabled = False
@@ -432,11 +433,13 @@ Public Sub Kopieren()
              If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
              If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
              FileView1.Reload
-        Endif
+        Endif 
+        DirView1.Enabled = True
         FileView1.Enabled = True
         FileView2.Enabled = True 
-        DirView1.Enabled = True
+        FileView2.SetFocus
     Endif 
+    DirView1.Reload
     InAction()
 End
 '' --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -563,12 +566,11 @@ Public Sub FileView1_GotFocus()
     FileView1.Background = iStandardfarbe
     FileView1.Foreground = iVordergrund
     TextBox1.Background = &HFFFFBF
-   
+    'iLR = 1
     FileView2.UnselectAll
     Menu37.Enabled = False
     ZIEL = FileView2.Dir
-    Print ZIEL & " Fokus links - rechtes Feld Ziel"
-    
+    TextLabel1.Text = "Fokus LINKS - rechtes Feld Ziel: " & ZIEL
 End
 
 Public Sub FileView2_GotFocus()
@@ -576,11 +578,11 @@ Public Sub FileView2_GotFocus()
     FileView2.Background = iStandardfarbe
     FileView2.Foreground = iVordergrund
     TextBox2.Background = &HFFFFBF
-    
+    'iLR = 2
     FileView1.UnselectAll
     Menu17.Enabled = False
     ZIEL = FileView1.Dir
-    Print ZIEL & " Fokus rechts - linkes Feld Ziel"
+    TextLabel1.Text = "Fokus RECHTS - linkes Feld Ziel: " & ZIEL
 End
 
 
@@ -660,15 +662,17 @@ Public Sub Button6_Click()
         TextLabel1.Foreground = iVordergrund
         TextLabel1.Refresh
     Endif 
+    DirView1.Reload
 End
 
 Public Sub Button7_Click()
     'neuer Ordner erstellen - F7
-    If iLR = 1 Then 
+    If FileView1.HasFocus Then 
         If Not Exist(FileView1.Dir &/ "Neuer Ordner") Then
             Mkdir FileView1.Dir &/ "Neuer Ordner"
             TextLabel1.text = "Ordner wurde angelegt."
-            FileView1.Reload 
+            FileView1.Reload
+            FileView2.Reload 
             FileView1.SetFocus
         Else 
             TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher mit der Maus auswählen."
@@ -676,11 +680,12 @@ Public Sub Button7_Click()
             FileView1.Current = "Neuer Ordner"
         Endif 
     Endif 
-    If iLR = 2 Then 
+    If FileView2.HasFocus Then 
         If Not Exist(FileView2.Dir &/ "Neuer Ordner") Then
             Mkdir FileView2.Dir &/ "Neuer Ordner"
             TextLabel1.text = "Ordner wurde angelegt."
             FileView2.Reload
+            FileView1.Reload
             FileView2.SetFocus
         Else 
             TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher mit der Maus auswählen."
@@ -688,6 +693,7 @@ Public Sub Button7_Click()
             FileView2.Current = "Neuer Ordner"
         Endif 
     Endif 
+    DirView1.Reload
 End
 
 Public Sub Button5_Click()
@@ -711,7 +717,7 @@ Public Sub Menu12_Click()
     If FileView2.Dir = User.Home Then FileView2.UnselectAll
     If FileView2.Dir = User.Home Then Menu37.Enabled = False
     If FileView2.Dir <> User.Home Then FileView2.SelectAll
-    If FileView2.Dir <> User.Home Then Menu37.Enabled = True
+   ' If FileView2.Dir <> User.Home Then Menu37.Enabled = True
 End
 
 Public Sub Menu13_Click()
@@ -725,7 +731,7 @@ Public Sub Menu14_Click()
   FileView2.Reload
   DirView1.Reload
   PictureBox2.Picture = pLED_BLAU 
-  Wait 0.2
+  Wait 0.3
   If PictureBox2.Picture = pLED_BLAU Then PictureBox2.Picture = pLED_GRAU
 End
 
@@ -734,7 +740,7 @@ Public Sub Menu18_Click()
   If FileView1.Dir = User.Home Then FileView1.UnselectAll
   If FileView1.Dir = User.Home Then Menu17.Enabled = False
   If FileView1.Dir <> User.Home Then FileView1.SelectAll
-  If FileView1.Dir <> User.Home Then Menu17.Enabled = True
+  'If FileView1.Dir <> User.Home Then Menu17.Enabled = True
 End
 
 Public Sub Menu16_Click()
@@ -752,7 +758,7 @@ Public Sub Menu16_Click()
             QUELLDATEI = FileView1.Selection[i]
             Print QUELLDATEI & "  " & QUELLPFAD
             Try Loeschen 
-            Wait 0.3
+            Wait 0.5
         Next
     Else 
     'eine Datei löschen
@@ -765,8 +771,10 @@ Public Sub Menu16_Click()
     FileView2.Enabled = True
     FileView1.Enabled = True
     DirView1.Enabled = True
+    FileView1.SetFocus
     FileView1.Reload
     FileView2.Reload
+    DirView1.Reload
 End
 
 Public Sub Menu17_Click()
@@ -788,17 +796,18 @@ Public Sub Menu17_Click()
             Print QUELLDATEI
             Try Loeschen
             If Error Then Message("Es ist ein Fehler aufgetreten!")
+            Wait 0.5
         Next
             FileView1.Reload
             Menu17.Enabled = False
             FileView1.Enabled = True
             FileView2.Enabled = True
             DirView1.Enabled = True
+            FileView1.SetFocus
         Endif
     Else
         Menu17.Enabled = False 
     Endif
-
 End
 
 Public Sub Menu8_Click()
@@ -972,6 +981,7 @@ Public Sub Button4_Click()
         FileView2.Enabled = True
         FileView1.Enabled = True
         DirView1.Enabled = True
+        FileView1.SetFocus
     Endif 
     'Verschieben von mehreren Dateien 
     If iLR = 2 Then                                                             'rechte Auswahl nach links verschieben
@@ -1011,6 +1021,7 @@ Public Sub Button4_Click()
         FileView1.Enabled = True
         FileView2.Enabled = True
         DirView1.Enabled = True
+        FileView2.SetFocus
     Endif
     InAction()
 End
@@ -1041,12 +1052,14 @@ Public Sub Menu37_Click()
             Try Loeschen
             Print "GELÖSCHT !!!"
             If Error Then Message("Es ist ein Fehler aufgetreten!")
+            Wait 0.5
         Next
             FileView2.Reload
             Menu37.Enabled = False
             FileView1.Enabled = True
             FileView2.Enabled = True
             DirView1.Enabled = True
+            FileView2.SetFocus
         Endif
     Else 
         Menu37.Enabled = False
@@ -1176,7 +1189,7 @@ Public Sub Menu10_Click()
     Wait 2
     TextLabel1.Background = -1
     TextLabel1.Foreground = -1
-    TextLabel1.Font.Bold = False
+    'TextLabel1.Font.Bold = False
     TextLabel1.Text = "Bereit für die Arbeit."
 End
 
@@ -1232,7 +1245,7 @@ Public Sub Menu46_Click()
             QUELLDATEI = FileView2.Selection[i]
             Print QUELLDATEI & "  " & QUELLPFAD
             Try Loeschen 
-            Wait 0.3
+            Wait 0.5
         Next
     
     Else 
@@ -1246,8 +1259,10 @@ Public Sub Menu46_Click()
     FileView2.Enabled = True
     FileView1.Enabled = True
     DirView1.Enabled = True
+    FileView2.SetFocus
     FileView1.Reload
     FileView2.Reload
+    DirView1.Reload
 End 
 
 Public Sub FileView1_KeyPress()
@@ -1335,8 +1350,10 @@ Public Sub Menu49_Click()
     Menu66.Visible = False
     USB()
     If Exist("/media/" & User.Name) Then 
-        If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
-        If FileView1.Dir Begins "/media/" & User.Name Then DirView1.Root = FileView1.Dir Else DirView1.Current = User.Home
+        FileView2.Dir = "/media/" & User.Name
+        FileView2.SetFocus
+        'If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
+        'If FileView1.Dir Begins "/media/" & User.Name Then DirView1.Root = FileView1.Dir Else DirView1.Current = User.Home
     Else 
         Return 
     Endif
@@ -1567,38 +1584,52 @@ End
 Public Sub Menu64_Click()
     'USB 1
     If Exist(Menu64.Text) Then 
-        FileView1.Dir = Menu64.Text
-        TextLabel4.Text = FileView1.Dir
+        FileView2.Dir = Menu64.Text
+        TextLabel3.Text = FileView2.Dir
     Else 
         Menu64.Text = "USB"
         Menu64.Visible = False
         TextLabel1.Text = "Der Datenträger ist nicht mehr verfügbar."
-        FileView1.Dir = User.Home
+        FileView2.Dir = User.Home
     Endif 
 End
 
 Public Sub Menu65_Click()
     'USB 2
     If Exist(Menu65.Text) Then 
-        FileView1.Dir = Menu65.Text
-        TextLabel4.Text = FileView1.Dir
+        FileView2.Dir = Menu65.Text
+        TextLabel3.Text = FileView2.Dir
     Else 
         Menu65.Text = "USB"
         Menu65.Visible = False
         TextLabel1.Text = "Der Datenträger ist nicht mehr verfügbar."
-        FileView1.Dir = User.Home
+        FileView2.Dir = User.Home
     Endif 
 End
 
 Public Sub Menu66_Click()
     'USB 3
     If Exist(Menu66.Text) Then 
-        FileView1.Dir = Menu66.Text
-        TextLabel4.Text = FileView1.Dir
+        FileView2.Dir = Menu66.Text
+        TextLabel3.Text = FileView2.Dir
     Else 
         Menu66.Text = "USB"
         Menu66.Visible = False
         TextLabel1.Text = "Der Datenträger ist nicht mehr verfügbar."
-        FileView1.Dir = User.Home
+        FileView2.Dir = User.Home
     Endif 
+End
+
+Public Sub Menu67_Click()
+    'freien Speicher anzeigen
+    Dim sInfo As String
+    Dim sResult As String
+    
+    sInfo = TextLabel1.Text
+    TextLabel1.Background = &H0000FF
+    Shell "df -h " & FileView1.Dir & " | tail -1 | awk '{print $4}'" To sResult
+    TextLabel1.Text = "Freier Speicherplatz:  " & sResult
+    Wait 2
+    TextLabel1.Text = sInfo
+    TextLabel1.Background = -1
 End
