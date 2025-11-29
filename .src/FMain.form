@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,171.375,100)
+  MoveScaled(0,0,171.4286,100)
   Background = &HDFFFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
@@ -43,9 +43,8 @@
       Picture = Picture["icon:/medium/select-all"]
     }
     { Menu17 Menu
-      Text = ("Alle Dateien löschen")
-      Picture = Picture["icon:/medium/trash"]
-      Enabled = False
+      Text = ("Datei als Favorit festlegen")
+      Picture = Picture["icon:/medium/card-heart"]
     }
     { Menu48 Menu
       Text = ("Schrift installieren")
@@ -228,6 +227,11 @@
       Text = ("Videos")
       Picture = Picture["icon:/medium/folder-video"]
     }
+    { Menu68 Menu
+      Text = ("Liebling")
+      Picture = Picture["icon:/medium/card-heart"]
+      Shortcut = "0"
+    }
     { Menu62 Menu
       Text = ("Liebling")
       Picture = Picture["icon:/medium/card-heart"]
@@ -305,9 +309,8 @@
       Picture = Picture["icon:/medium/select-all"]
     }
     { Menu37 Menu
-      Text = ("Alle Dateien löschen")
-      Picture = Picture["icon:/medium/trash"]
-      Enabled = False
+      Text = ("Datei als Favorit festlegen")
+      Picture = Picture["icon:/medium/card-heart"]
     }
   }
   { !Splitter3 Splitter
@@ -534,7 +537,7 @@
       MoveScaled(2,0,91,5)
       #Public = True
       Font = Font["10"]
-      Foreground = &H808080
+      Foreground = &HA0A0A0
       Alignment = Align.Center
       Text = ("Spruch des Tages")
     }

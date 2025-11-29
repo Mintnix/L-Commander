@@ -100,11 +100,11 @@ End
 Public Sub Spruch()
     ''Spruch des Tages
     Dim x As Integer
-    x = Rand(1, 20)
+    x = Rand(1, 26)
     'Print x
     If x = 1 Then FMain.Label1.Text = "Morgen, morgen nur nicht heute, sagen alle faulen Leute."
     If x = 2 Then FMain.Label1.Text = "Denke nie gedacht zu haben, denn das Denken der Gedanken ist gedankenloses Denken."
-    If x = 3 Then FMain.Label1.Text = "Was du heute kannst besorgen, verschiebe nicht auf morgen."
+    If x = 3 Then FMain.Label1.Text = "Was du heute kannst besorgen, das verschiebe nicht auf Morgen."
     If x = 4 Then FMain.Label1.Text = "Man muss das Eisen schmieden, solange es heiß ist."
     If x = 5 Then FMain.Label1.Text = "Kindermund tut Wahrheit kund."
     If x = 6 Then FMain.Label1.Text = "Was Hänschen nicht lernt, lernt Hans nimmermehr."
@@ -121,5 +121,11 @@ Public Sub Spruch()
     If x = 17 Then FMain.Label1.Text = "In der Not frisst der Teufel fliegen."
     If x = 18 Then FMain.Label1.Text = "Allen Leuten recht getan, ist eine Kunst, die niemand kann."
     If x = 19 Then FMain.Label1.Text = "Besser stumm als dumm."
-    If x = 20 Then FMain.Label1.Text = "Ein gebranntes Kind scheut das Feuer."    
+    If x = 20 Then FMain.Label1.Text = "Ein gebranntes Kind scheut das Feuer." 
+    If x = 21 Then FMain.Label1.Text = "Advent, Advent, ein Lichtlein brennt"
+    If x = 22 Then FMain.Label1.Text = "Reden ist Silber, schweigen ist Gold."
+    If x = 23 Then FMain.Label1.Text = "Hochmut kommt vor dem Fall."
+    If x = 24 Then FMain.Label1.Text = "Wer nicht wagt, der nicht gewinnt."
+    If x = 25 Then FMain.Label1.Text = "Wer den Pfennig nicht ehrt, ist des Talers nicht wert."
+    If x = 26 Then FMain.Label1.Text = "Wo Rauch aufsteigt, da ist auch Feuer."
 End

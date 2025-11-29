@@ -18,7 +18,7 @@ Public Sub ComboBox1_Click()
     Endif
     If ComboBox1.Text = "Rot" Then 
         'rot
-        FMain.iHindergrund = &HFFDFE7
+        FMain.iHindergrund = &HFFDFDF
         FMain.iVordergrund = &H0000FF
         FMain.iStandardfarbe = &FFBFBF
         'FMain.FileView1.Foreground = FMain.iVordergrund
@@ -70,7 +70,7 @@ Public Sub ComboBox1_Click()
     Endif
     If ComboBox1.Text = "Dunkelgrau" Then 
         'grau
-        FMain.iHindergrund = &60605E
+        FMain.iHindergrund = &H808080
         FMain.iVordergrund = &HFFFFFF
         FMain.iStandardfarbe = &A0A09B
         'FMain.FileView1.Foreground = FMain.iVordergrund
@@ -124,6 +124,6 @@ End
 
 Public Sub Button1_Click()
     'Speichern und Schließen
-    File.Save("~/.lc_config.txt", FMain.iStandardfarbe & gb.NewLine & FMain.iHindergrund & gb.NewLine & FMain.iVordergrund & gb.NewLine & CheckBox1.Value & gb.NewLine & CheckBox2.Value & gb.NewLine & CheckBox3.Value & gb.NewLine & CheckBox4.Value & gb.NewLine & CheckBox5.Value & gb.NewLine & CheckBox6.Value & gb.NewLine & FMain.sLiebling1 & gb.NewLine & FMain.sLiebling2 & gb.NewLine)
+    File.Save("~/.lc_config.txt", FMain.iStandardfarbe & gb.NewLine & FMain.iHindergrund & gb.NewLine & FMain.iVordergrund & gb.NewLine & CheckBox1.Value & gb.NewLine & CheckBox2.Value & gb.NewLine & CheckBox3.Value & gb.NewLine & CheckBox4.Value & gb.NewLine & CheckBox5.Value & gb.NewLine & CheckBox6.Value & gb.NewLine & FMain.sLiebling1 & gb.NewLine & FMain.sLiebling2 & gb.NewLine & FMain.sLiebling3 & gb.NewLine)
     Me.Close
 End

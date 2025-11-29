@@ -21,6 +21,7 @@ Public bRand As Boolean                     'Ränder anzeigen ja oder nein
 Static Public bBaum As Boolean              'Baum anzeigen
 Public sLiebling1 As String                 'Favorit 1
 Public sLiebling2 As String                 'Favorit 2
+Public sLiebling3 As String                 'Favoritendatei
 Public sBefehl As String
 Private sResultRoot As String               'Rootpartitionsname
 'Private sResultHome As String               'Homepartitionsname
@@ -47,6 +48,7 @@ Public Sub Form_Open()
     Dim sLine9 As String
     Dim sLine10 As String
     Dim sLine11 As String
+    Dim sLine12 As String
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
@@ -68,6 +70,7 @@ Public Sub Form_Open()
     Line Input #hFile, sLine9   'Verzeichnisbaum
     Line Input #hFile, sLine10  'Fav 1
     Line Input #hFile, sLine11  'Fav 2
+    Line Input #hFile, sLine12  'Fav 3
     Close #hFile
     Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
     ''Laden Ende
@@ -93,6 +96,7 @@ Public Sub Form_Open()
     Einstellungen.CheckBox6.Value = sLine9
     sLiebling1 = sLine10
     sLiebling2 = sLine11
+    sLiebling3 = sLine12
     Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
 
     Splitter1.Layout = [0, 48, 4, 48]
@@ -125,6 +129,7 @@ Public Sub Form_Open()
     Menu15.Visible = False
     Menu63.Text = "Liebling 2: " & sLiebling2
     Menu62.Text = "Liebling 1: " & sLiebling1
+    Menu68.Text = "Liebling 0: " & sLiebling3
 
     If bBaum = -1 Then
         Menu34.Checked = True
@@ -457,7 +462,6 @@ Public Sub FileView2_DblClick()
     'FileView2.Reload
     TextLabel3.Text = FileView2.Dir
     TextBox2.Text = FileView2.Current
-    Menu37.Enabled = False
 End
 
 Public Sub FileView1_DblClick()
@@ -475,7 +479,6 @@ Public Sub FileView1_DblClick()
     'FileView1.Reload
     TextLabel4.Text = FileView1.Dir
     TextBox1.Text = FileView1.Current
-    Menu17.Enabled = False
     'FileView1.Reload    
     'If Menu33.Checked = True Then Desktop.Open(FileView1.Path)
     DirView1.Current = FileView1.Dir
@@ -568,8 +571,8 @@ Public Sub FileView1_GotFocus()
     TextBox1.Background = &HFFFFBF
     'iLR = 1
     FileView2.UnselectAll
-    Menu37.Enabled = False
     ZIEL = FileView2.Dir
+    Wait 1.5
     TextLabel1.Text = "Fokus LINKS - rechtes Feld Ziel: " & ZIEL
 End
 
@@ -580,8 +583,8 @@ Public Sub FileView2_GotFocus()
     TextBox2.Background = &HFFFFBF
     'iLR = 2
     FileView1.UnselectAll
-    Menu17.Enabled = False
     ZIEL = FileView1.Dir
+    Wait 1.5
     TextLabel1.Text = "Fokus RECHTS - linkes Feld Ziel: " & ZIEL
 End
 
@@ -613,7 +616,6 @@ Public Sub Button1_Click()
     FileView1.Current = ""
     TextBox1.Text = FileView1.Current
     TextLabel1.Text = "Home"
-    Menu17.Enabled = False
     
     QUELLE = ""
 End
@@ -626,7 +628,6 @@ Public Sub Button2_Click()
     FileView2.Current = ""
     TextBox2.Text = FileView2.Current
     TextLabel1.Text = "Home"
-    Menu37.Enabled = False
     
     QUELLE = ""
 End
@@ -715,9 +716,7 @@ End
 Public Sub Menu12_Click()
     '' alle Dateien auswählen >>> rechte Seite
     If FileView2.Dir = User.Home Then FileView2.UnselectAll
-    If FileView2.Dir = User.Home Then Menu37.Enabled = False
     If FileView2.Dir <> User.Home Then FileView2.SelectAll
-   ' If FileView2.Dir <> User.Home Then Menu37.Enabled = True
 End
 
 Public Sub Menu13_Click()
@@ -738,9 +737,7 @@ End
 Public Sub Menu18_Click()
   '' alle Dateien auswählen >>> linke Seite
   If FileView1.Dir = User.Home Then FileView1.UnselectAll
-  If FileView1.Dir = User.Home Then Menu17.Enabled = False
   If FileView1.Dir <> User.Home Then FileView1.SelectAll
-  'If FileView1.Dir <> User.Home Then Menu17.Enabled = True
 End
 
 Public Sub Menu16_Click()
@@ -778,36 +775,20 @@ Public Sub Menu16_Click()
 End
 
 Public Sub Menu17_Click()
-    '' Alle Dateien in den Papierkorb löschen >>> Linke Seite FileView1
-    Dim i As Integer
-    FileView1.Enabled = False
-    FileView2.Enabled = False
-    DirView1.Enabled = False
-    If FileView1.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
-    If FileView1.Selected = True Then
-        If FileView1.Dir <> User.Home Then
-            Print "Auswahl erlaubt, da nicht im Home-Ordner."
-            FileView1.SelectAll
-            For i = 0 To FileView1.Count - 1
-            Print i
-            Print FileView1.Selection[i]
-            QUELLPFAD = FileView1.Dir
-            QUELLDATEI = FileView1.Selection[i]
-            Print QUELLDATEI
-            Try Loeschen
-            If Error Then Message("Es ist ein Fehler aufgetreten!")
-            Wait 0.5
-        Next
-            FileView1.Reload
-            Menu17.Enabled = False
-            FileView1.Enabled = True
-            FileView2.Enabled = True
-            DirView1.Enabled = True
-            FileView1.SetFocus
-        Endif
-    Else
-        Menu17.Enabled = False 
-    Endif
+    'Datei als Favorit festlegen
+    If sLiebling3 > "" Then 
+        Select Message.Question("Favorit ist bereits vergeben. \nMöchten Sie die Taste 0 neu belegen? \n Wählen Sie Löschen und versuchen\nSie Ihre Auswahl noch einmal.", "Löschen", "Abbrechen")
+                Case 1
+                    sLiebling3 = ""
+                    Menu68.Text = "Liebling 0: "
+                    TextLabel1.Text = "Favoritendatei gelöscht."
+                Case 2
+                    Return 
+            End Select
+    Else 
+        sLiebling3 = FileView1.Path
+        Menu68.Text = "Liebling 0: " & sLiebling3
+    Endif 
 End
 
 Public Sub Menu8_Click()
@@ -1033,36 +1014,19 @@ Public Sub Menu36_Click()
 End
 
 Public Sub Menu37_Click()
-    '' Alle Dateien in den Papierkorb löschen >>> Rechte Seite FileView2
-    Dim i As Integer
-    FileView1.Enabled = False
-    FileView2.Enabled = False
-    DirView1.Enabled = False
-    If FileView2.Dir = User.Home Then Print "Fehler: Auswahl im Home-Ordner nicht erlaubt."
-    If FileView2.Selected = True Then
-        If FileView2.Dir <> User.Home Then
-        Print "Auswahl erlaubt, da nicht im Home-Ordner."
-            FileView2.SelectAll
-            For i = 0 To FileView2.Count - 1
-            Print i
-            Print FileView2.Selection[i]
-            QUELLPFAD = FileView2.Dir
-            QUELLDATEI = FileView2.Selection[i]
-            Print QUELLDATEI
-            Try Loeschen
-            Print "GELÖSCHT !!!"
-            If Error Then Message("Es ist ein Fehler aufgetreten!")
-            Wait 0.5
-        Next
-            FileView2.Reload
-            Menu37.Enabled = False
-            FileView1.Enabled = True
-            FileView2.Enabled = True
-            DirView1.Enabled = True
-            FileView2.SetFocus
-        Endif
+    'Datei als Favorit festlegen
+    If sLiebling3 > "" Then 
+        Select Message.Question("Favorit ist bereits vergeben. \nMöchten Sie die Taste 0 neu belegen? \n Wählen Sie Löschen und versuchen\nSie Ihre Auswahl noch einmal.", "Löschen", "Abbrechen")
+                Case 1
+                    sLiebling3 = ""
+                    Menu68.Text = "Liebling 0: "
+                    TextLabel1.Text = "Favoritendatei gelöscht."
+                Case 2
+                    Return 
+            End Select
     Else 
-        Menu37.Enabled = False
+        sLiebling3 = FileView1.Path
+        Menu68.Text = "Liebling 0: " & sLiebling3
     Endif 
 End
 
@@ -1091,8 +1055,7 @@ Public Sub Button8_Click()
     Endif
     If Zeile = "" Then FileView1.Dir = User.Home
     If Zeile = "" Then DirView1.Root = User.Home
-     
-    Menu17.Enabled = False
+
     TextLabel4.Text = FileView1.Dir
     FileView1.Current = ""
     TextBox1.Text = FileView1.Current
@@ -1124,8 +1087,7 @@ Public Sub Button9_Click()
         FileView2.Dir = Zeile
     Endif 
     If Zeile = "" Then FileView2.Dir = User.Home
-    
-    Menu37.Enabled = False
+
     TextLabel3.Text = FileView2.Dir
     FileView2.Current = ""
     TextBox2.Text = FileView2.Current
@@ -1632,4 +1594,10 @@ Public Sub Menu67_Click()
     Wait 2
     TextLabel1.Text = sInfo
     TextLabel1.Background = -1
+End
+
+Public Sub Menu68_Click()
+    'Lieblingsdatei öffnen
+    Desktop.UsePortal = False
+    Try Desktop.Open(sLiebling3)
 End
