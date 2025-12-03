@@ -571,8 +571,8 @@ Public Sub FileView1_GotFocus()
     TextBox1.Background = &HFFFFBF
     'iLR = 1
     FileView2.UnselectAll
-    ZIEL = FileView2.Dir
-    Wait 1.5
+    ZIEL = TextLabel3.Text 
+    Wait 1
     TextLabel1.Text = "Fokus LINKS - rechtes Feld Ziel: " & ZIEL
 End
 
@@ -583,8 +583,8 @@ Public Sub FileView2_GotFocus()
     TextBox2.Background = &HFFFFBF
     'iLR = 2
     FileView1.UnselectAll
-    ZIEL = FileView1.Dir
-    Wait 1.5
+    ZIEL = TextLabel4.Text
+    Wait 1
     TextLabel1.Text = "Fokus RECHTS - linkes Feld Ziel: " & ZIEL
 End
 
@@ -781,13 +781,14 @@ Public Sub Menu17_Click()
                 Case 1
                     sLiebling3 = ""
                     Menu68.Text = "Liebling 0: "
-                    TextLabel1.Text = "Favoritendatei gelöscht."
+                    TextLabel1.Text = "Favorit 0 gelöscht."
                 Case 2
                     Return 
             End Select
     Else 
         sLiebling3 = FileView1.Path
         Menu68.Text = "Liebling 0: " & sLiebling3
+        TextLabel1.Text = "Favorit 0 wurde angelegt."
     Endif 
 End
 
@@ -1020,13 +1021,14 @@ Public Sub Menu37_Click()
                 Case 1
                     sLiebling3 = ""
                     Menu68.Text = "Liebling 0: "
-                    TextLabel1.Text = "Favoritendatei gelöscht."
+                    TextLabel1.Text = "Favorit 0 gelöscht."
                 Case 2
                     Return 
             End Select
     Else 
-        sLiebling3 = FileView1.Path
+        sLiebling3 = FileView2.Path
         Menu68.Text = "Liebling 0: " & sLiebling3
+        TextLabel1.Text = "Favorit 0 wurde angelegt."
     Endif 
 End
 
@@ -1314,6 +1316,7 @@ Public Sub Menu49_Click()
     If Exist("/media/" & User.Name) Then 
         FileView2.Dir = "/media/" & User.Name
         FileView2.SetFocus
+        TextLabel3.Text = FileView2.Dir
         'If FileView2.HasFocus Then FileView2.Dir = "/media/" & User.Name Else FileView1.Dir = "/media/" & User.Name
         'If FileView1.Dir Begins "/media/" & User.Name Then DirView1.Root = FileView1.Dir Else DirView1.Current = User.Home
     Else 

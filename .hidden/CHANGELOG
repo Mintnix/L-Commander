@@ -1,3 +1,8 @@
+* Wed Dec 03 2025 Mintnix <pcspezialist@arcor.de> 0.1.7
+- kleinere Fehler beseitigt
+- Favorit 0 kann nun auch im rechten Feld korrekt angelegt werden.
+- Pfadanzeige bei Focuswechsel angepasst
+
 * Sat Nov 29 2025 Mintnix <pcspezialist@arcor.de> 0.1.6
 - neuer Favorit / Liebling hinzugefügt
 - Taste 0 für neuen Favorit, der auch eine Datei sein kann
