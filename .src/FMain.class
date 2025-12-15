@@ -32,6 +32,10 @@ Public sUSB3 As String
 Private pLED_ROT As Picture = Picture["led_rot.png"]
 Private pLED_GRAU As Picture = Picture["led_grau.png"]
 Private pLED_BLAU As Picture = Picture["led_blau.png"]
+Private pLED_GELB As Picture = Picture["led_gelb.png"]
+Private pLED_GRUEN As Picture = Picture["led_gruen.png"]
+Private pLED_XMAS As Picture = Picture["led_xmas.png"]
+
 
 
 Public Sub Form_Open()
@@ -116,8 +120,8 @@ Public Sub Form_Open()
 
     If sLine4 = -1 Then TextBox1.NoTabFocus = False
     If sLine4 = -1 Then TextBox2.NoTabFocus = False
-    If sLine6 = -1 Then FileView1.View = 1
-    If sLine6 = -1 Then FileView2.View = 1
+    If sLine6 = -1 Then FileView1.View = 2
+    If sLine6 = -1 Then FileView2.View = 2
     If sLine6 = -1 Then FileView1.IconSize = 28
     If sLine6 = -1 Then FileView2.IconSize = 28
     If sLine7 = -1 Then FMain.Maximized = True
@@ -379,26 +383,24 @@ Public Sub Kopieren()
         FileView2.Enabled = False
         FileView1.Enabled = False
         DirView1.Enabled = False
-        If FileView1.Selection.Count > 1 Then 
+        If FileView1.Selection.Count > 0 Then 
             For i = 0 To FileView1.Selection.Count - 1
                 Print i
                 Print FileView1.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView1.Selection[i]
-                Print QUELLE & " MEHRERE DATEN"
+                Print QUELLE & " KOPIERVORGANG"
                 If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
                 If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
-                If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
-                If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
                 If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
                 If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+                Wait 0.3
                 FileView2.Reload
-                Wait 0.1
             Next
                 'Print "neu geladen"
         Else 
             'Standardfunktion
-            Print QUELLE & " - EINZEL DATEI"
+            Print QUELLE & " - Kopie EINZEL DATEI"
             If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
             If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
             If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
@@ -414,24 +416,24 @@ Public Sub Kopieren()
         FileView1.Enabled = False
         FileView2.Enabled = False 
         DirView1.Enabled = False
-        If FileView2.Selection.Count > 1 Then 
+        If FileView2.Selection.Count > 0 Then 
             For i = 0 To FileView2.Selection.Count - 1
                 Print i
                 Print FileView2.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView2.Selection[i]
-                Print QUELLE & " MEHRERE DATEN"
+                Print QUELLE & " KOPIERVORGANG"
                 If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
                 If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
                 If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
-                TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-                If Error Then TextLabel1.Text = "Das funktioniert nicht."
+                If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
+                If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
+                Wait 0.3
                 FileView1.Reload
-                Wait 0.1
             Next
             
         Else 
             'Standardfunktion
-             Print QUELLE & " - EINZEL DATEI"
+             Print QUELLE & " - Kopie EINZEL DATEI"
              If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
              If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
              Print Process.LastValue
@@ -447,41 +449,59 @@ Public Sub Kopieren()
     DirView1.Reload
     InAction()
 End
-'' --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+'' -------------------------------------------------------------------------------------------------------------------------------------------------------
+Private Sub OpenCurrent()
+    ''die Funktion zum Öffnen von Ordnern und Dateien
+    Dim sPath As String
+    If iLR = 1 Then 
+        sPath = FileView1.Path
+        Print sPath & "   - FileView1 Pfad"
+        If sPath = "" Then Return 
+        If IsDir(sPath) = True Then FileView1.Dir = FileView1.Path Else Try Desktop.Open(sPath)
+        TextLabel4.Text = FileView1.Dir
+        TextBox1.Text = FileView1.Current
+        DirView1.Current = FileView1.Dir
+    Endif
+    If iLR = 2 Then 
+        sPath = FileView2.Path
+        Print sPath & "   - FileView2 Pfad" 
+        If sPath = "" Then Return 
+        If IsDir(sPath) = True Then FileView2.Dir = FileView2.Path Else Try Desktop.Open(sPath)
+        TextLabel3.Text = FileView2.Dir
+        TextBox2.Text = FileView2.Current
+    Endif
+    
+End
+
 
 '' Feldfunktionen hier machen -------------------------
 Public Sub FileView2_DblClick()
  '' was bei Doppelklick passiert
-    Dim sPfad As String
-    'lOrdner = FileView1.Dir
-    'Print FileView2.Path
-    Print "Doppelklick Feld rechts"
-    sPfad = FileView2.Path
-    Print IsDir(sPfad) 
-    If IsDir(sPfad) = True Then FileView2.Dir = FileView2.Path Else Try Desktop.Open(FileView2.Path)
-    'FileView2.Reload
-    TextLabel3.Text = FileView2.Dir
-    TextBox2.Text = FileView2.Current
+    OpenCurrent()
+    ' Dim sPfad As String
+    ' 
+     Print "Doppelklick Feld rechts"
+    ' sPfad = FileView2.Path
+    ' Print IsDir(sPfad) 
+    ' If IsDir(sPfad) = True Then FileView2.Dir = FileView2.Path Else Try Desktop.Open(FileView2.Path)
+    ' FileView2.Reload
+    ' TextLabel3.Text = FileView2.Dir
+    ' TextBox2.Text = FileView2.Current
 End
 
 Public Sub FileView1_DblClick()
     '' was bei Doppelklick passiert
-    Dim sPfad As String
-    'lOrdner = FileView1.Dir
-    'Print FileView1.Path
-    Print "Doppelklick Feld links"
-    sPfad = FileView1.Path
-    'If sPfad = "" Then FileView1.Dir = User.Home
-    'If sPfad = "" Then sPfad = User.Home
-    Print IsDir(sPfad) 
-    Print sPfad
-    If IsDir(sPfad) = True Then FileView1.Dir = FileView1.Path Else Try Desktop.Open(FileView1.Path)
-    'FileView1.Reload
-    TextLabel4.Text = FileView1.Dir
-    TextBox1.Text = FileView1.Current
-    'FileView1.Reload    
-    'If Menu33.Checked = True Then Desktop.Open(FileView1.Path)
-    DirView1.Current = FileView1.Dir
+    OpenCurrent()
+    ' Dim sPfad As String
+    ' 
+     Print "Doppelklick Feld links"
+    ' sPfad = FileView1.Path
+    ' Print IsDir(sPfad) 
+    ' Print sPfad
+    ' If IsDir(sPfad) = True Then FileView1.Dir = FileView1.Path Else Try Desktop.Open(FileView1.Path)
+    ' TextLabel4.Text = FileView1.Dir
+    ' TextBox1.Text = FileView1.Current
+    ' DirView1.Current = FileView1.Dir
 End
 
 Public Sub FileView1_Click()
@@ -495,7 +515,7 @@ Public Sub FileView1_Click()
     
     TextLabel4.Text = FileView1.Dir
     TextBox1.Text = FileView1.Current
-    FileView1.Refresh
+    'FileView1.Refresh
     Wait 
 
 End
@@ -511,7 +531,7 @@ Public Sub FileView2_Click()
     
     TextLabel3.Text = FileView2.Dir
     TextBox2.Text = FileView2.Current
-    FileView2.Refresh
+    'FileView2.Refresh
     Wait 
 End
 
@@ -520,6 +540,7 @@ Public Sub FileView1_LostFocus()
     FileView1.Background = iHindergrund
     FileView1.Foreground = iVordergrund
     TextBox1.Background = iHindergrund
+    Print FileView1.Dir & " - links"
 End
 
 Public Sub FileView2_LostFocus()
@@ -527,6 +548,7 @@ Public Sub FileView2_LostFocus()
     FileView2.Background = iHindergrund
     FileView2.Foreground = iVordergrund
     TextBox2.Background = iHindergrund
+    Print FileView2.Dir & " - rechts"
 End
 
 Public Sub FileView1_Select()
@@ -569,11 +591,14 @@ Public Sub FileView1_GotFocus()
     FileView1.Background = iStandardfarbe
     FileView1.Foreground = iVordergrund
     TextBox1.Background = &HFFFFBF
-    'iLR = 1
     FileView2.UnselectAll
-    ZIEL = TextLabel3.Text 
-    Wait 1
+    ZIEL = FileView2.Dir
+    QUELLE = ""
+    Wait
+    iLR = 1
     TextLabel1.Text = "Fokus LINKS - rechtes Feld Ziel: " & ZIEL
+    Print iLR
+    'FileView1.SetFocus
 End
 
 Public Sub FileView2_GotFocus()
@@ -581,11 +606,14 @@ Public Sub FileView2_GotFocus()
     FileView2.Background = iStandardfarbe
     FileView2.Foreground = iVordergrund
     TextBox2.Background = &HFFFFBF
-    'iLR = 2
     FileView1.UnselectAll
-    ZIEL = TextLabel4.Text
-    Wait 1
+    ZIEL = FileView1.Dir
+    QUELLE = ""
+    Wait 
+    iLR = 2
     TextLabel1.Text = "Fokus RECHTS - linkes Feld Ziel: " & ZIEL
+    Print iLR
+    'FileView2.SetFocus
 End
 
 
@@ -594,10 +622,18 @@ Public Sub LCDLabel2_Leave()
     'Datum wieder anzeigen
     LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
     Zeitfenster.Close
+    TextLabel1.Background = -1
+    TextLabel1.Foreground = -1
+    TextLabel1.Text = "Bereit für die Arbeit."
+    PictureBox2.Picture = pLED_GRAU
 End
 
 Public Sub LCDLabel2_Enter()
     'Uhrzeit zeigen beim Überfahren
+    TextLabel1.Background = &H000000
+    TextLabel1.Foreground = &H5FFF5F
+    TextLabel1.Text = "Fröhliche Weihnachten und einen guten Rutsch!"
+    PictureBox2.Picture = pLED_XMAS
     LCDLabel2.Text = Format(Time(Now), "hh:nn") & " Uhr"
     Zeitfenster.LCDLabel1.Background = iHindergrund
     Zeitfenster.ShowModal
@@ -642,11 +678,13 @@ Public Sub Button6_Click()
         sEditfile = FileView1.Current
         FileView1.SetFocus
         FileView1.Rename
-        TextLabel1.Foreground = 0
+        PictureBox2.Picture = pLED_GELB
         TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
-        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher mit der Maus auswählen, dann klappt auch das Umbenennen."
+        TextLabel1.Foreground = 0
+        
+        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher auswählen, dann klappt auch das Umbenennen."
         If sEditfile = "" Then TextLabel1.Foreground = 16711680
-        Wait 2
+        Wait 1
         TextLabel1.Foreground = iVordergrund
         TextLabel1.Refresh
     Endif
@@ -655,46 +693,58 @@ Public Sub Button6_Click()
         sEditfile = FileView2.Current
         FileView2.SetFocus
         FileView2.Rename
+        PictureBox2.Picture = pLED_GELB
         TextLabel1.Foreground = 0
         TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
-        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher mit der Maus auswählen, dann klappt auch das Umbenennen."
+        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher auswählen, dann klappt auch das Umbenennen."
         If sEditfile = "" Then TextLabel1.Foreground = 16711680
-        Wait 2
+        Wait 1
         TextLabel1.Foreground = iVordergrund
         TextLabel1.Refresh
     Endif 
     DirView1.Reload
+    PictureBox2.Picture = pLED_GRAU
 End
 
 Public Sub Button7_Click()
     'neuer Ordner erstellen - F7
-    If FileView1.HasFocus Then 
+    If iLR = 1 Then 
         If Not Exist(FileView1.Dir &/ "Neuer Ordner") Then
             Mkdir FileView1.Dir &/ "Neuer Ordner"
             TextLabel1.text = "Ordner wurde angelegt."
+            PictureBox2.Picture = pLED_ROT
             FileView1.Reload
             FileView2.Reload 
             FileView1.SetFocus
+            Wait 1
         Else 
-            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher mit der Maus auswählen."
-            FileView1.SetFocus
+            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher auswählen."
+            PictureBox2.Picture = pLED_GELB
+            FileView1.SetFocus 
             FileView1.Current = "Neuer Ordner"
+            Wait 1
         Endif 
     Endif 
-    If FileView2.HasFocus Then 
+    If iLR = 2 Then 
         If Not Exist(FileView2.Dir &/ "Neuer Ordner") Then
             Mkdir FileView2.Dir &/ "Neuer Ordner"
             TextLabel1.text = "Ordner wurde angelegt."
+            PictureBox2.Picture = pLED_ROT
             FileView2.Reload
             FileView1.Reload
             FileView2.SetFocus
+            Wait 1
         Else 
-            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher mit der Maus auswählen."
+            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher auswählen."
+            PictureBox2.Picture = pLED_GELB
             FileView2.SetFocus
             FileView2.Current = "Neuer Ordner"
+            Wait 1
         Endif 
     Endif 
+    ' If FileView1.HasFocus = False And FileView2.HasFocus = False Then Print "FEHLER !!!"
     DirView1.Reload
+    PictureBox2.Picture = pLED_GRAU
 End
 
 Public Sub Button5_Click()
@@ -807,27 +857,37 @@ Public Sub Menu22_Click()
     ' Kompakte Ansicht
     FileView1.View = 1
     FileView1.IconSize = 22
+    FileView1.Reload
+    FileView1.SetFocus
 End
 
 Public Sub Menu23_Click()
     'Detail Ansicht
     FileView1.View = 2
+    FileView1.Reload
+    FileView1.SetFocus
 End
 
 Public Sub Menu25_Click()
     'Normale Ansicht
     FileView2.View = 0
+    FileView2.Reload
+    FileView2.SetFocus
 End
 
 Public Sub Menu26_Click()
     'Kompakte Ansicht
     FileView2.View = 1
     FileView2.IconSize = 22
+    FileView2.Reload
+    FileView2.SetFocus
 End
 
 Public Sub Menu27_Click()
     'Detail Ansicht
     FileView2.View = 2
+    FileView2.Reload
+    FileView2.SetFocus
 End
 
 Public Sub Menu29_Click()
@@ -910,6 +970,8 @@ End
 Public Sub Menu21_Click()
     'normale Ansicht
     FileView1.View = 0
+    FileView1.Reload
+    FileView1.SetFocus
 End
 
 Public Sub Button3_Click()
@@ -930,34 +992,39 @@ Public Sub Button4_Click()
         FileView2.Enabled = False
         FileView1.Enabled = False
         DirView1.Enabled = False
-        If FileView1.Selection.Count > 1 Then 
+        If FileView1.Selection.Count > 0 Then 
             For i = 0 To FileView1.Selection.Count - 1
                 Print i
                 Print FileView1.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView1.Selection[i]
-                Print QUELLE & " MEHRERE DATEN"
+                Print QUELLE & " - Verschieben"
                 If Not Exist(ZIEL &/ FileView1.Selection[i]) Then 
                     Funktionen.Verschieben()
+                    Print "verschoben"
                     TextLabel1.Text = Funktionen.sInfotext
                     Wait 0.2
                     FileView2.Reload
                 Else 
                     TextLabel1.Text = "Die Datei " & FileView1.Selection[i] & " existiert schon und wird nicht verschoben."
+                    Print "ausgelassen, gibt es schon"
                     Wait 1
                 Endif
             Next
         Else 
             'Standardfunktion für einzelne Datei/Ordner
-            Print QUELLE & " - EINZEL DATEI"
+            Print QUELLE & " - Quelle leer?"
             Print ZIEL
             If Not Exist(ZIEL &/ FileView1.Current) Then 
                 Funktionen.Verschieben
+                Print "einzelne Datei verschoben"
                 TextLabel1.Text = Funktionen.sInfotext
                 FileView2.Reload
             Else
-                TextLabel1.Text = "Fehler, die Datei " & QUELLE & " existiert schon und wird nicht verschoben."
+                TextLabel1.Text = "Das hat nicht funktioniert."
+                Print "Einzeldatei nicht verschoben"
             Endif 
-            If QUELLE = "" Then TextLabel1.Text = "Das funktioniert nicht."
+            If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
+            Print "Fehler, Quelle leer!"
         Endif 
         FileView1.Reload
         FileView2.Enabled = True
@@ -970,19 +1037,21 @@ Public Sub Button4_Click()
         FileView1.Enabled = False
         FileView2.Enabled = False
         DirView1.Enabled = False
-        If FileView2.Selection.Count > 1 Then 
+        If FileView2.Selection.Count > 0 Then 
             For i = 0 To FileView2.Selection.Count - 1
                 Print i
                 Print FileView2.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView2.Selection[i]
-                Print QUELLE & " MEHRERE DATEN"
+                Print QUELLE & " - Verschieben"
                 If Not Exist(ZIEL &/ FileView2.Selection[i]) Then 
                     Funktionen.Verschieben()
+                    Print "verschoben"
                     TextLabel1.Text = Funktionen.sInfotext
                     Wait 0.2
                     FileView1.Reload
                 Else 
                     TextLabel1.Text = "Die Datei " & FileView2.Selection[i] & " existiert schon und wird nicht verschoben."
+                    Print "ausgelassen"
                     Wait 1
                 Endif
             Next
@@ -992,12 +1061,15 @@ Public Sub Button4_Click()
             Print ZIEL
             If Not Exist(ZIEL &/ FileView2.Current) Then 
                 Funktionen.Verschieben
+                Print "Datei verschoben"
                 TextLabel1.Text = Funktionen.sInfotext
                 FileView1.Reload
             Else
                 TextLabel1.Text = "Fehler, die Datei " & QUELLE & " existiert schon und wird nicht verschoben."
+                Print "Datei ausgelassen"
             Endif 
             If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
+            Print "Error, Quelle leer"
         Endif 
         FileView2.Reload
         FileView1.Enabled = True
@@ -1124,11 +1196,15 @@ End
 Public Sub Menu42_Click()
     'Vorschau Ansicht
     FileView1.View = 3
+    FileView1.Reload
+    FileView1.SetFocus
 End
 
 Public Sub Menu43_Click()
     'Vorschau Ansicht
     FileView2.View = 3
+    FileView2.Reload
+    FileView2.SetFocus
 End
 
 Public Sub Menu44_Click()
@@ -1150,10 +1226,12 @@ Public Sub Menu10_Click()
     TextLabel1.Background = &HFFFF00
     TextLabel1.Foreground = &H0000FF
     TextLabel1.Text = "L-Commander Version:  " & Application.Version & "  -   Besuchen Sie die Seite openyourlinux.de für Neuigkeiten."
+    PictureBox2.Picture = pLED_GRUEN
     Wait 2
     TextLabel1.Background = -1
     TextLabel1.Foreground = -1
     'TextLabel1.Font.Bold = False
+    PictureBox2.Picture = pLED_GRAU
     TextLabel1.Text = "Bereit für die Arbeit."
 End
 
@@ -1231,13 +1309,14 @@ End
 
 Public Sub FileView1_KeyPress()
     'Tastenabfrage im linken Feld
-    If Key.Code = Key.Return Then FileView1_DblClick()
+    'If Key.Code = Key.Return Then FileView1_DblClick()
+    'If Key.Code = Key.Space Then FileView1_DblClick()
     If Key.Code = Key.Esc Then Button8_Click()
 End
 
 Public Sub FileView2_KeyPress()
     'Tastenabfrage im rechten Feld
-    If Key.Code = Key.Return Then FileView2_DblClick()
+    'If Key.Code = Key.Return Then FileView2_DblClick()
     If Key.Code = Key.Esc Then Button9_Click()
 End
 
@@ -1450,6 +1529,7 @@ End
 
 Public Sub Form_KeyPress()
     'Versuch die Schriftgröße im Baum anzupassen
+   
     If Key.Code = Key["L"] And If Key.Control Then 
         sLiebling1 = ""
         Menu62.Text = "Liebling"
@@ -1589,7 +1669,8 @@ Public Sub Menu67_Click()
     'freien Speicher anzeigen
     Dim sInfo As String
     Dim sResult As String
-    
+
+    PictureBox2.Picture = pLED_GRUEN
     sInfo = TextLabel1.Text
     TextLabel1.Background = &H0000FF
     Shell "df -h " & FileView1.Dir & " | tail -1 | awk '{print $4}'" To sResult
@@ -1597,10 +1678,21 @@ Public Sub Menu67_Click()
     Wait 2
     TextLabel1.Text = sInfo
     TextLabel1.Background = -1
+    PictureBox2.Picture = pLED_GRAU
 End
 
 Public Sub Menu68_Click()
     'Lieblingsdatei öffnen
     Desktop.UsePortal = False
     Try Desktop.Open(sLiebling3)
+End
+
+Public Sub FileView1_KeyRelease()
+    'Tastenfunktionen auch bei Detailliste des FileView
+    If Key.Code = Key.Return Or Key.Code = Key.Space Then OpenCurrent()
+End
+
+Public Sub FileView2_KeyRelease()
+    'Tastenfunktionen auch bei Detailliste des FileView
+    If Key.Code = Key.Return Or Key.Code = Key.Space Then OpenCurrent()
 End

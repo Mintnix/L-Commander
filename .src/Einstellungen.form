@@ -34,7 +34,8 @@
     { !CheckBox3 CheckBox
       MoveScaled(3,16,92,5)
       #Public = True
-      Text = ("LISTEN - Dateianzeige standardmäßig als Liste anzeigen. ")
+      ToolTip = ("VORSCHAU hat Vorrang.")
+      Text = ("LISTEN - Dateianzeige standardmäßig als detaillierte Liste anzeigen. ")
     }
     { !CheckBox4 CheckBox
       MoveScaled(3,22,92,5)

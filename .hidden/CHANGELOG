@@ -1,3 +1,19 @@
+* Mon Dec 15 2025 Mintnix <pcspezialist@arcor.de> 0.1.8
+- Doppelklickfunktion nochmal angepasst
+
+* Mon Dec 15 2025 Mintnix <pcspezialist@arcor.de> 0.1.8
+- Bugfix: Bei Ansichtwechsel ein SetFocus zugefügt, damit die Navigation funktioniert.
+
+* Mon Dec 15 2025 Mintnix <pcspezialist@arcor.de> 0.1.8
+- Änderung der Funktion für Doppelklick, da diese in der Detailansicht nicht so funktioniert wie erwartet. Es erfolgt die Tastenabfrage nun über Key.Release Event des FileView.
+- die Space-Taste kann aktuell auch für Return genutzt werden
+
+* Sun Dec 14 2025 Mintnix <pcspezialist@arcor.de> 0.1.8
+- Weihnachtsupdate
+- kleinere Fehlerkorrekturen
+- mehr LED Farben
+- Listeneinstellung auf Detailliste gesetzt (Vorschau hat aber Vorrang)
+
 * Wed Dec 03 2025 Mintnix <pcspezialist@arcor.de> 0.1.7
 - kleinere Fehler beseitigt
 - Favorit 0 kann nun auch im rechten Feld korrekt angelegt werden.
