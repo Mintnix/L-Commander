@@ -1,0 +1,74 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,65,34)
+  Background = Color.SoftCyan
+  { Frame1 Frame
+    MoveScaled(2,3,19,19)
+    Text = ("Besitzer")
+    { chkUW CheckBox
+      MoveScaled(2,8,16,4)
+      Text = ("Schreiben")
+    }
+    { chkUX CheckBox
+      MoveScaled(2,13,16,4)
+      Text = ("Ausführen")
+    }
+    { chkUR CheckBox
+      MoveScaled(2,3,16,4)
+      Text = ("Lesen")
+    }
+  }
+  { Button1 Button
+    MoveScaled(44,28,19,4)
+    Foreground = Color.Red
+    Text = ("Speichern")
+  }
+  { uName TextBox
+    MoveScaled(2,28,19,4)
+    ToolTip = ("Besitzername")
+    ReadOnly = True
+  }
+  { dPfad TextBox
+    MoveScaled(2,23,61,4)
+    ToolTip = ("Ausgewählter Pfad oder Datei dessen Rechte bearbeitet werden.")
+    ReadOnly = True
+  }
+  { gName TextBox
+    MoveScaled(23,28,19,4)
+    ToolTip = ("Gruppenname")
+    ReadOnly = True
+  }
+  { Frame2 Frame
+    MoveScaled(23,3,19,19)
+    Text = ("Gruppe")
+    { chkGR CheckBox
+      MoveScaled(2,3,16,4)
+      Text = ("Lesen")
+    }
+    { chkGW CheckBox
+      MoveScaled(2,8,16,4)
+      Text = ("Schreiben")
+    }
+    { chkGX CheckBox
+      MoveScaled(2,13,16,4)
+      Text = ("Ausführen")
+    }
+  }
+  { Frame3 Frame
+    MoveScaled(44,3,19,19)
+    Text = ("Andere")
+    { chkOR CheckBox
+      MoveScaled(2,3,16,4)
+      Text = ("Lesen")
+    }
+    { chkOW CheckBox
+      MoveScaled(2,8,16,4)
+      Text = ("Schreiben")
+    }
+    { chkOX CheckBox
+      MoveScaled(2,13,16,4)
+      Text = ("Ausführen")
+    }
+  }
+}

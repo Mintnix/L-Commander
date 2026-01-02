@@ -34,8 +34,9 @@ Private pLED_GRAU As Picture = Picture["led_grau.png"]
 Private pLED_BLAU As Picture = Picture["led_blau.png"]
 Private pLED_GELB As Picture = Picture["led_gelb.png"]
 Private pLED_GRUEN As Picture = Picture["led_gruen.png"]
-Private pLED_XMAS As Picture = Picture["led_xmas.png"]
-
+'Private pLED_XMAS As Picture = Picture["led_xmas.png"]
+Private pLED_NY As Picture = Picture["led_newyear.png"]
+Public sRechte As String
 
 
 Public Sub Form_Open()
@@ -368,7 +369,7 @@ Public Sub move_totrash()
     Endif 
 End
 ''#############################################################################################################################
-''-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+''-----------------------------------------------------------------------------------------------------------------------------------------
 Public Sub Kopieren()
     ''Kopierfunktion mit den Testroutinen
     ' Alle Dateien kopieren
@@ -388,28 +389,19 @@ Public Sub Kopieren()
                 Print i
                 Print FileView1.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView1.Selection[i]
-                Print QUELLE & " KOPIERVORGANG"
-                If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
+                Print " KOPIERVORGANG von links nach rechts"
+                If QUELLE = ZIEL Then Print "Fehler, kann nicht auf sich selbst kopieren."
                 If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
                 If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
                 If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
                 If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 Wait 0.3
-                FileView2.Reload
             Next
-                'Print "neu geladen"
-        Else 
-            'Standardfunktion
-            Print QUELLE & " - Kopie EINZEL DATEI"
-            If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-            If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
-            If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
-            If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-            FileView2.Reload
         Endif 
         DirView1.Enabled = True
         FileView2.Enabled = True
         FileView1.Enabled = True
+        FileView2.Reload
         FileView1.SetFocus
     Endif 
     If iLR = 2 Then
@@ -421,29 +413,19 @@ Public Sub Kopieren()
                 Print i
                 Print FileView2.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView2.Selection[i]
-                Print QUELLE & " KOPIERVORGANG"
+                Print " KOPIERVORGANG von rechts nach links"
                 If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
                 If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
                 If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
                 If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
                 If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
                 Wait 0.3
-                FileView1.Reload
             Next
-            
-        Else 
-            'Standardfunktion
-             Print QUELLE & " - Kopie EINZEL DATEI"
-             If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-             If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait Else Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
-             Print Process.LastValue
-             If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
-             If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-             FileView1.Reload
         Endif 
         DirView1.Enabled = True
         FileView1.Enabled = True
         FileView2.Enabled = True 
+        FileView1.Reload
         FileView2.SetFocus
     Endif 
     DirView1.Reload
@@ -470,8 +452,121 @@ Private Sub OpenCurrent()
         TextLabel3.Text = FileView2.Dir
         TextBox2.Text = FileView2.Current
     Endif
-    
 End
+
+
+Public Sub ShowSizeFromKey(fv As FileView)
+    'Anzeige der Datei / Ordner -Größen im Textfeld 
+  Dim list As String[]
+  Dim s As String
+  Dim full As String
+  Dim total As Long
+  Dim files As Integer
+  Dim dirs As Integer
+  Dim st As Stat
+  
+  total = 0
+  files = 0
+  dirs = 0
+    
+    Print " START "
+  ' Print " Path = "; fv.Path
+  ' Print "Selection.Count = "; fv.Selection.Count
+  ' Print "Current = "; fv.Current
+
+    If fv.Selection.Count > 0 Then
+        list = fv.Selection
+'        Print "Selection"
+    Else If fv.Current <> "" Then 
+        list = [fv.Current]
+'        Print "Current"
+    Else 
+        Print "NICHTS AUSGEWÄHLT"
+        Return 
+    Endif 
+    
+     For Each s In list
+        
+        full = fv.Dir &/ s
+        Print "SELECTED: "; full
+        
+        Try st = Stat(full)
+        If Error Then
+            Print "  -> Stat ERROR"
+            Continue 
+        Endif 
+        
+        'Print "  > Type = "; st.Type; " Size = "; st.Size
+        
+        If st.Type = gb.Directory Then 
+            'total += DirSize(full)
+            dirs += 1
+            total += DirSize(full)
+        Else 
+            files += 1
+            total += st.Size
+        Endif
+    Next
+    Print "Files = "; files
+    Print "Dirs = "; dirs
+    Print "Bytes = "; total
+    Print " END "
+    
+    TextLabel1.Text = dirs & " Ordner / " & files & " Dateien - " & FormatSize(total)
+    PictureBox2.Picture = pLED_GRAU
+End
+
+Public Function FormatSize(bytes As Long) As String
+    'Dateigrößen formatieren
+    Dim size As Float
+    Dim units As String[] = ["B", "KB", "MB", "GB", "TB"]
+    Dim u As Integer
+    
+    size = bytes 'wichtig
+    
+    While size >= 1024 And u < units.Count - 1
+        size /= 1024
+        Inc u
+    Wend
+
+    Return Format(size, "0.##") & " " & units[u]
+End
+
+Public Function DirSize(path As String) As Long
+    'Rekursive Ordnergröße 
+    Dim s As String
+    Dim full As String
+    Dim st As Stat
+    Dim total As Long
+    
+    total = 0
+    ' Print "SCAN: ", path
+    ' Print "Type of total:  ", TypeOf(total)
+    For Each s In Dir(path)
+        
+        If s = "." Or s = ".." Then Continue 
+        
+        full = path &/ s
+        'Print full & " full"
+        'Print path & " path"
+        'Print s & " s"
+        
+        Try st = Stat(full)
+        'Print st
+        If Error Then Continue 
+        
+        If st.Type = gb.Directory Then 
+            total += DirSize(full)
+            'Print total & " DirSize", TypeOf(total)
+        Else 
+            total += st.Size
+            'Print total & " ST Size", TypeOf(total)
+        Endif
+    Next
+    Print "TOTAL FOR ", path, " = ", total
+    Return total
+End
+
 
 
 '' Feldfunktionen hier machen -------------------------
@@ -632,8 +727,8 @@ Public Sub LCDLabel2_Enter()
     'Uhrzeit zeigen beim Überfahren
     TextLabel1.Background = &H000000
     TextLabel1.Foreground = &H5FFF5F
-    TextLabel1.Text = "Fröhliche Weihnachten und einen guten Rutsch!"
-    PictureBox2.Picture = pLED_XMAS
+    TextLabel1.Text = "Gesundes neues Jahr 2026!"
+    PictureBox2.Picture = pLED_NY
     LCDLabel2.Text = Format(Time(Now), "hh:nn") & " Uhr"
     Zeitfenster.LCDLabel1.Background = iHindergrund
     Zeitfenster.ShowModal
@@ -957,14 +1052,20 @@ Public Sub Menu20_Click()
     'Icons vergrößern
     FileView1.IconSize = FileView1.IconSize * 2 
     FileView2.IconSize = FileView2.IconSize * 2
+    If FileView1.View = 2 Then FileView1.Font.Grade += 1 
+    If FileView2.View = 2 Then FileView2.Font.Grade += 1 
     Print FileView1.IconSize 
+    Menu14_Click
 End
 
 Public Sub Menu24_Click()
     'Icons verkleinern
     FileView1.IconSize = FileView1.IconSize / 2 
     FileView2.IconSize = FileView2.IconSize / 2
+    If FileView1.View = 2 Then FileView1.Font.Grade -= 1 
+    If FileView2.View = 2 Then FileView2.Font.Grade -= 1 
     Print FileView1.IconSize 
+    Menu14_Click
 End
 
 Public Sub Menu21_Click()
@@ -996,37 +1097,26 @@ Public Sub Button4_Click()
             For i = 0 To FileView1.Selection.Count - 1
                 Print i
                 Print FileView1.Selection[i]
-                QUELLE = QUELLPFAD &/ FileView1.Selection[i]
+                QUELLE = FileView1.Dir &/ FileView1.Selection[i]
                 Print QUELLE & " - Verschieben"
-                If Not Exist(ZIEL &/ FileView1.Selection[i]) Then 
-                    Funktionen.Verschieben()
-                    Print "verschoben"
-                    TextLabel1.Text = Funktionen.sInfotext
-                    Wait 0.2
-                    FileView2.Reload
-                Else 
+                If Exist(FileView2.Dir &/ FileView1.Selection[i]) Then 
                     TextLabel1.Text = "Die Datei " & FileView1.Selection[i] & " existiert schon und wird nicht verschoben."
-                    Print "ausgelassen, gibt es schon"
+                    Print FileView1.Selection[i] & "  ausgelassen, gibt es schon"
                     Wait 1
                 Endif
+                If Not Exist(FileView2.Dir &/ FileView1.Selection[i]) Then 
+                    Try Shell "mv " & Shell(QUELLE) & " " & Shell(FileView2.Dir) Wait 
+                    If Error Or If Process.LastValue <> 0 Then Print "Der Befehl move gab einen Fehler zurück." Else TextLabel1.Text = 
+                    FileView1.Selection[i] & " >=> wurde verschoben."
+                    'Funktionen.Verschieben()
+                    Print QUELLE & "  wurde verschoben"
+                    'TextLabel1.Text = Funktionen.sInfotext
+                    Wait 0.5
+                Endif 
             Next
-        Else 
-            'Standardfunktion für einzelne Datei/Ordner
-            Print QUELLE & " - Quelle leer?"
-            Print ZIEL
-            If Not Exist(ZIEL &/ FileView1.Current) Then 
-                Funktionen.Verschieben
-                Print "einzelne Datei verschoben"
-                TextLabel1.Text = Funktionen.sInfotext
-                FileView2.Reload
-            Else
-                TextLabel1.Text = "Das hat nicht funktioniert."
-                Print "Einzeldatei nicht verschoben"
-            Endif 
-            If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
-            Print "Fehler, Quelle leer!"
         Endif 
         FileView1.Reload
+        FileView2.Reload
         FileView2.Enabled = True
         FileView1.Enabled = True
         DirView1.Enabled = True
@@ -1041,37 +1131,25 @@ Public Sub Button4_Click()
             For i = 0 To FileView2.Selection.Count - 1
                 Print i
                 Print FileView2.Selection[i]
-                QUELLE = QUELLPFAD &/ FileView2.Selection[i]
+                QUELLE = FileView2.Dir &/ FileView2.Selection[i]
                 Print QUELLE & " - Verschieben"
-                If Not Exist(ZIEL &/ FileView2.Selection[i]) Then 
-                    Funktionen.Verschieben()
-                    Print "verschoben"
-                    TextLabel1.Text = Funktionen.sInfotext
-                    Wait 0.2
-                    FileView1.Reload
-                Else 
+                If Exist(FileView1.Dir &/ FileView2.Selection[i]) Then 
                     TextLabel1.Text = "Die Datei " & FileView2.Selection[i] & " existiert schon und wird nicht verschoben."
-                    Print "ausgelassen"
+                    Print FileView2.Selection[i] & "  ausgelassen, gibt es schon"
                     Wait 1
                 Endif
+                If Not Exist(FileView1.Dir &/ FileView2.Selection[i]) Then 
+                    Try Shell "mv " & Shell(QUELLE) & " " & Shell(FileView1.Dir) Wait 
+                    If Error Or If Process.LastValue <> 0 Then Print "Der Befehl move gab einen Fehler zurück." Else TextLabel1.Text = 
+                    FileView2.Selection[i] & " >=> wurde verschoben."
+                    'Funktionen.Verschieben()
+                    Print QUELLE & "  wurde verschoben"
+                    Wait 0.5
+                Endif
             Next
-        Else 
-            'Standardfunktion für einzelne Datei/Ordner
-            Print QUELLE & " - EINZEL DATEI"
-            Print ZIEL
-            If Not Exist(ZIEL &/ FileView2.Current) Then 
-                Funktionen.Verschieben
-                Print "Datei verschoben"
-                TextLabel1.Text = Funktionen.sInfotext
-                FileView1.Reload
-            Else
-                TextLabel1.Text = "Fehler, die Datei " & QUELLE & " existiert schon und wird nicht verschoben."
-                Print "Datei ausgelassen"
-            Endif 
-            If QUELLE = "" Then TextLabel1.Text = "Nix ausgewählt - das funktioniert nicht."
-            Print "Error, Quelle leer"
         Endif 
         FileView2.Reload
+        FileView1.Reload
         FileView1.Enabled = True
         FileView2.Enabled = True
         DirView1.Enabled = True
@@ -1216,7 +1294,7 @@ End
 
 Public Sub Menu9_Click()
     'eigentliche Hilfefunktion
-    Hilfe.ShowModal
+    Hilfe.ShowModal()
 End
 
 Public Sub Menu10_Click()
@@ -1529,13 +1607,12 @@ End
 
 Public Sub Form_KeyPress()
     'Versuch die Schriftgröße im Baum anzupassen
-   
     If Key.Code = Key["L"] And If Key.Control Then 
         sLiebling1 = ""
         Menu62.Text = "Liebling"
         sLiebling2 = ""
         Menu63.Text = "Liebling"
-        TextLabel1.Text = "Alle Liebling- bzw. Favorit- Belegungen entfernt."
+        TextLabel1.Text = "Liebling- bzw. Favorit- Belegungen, Nummer 1 und 2, entfernt. Vergessen Sie nicht unter Einstellungen abzuspeichern."
     Endif
     If Key.Code = Key["+"] And If Key.Control Then DirView1.Font.Grade += 1
     If Key.Code = Key["-"] And If Key.Control Then DirView1.Font.Grade -= 1
@@ -1690,9 +1767,38 @@ End
 Public Sub FileView1_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
     If Key.Code = Key.Return Or Key.Code = Key.Space Then OpenCurrent()
+    If Key.Code = Key["#"] Or If Key.Code = Key["m"] Then 
+        PictureBox2.Picture = pLED_GELB 
+        Wait 
+        ShowSizeFromKey(FileView1)  
+    Endif
+    
 End
 
 Public Sub FileView2_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
     If Key.Code = Key.Return Or Key.Code = Key.Space Then OpenCurrent()
+    If Key.Code = Key["m"] Or If Key.Code = Key["#"] Then 
+        PictureBox2.Picture = pLED_GELB
+        Wait 
+        ShowSizeFromKey(FileView2)
+    Endif 
+End
+
+Public Sub Menu69_Click()
+    'Rechte Dialog öffnen linke Seite
+    If FileView1.Selection.Count = 0 Then Return 
+    sRechte = FileView1.Path
+    Rechte.LoadPermission(sRechte)
+    Rechte.ShowModal()
+    Menu14_Click()
+End
+
+Public Sub Menu70_Click()
+    'Rechte Dialog öffnen rechte Seite
+    If FileView2.Selection.Count = 0 Then Return 
+    sRechte = FileView2.Path
+    Rechte.LoadPermission(sRechte)
+    Rechte.ShowModal()
+    Menu14_Click()
 End

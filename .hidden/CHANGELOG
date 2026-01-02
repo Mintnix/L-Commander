@@ -1,3 +1,19 @@
+* Fri Jan 02 2026 Mintnix <pcspezialist@arcor.de> 0.1.9
+- Bug im Kopiervorgang behoben
+- Kopierfunktion angepasst
+
+* Thu Jan 01 2026 Mintnix <pcspezialist@arcor.de> 0.1.9
+- Taste M und # für Gesamtgröße festgelegt, da das Verhalten in anderer Ansicht als "Detailliste" vom FileView beeinflusst wird.
+- LED Gelb bei Größenberechnung signalisiert die laufende Berechnung
+
+* Wed Dec 31 2025 Mintnix <pcspezialist@arcor.de> 0.1.9
+- Taste M für Anzeige zur Gesamtgröße der ausgewählten Dateien und Ordner hinzugefügt
+- Hilfefenster angepasst
+
+* Sun Dec 21 2025 Mintnix <pcspezialist@arcor.de> 0.1.9
+- Verschiebefunktion berichtigt
+- Rechte-Dialog eingefügt, über Kontextmenü aufrufbar
+
 * Mon Dec 15 2025 Mintnix <pcspezialist@arcor.de> 0.1.8
 - Doppelklickfunktion nochmal angepasst
 

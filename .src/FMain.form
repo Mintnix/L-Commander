@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,171.4286,100)
+  MoveScaled(0,0,171.375,100)
   Background = &HDFFFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
@@ -45,6 +45,10 @@
     { Menu17 Menu
       Text = ("Datei als Favorit festlegen")
       Picture = Picture["icon:/medium/card-heart"]
+    }
+    { Menu69 Menu
+      Text = ("Rechte anpassen")
+      Picture = Picture["icon:/medium/user-group"]
     }
     { Menu48 Menu
       Text = ("Schrift installieren")
@@ -311,6 +315,10 @@
     { Menu37 Menu
       Text = ("Datei als Favorit festlegen")
       Picture = Picture["icon:/medium/card-heart"]
+    }
+    { Menu70 Menu
+      Text = ("Rechte anpassen")
+      Picture = Picture["icon:/medium/user-group"]
     }
   }
   { !Splitter3 Splitter

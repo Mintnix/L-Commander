@@ -1,0 +1,83 @@
+' Gambas class file
+
+
+
+Public Sub LoadPermission(sPath As String)
+    
+  Dim mode As String
+  mode = Stat(sPath).Auth
+  uName.Text = Stat(sPath).User
+  gName.Text = Stat(sPath).Group
+  dPfad.Text = Stat(sPath).Path
+  'Besitzer
+  chkUR.Value = Mid$(mode, 1, 1) = "r"
+  chkUW.Value = Mid$(mode, 2, 1) = "w"
+  chkUX.Value = Mid$(mode, 3, 1) = "x"
+  'Gruppe
+  chkGR.Value = Mid$(mode, 4, 1) = "r"
+  chkGW.Value = Mid$(mode, 5, 1) = "w"
+  chkGX.Value = Mid$(mode, 6, 1) = "x"
+   'Andere
+  chkOR.Value = Mid$(mode, 7, 1) = "r"
+  chkOW.Value = Mid$(mode, 8, 1) = "w"
+  chkOX.Value = Mid$(mode, 9, 1) = "x"
+  
+  Print mode
+    
+End 
+
+Public Function Perm(r As CheckBox, w As CheckBox, x As CheckBox) As String
+
+    Dim s As String
+    
+    If r.Value Then s = "r" Else s = "-"
+    If w.Value Then s &= "w" Else s &= "-"
+    If x.Value Then s &= "x" Else s &= "-"
+    
+    Return s
+    
+    Print s & " Permfunktion"
+End
+
+Public Function BuildModeString() As String
+   
+    Dim s As String
+    
+    s = Perm(chkUR, chkUW, chkUX) & Perm(chkGR, chkGW, chkGX) & Perm(chkOR, chkOW, chkOX)
+    Print s & " das ist der BuildModeString"
+    Return s
+    Wait 
+    Print BuildModeString
+End
+
+Public Sub ApplyPermissions()
+    
+    Dim s As String
+    Dim mode As String
+  
+    mode = BuildModeString()
+    Wait 
+  
+    s = FMain.sRechte
+        Print s & " permis anwenden"
+        Print mode
+        Try Chmod s To mode
+        If Error Then Message.Warning("Keine Berechstigung für: " & gb.NewLine & s)
+    'Next 
+End
+
+
+Public Sub Button1_Click()
+    'Rechte abspeichern
+    Dim mode As String
+    
+    mode = BuildModeString()
+    ApplyPermissions()
+    Wait 
+    Me.Close
+End
+
+Public Sub Form_KeyRelease()
+    'ESC schließt Dialog / Abbruch
+    If Key.Esc Then Me.Close
+End

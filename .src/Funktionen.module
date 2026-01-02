@@ -49,12 +49,12 @@ Public Sub Einpacken()
 
 End
 
-Public Sub Verschieben()
-    ''Verschieben Funktion
-    Try Shell "mv " & Shell(FMain.QUELLE) & " " & Shell(FMain.ZIEL) Wait 
-    If Error Or If Process.LastValue <> 0 Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
-    ' Die überarbeitete Funktion statt Quote Shell zu nutzen.
-End
+' Public Sub Verschieben()
+'     ''Verschieben Funktion
+'     Try Shell "mv " & Shell(FMain.QUELLE) & " " & Shell(FMain.ZIEL) Wait 
+'     If Error Or If Process.LastValue <> 0 Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
+'     ' Die überarbeitete Funktion statt Quote Shell zu nutzen.
+' End
 
 Public Sub Baum()
     'Baum anzeigen
