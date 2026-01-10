@@ -140,7 +140,6 @@ Public Sub Form_Open()
         Menu34.Checked = True
         Menu33.Visible = False
         Menu45.Visible = False
-        'Menu19.Visible = False
         Button10.Enabled = False
     Endif 
 
@@ -152,7 +151,9 @@ Public Sub Form_Open()
     If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
     If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
-
+    If FMain.Maximized = True Then FileView1.Font.Grade = 3 Else FileView1.Font.Grade = 2
+    If FMain.Maximized = True Then FileView2.Font.Grade = 3 Else FileView2.Font.Grade = 2
+    
     LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
     If FMain.iHindergrund = &H000000 Then
         LCDLabel2.Foreground = iVordergrund
@@ -170,6 +171,8 @@ Public Sub Form_Open()
     Print "Root-Gerät: "; sResultRoot
     'Timer1.Enabled = True
     PictureBox2.Picture = pLED_GRAU
+    Print "Fontgrade = ", FileView1.Font.Grade
+    Menu14_Click()
 End
 
 Public Sub Menu5_Click()
@@ -187,10 +190,8 @@ Public Sub Timer1_Timer()
   Static lastWrite As Long
 
   ' Eintrag aus /proc/diskstats holen
-  'Print sResultRoot
-  Shell "grep ' " & sResultRoot & " ' /proc/diskstats" To res
+   Shell "grep ' " & sResultRoot & " ' /proc/diskstats" To res
     res = Trim(res)
-    'Print res
   If res = "" Then
     Message("ROOT - Gerät nicht gefunden!")
     Return
@@ -198,7 +199,6 @@ Public Sub Timer1_Timer()
 
   ' Split mit True, damit keine leeren Felder entstehen
   parts = Split(res, " ", "\n", True)
-  'Print res
 
   ' Sicherheit: Prüfen, ob genug Felder vorhanden sind
   If parts.Count < 10 Then
@@ -252,9 +252,9 @@ Public Sub InAction()
         Label1.Text = "Bitte warten! Dies kann eine Weile dauern, auch wenn sich die Anzeige scheinbar nicht bewegt."
         Label1.Foreground = &HFF003F
         'PictureBox2.Picture = pLED_ROT
-        Wait 1
+        Wait 0.5
     Else 
-        Wait 1
+        Wait 0.8
         Timer1.Stop
         PictureBox2.Picture = pLED_GRAU
         Label1.Foreground = &H808080
@@ -355,8 +355,6 @@ End
 
 Public Sub move_totrash()
     'Ab in den Papierkorb verschieben
-    'Dim iZahl As Integer = 1
-    
     If sTDatei = "" Then 
         TextLabel1.Text = "Keine Datei ausgewählt."
     Else If Exist(Trash_Files &/ sTDatei) Then
@@ -464,40 +462,29 @@ Public Sub ShowSizeFromKey(fv As FileView)
   Dim files As Integer
   Dim dirs As Integer
   Dim st As Stat
-  
+
   total = 0
   files = 0
   dirs = 0
-    
-    Print " START "
-  ' Print " Path = "; fv.Path
-  ' Print "Selection.Count = "; fv.Selection.Count
-  ' Print "Current = "; fv.Current
 
+    Print " START "
     If fv.Selection.Count > 0 Then
         list = fv.Selection
-'        Print "Selection"
     Else If fv.Current <> "" Then 
         list = [fv.Current]
-'        Print "Current"
     Else 
         Print "NICHTS AUSGEWÄHLT"
         Return 
     Endif 
     
-     For Each s In list
-        
+    For Each s In list
         full = fv.Dir &/ s
         Print "SELECTED: "; full
-        
         Try st = Stat(full)
         If Error Then
             Print "  -> Stat ERROR"
             Continue 
         Endif 
-        
-        'Print "  > Type = "; st.Type; " Size = "; st.Size
-        
         If st.Type = gb.Directory Then 
             'total += DirSize(full)
             dirs += 1
@@ -507,11 +494,11 @@ Public Sub ShowSizeFromKey(fv As FileView)
             total += st.Size
         Endif
     Next
+
     Print "Files = "; files
     Print "Dirs = "; dirs
     Print "Bytes = "; total
     Print " END "
-    
     TextLabel1.Text = dirs & " Ordner / " & files & " Dateien - " & FormatSize(total)
     PictureBox2.Picture = pLED_GRAU
 End
@@ -528,7 +515,6 @@ Public Function FormatSize(bytes As Long) As String
         size /= 1024
         Inc u
     Wend
-
     Return Format(size, "0.##") & " " & units[u]
 End
 
@@ -540,27 +526,16 @@ Public Function DirSize(path As String) As Long
     Dim total As Long
     
     total = 0
-    ' Print "SCAN: ", path
-    ' Print "Type of total:  ", TypeOf(total)
+
     For Each s In Dir(path)
-        
         If s = "." Or s = ".." Then Continue 
-        
         full = path &/ s
-        'Print full & " full"
-        'Print path & " path"
-        'Print s & " s"
-        
         Try st = Stat(full)
-        'Print st
         If Error Then Continue 
-        
         If st.Type = gb.Directory Then 
             total += DirSize(full)
-            'Print total & " DirSize", TypeOf(total)
         Else 
             total += st.Size
-            'Print total & " ST Size", TypeOf(total)
         Endif
     Next
     Print "TOTAL FOR ", path, " = ", total
@@ -568,35 +543,17 @@ Public Function DirSize(path As String) As Long
 End
 
 
-
 '' Feldfunktionen hier machen -------------------------
 Public Sub FileView2_DblClick()
- '' was bei Doppelklick passiert
+    'Doppelklick oder Enter rechts
     OpenCurrent()
-    ' Dim sPfad As String
-    ' 
-     Print "Doppelklick Feld rechts"
-    ' sPfad = FileView2.Path
-    ' Print IsDir(sPfad) 
-    ' If IsDir(sPfad) = True Then FileView2.Dir = FileView2.Path Else Try Desktop.Open(FileView2.Path)
-    ' FileView2.Reload
-    ' TextLabel3.Text = FileView2.Dir
-    ' TextBox2.Text = FileView2.Current
+    Print "Doppelklick Feld rechts"
 End
 
 Public Sub FileView1_DblClick()
-    '' was bei Doppelklick passiert
+    'Doppelklick oder Enter links
     OpenCurrent()
-    ' Dim sPfad As String
-    ' 
-     Print "Doppelklick Feld links"
-    ' sPfad = FileView1.Path
-    ' Print IsDir(sPfad) 
-    ' Print sPfad
-    ' If IsDir(sPfad) = True Then FileView1.Dir = FileView1.Path Else Try Desktop.Open(FileView1.Path)
-    ' TextLabel4.Text = FileView1.Dir
-    ' TextBox1.Text = FileView1.Current
-    ' DirView1.Current = FileView1.Dir
+    Print "Doppelklick Feld links"
 End
 
 Public Sub FileView1_Click()
@@ -610,9 +567,7 @@ Public Sub FileView1_Click()
     
     TextLabel4.Text = FileView1.Dir
     TextBox1.Text = FileView1.Current
-    'FileView1.Refresh
     Wait 
-
 End
 
 Public Sub FileView2_Click()
@@ -626,7 +581,6 @@ Public Sub FileView2_Click()
     
     TextLabel3.Text = FileView2.Dir
     TextBox2.Text = FileView2.Current
-    'FileView2.Refresh
     Wait 
 End
 
@@ -856,6 +810,7 @@ End
 Public Sub Menu11_Click()
     'rechts vergrößern
     FileView2.IconSize = FileView2.IconSize * 2
+    FileView2.Font.Grade += 1
 End
 
 Public Sub Menu12_Click()
@@ -867,6 +822,7 @@ End
 Public Sub Menu13_Click()
     'rechts verkleinern
     FileView2.IconSize = FileView2.IconSize / 2
+    FileView2.Font.Grade -= 1
 End
 
 Public Sub Menu14_Click()
@@ -1016,7 +972,6 @@ Public Sub Menu19_Click()
     hFont = Font[", Bold,12"]
     FileProperties1.Font = hFont
     If Menu19.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
-    'If Menu19.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
     If Menu19.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True 
     If Menu19.Checked = True Then FileProperties1.Visible = True Else FileProperties1.Visible = False
     If Menu19.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
@@ -1033,7 +988,6 @@ Public Sub Menu34_Click()
     DirView1.Current = FileView1.Dir
     If Menu34.Checked = True Then Splitter1.Layout = [18, 50, 4, 30] Else Splitter1.Layout = [0, 48, 4, 48]
     If Menu34.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
-    'If Menu34.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
     If Menu34.Checked = True Then Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3] Else Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
     If Menu34.Checked = True Then DirView1.Visible = True Else DirView1.Visible = False
     If Menu34.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
@@ -1162,6 +1116,7 @@ End
 Public Sub Menu36_Click()
     'links vergrößern
     FileView1.IconSize = FileView1.IconSize * 2
+    FileView1.Font.Grade += 1
 End
 
 Public Sub Menu37_Click()
@@ -1197,7 +1152,6 @@ Public Sub Button8_Click()
         For Each Wort In Liste
             Print (Wort)
         Next
-        Print
         Print Liste.Last
         'Zeile = Replace(Zeile, Liste.Last, "")
         Zeile = Left(Zeile, Zeile.Len - Liste.Last.Len)
@@ -1230,7 +1184,6 @@ Public Sub Button9_Click()
         For Each Wort In Liste
             Print (Wort)
         Next
-        Print
         Print Liste.Last
         'Zeile = Replace(Zeile, Liste.Last, "")
         Zeile = Left(Zeile, Zeile.Len - Liste.Last.Len)
@@ -1348,6 +1301,7 @@ End
 Public Sub Menu47_Click()
     'links verkleinern
     FileView1.IconSize = FileView1.IconSize / 2
+    FileView1.Font.Grade -= 1
 End
 
 Public Sub Menu46_Click()
@@ -1387,14 +1341,11 @@ End
 
 Public Sub FileView1_KeyPress()
     'Tastenabfrage im linken Feld
-    'If Key.Code = Key.Return Then FileView1_DblClick()
-    'If Key.Code = Key.Space Then FileView1_DblClick()
     If Key.Code = Key.Esc Then Button8_Click()
 End
 
 Public Sub FileView2_KeyPress()
     'Tastenabfrage im rechten Feld
-    'If Key.Code = Key.Return Then FileView2_DblClick()
     If Key.Code = Key.Esc Then Button9_Click()
 End
 
@@ -1603,6 +1554,9 @@ Public Sub Form_State()
     If FMain.Maximized = True Then DirView1.Font.Grade = 2 Else DirView1.Font.Grade = 0 
     If FMain.Maximized = True Then FileView1.IconSize = 128 Else FileView1.IconSize = 64 
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
+    If FMain.Maximized = True Then FileView1.Font.Grade = 3 Else FileView1.Font.Grade = 2
+    If FMain.Maximized = True Then FileView2.Font.Grade = 3 Else FileView2.Font.Grade = 2
+    Menu14_Click()
 End
 
 Public Sub Form_KeyPress()
@@ -1766,18 +1720,17 @@ End
 
 Public Sub FileView1_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
-    If Key.Code = Key.Return Or Key.Code = Key.Space Then OpenCurrent()
+    If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["#"] Or If Key.Code = Key["m"] Then 
         PictureBox2.Picture = pLED_GELB 
         Wait 
         ShowSizeFromKey(FileView1)  
     Endif
-    
 End
 
 Public Sub FileView2_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
-    If Key.Code = Key.Return Or Key.Code = Key.Space Then OpenCurrent()
+    If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["m"] Or If Key.Code = Key["#"] Then 
         PictureBox2.Picture = pLED_GELB
         Wait 
