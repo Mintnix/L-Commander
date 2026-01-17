@@ -1,3 +1,8 @@
+* Sat Jan 17 2026 Mintnix <pcspezialist@arcor.de> 0.2.1
+- "Öffnen mit ..." Dialog eingebaut
+- Strg + O Tastenkombi für neuen Dialog hinzugefügt
+- kleinere UI Anpassungen vorgenommen
+
 * Sat Jan 10 2026 Mintnix <pcspezialist@arcor.de> 0.2.0
 - Taste Space durch Taste Enter für Doppelklick ersetzt
 - Anpassungen in der Größendarstellung bei aktivierter Detaillistenansicht

@@ -1,0 +1,17 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,54,23)
+  Background = &HDFFFFF
+  Text = ("Öffnen mit ") & "..."
+  Resizable = False
+  Utility = True
+  { ListBox1 ListBox
+    MoveScaled(2,2,50,13)
+    Background = &HDFFFFF
+  }
+  { Button1 Button
+    MoveScaled(2,17,50,4)
+    Text = ("OK")
+  }
+}

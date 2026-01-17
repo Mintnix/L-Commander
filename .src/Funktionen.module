@@ -2,37 +2,12 @@
 
 Public sInfotext As String
 
-'' Hier muss vorher noch ausgiebig getestet werden
-' Private $hProc As Process
-'  
-' Public Sub Verschieben()
-'     ''Verschieben Funktion
-'     Try $hProc = Shell "mv " & Shell(FMain.QUELLE) & " " & Shell(FMain.ZIEL) For Input Output As "Proc"
-'     If Error Then 
-'          sInfotext = "Das funktioniert nicht." 
-'     Else 
-'         FMain.FileView1.Reload()
-'         sInfotext = FMain.QUELLE & " >=> wurde verschoben."
-'     Endif 
-' End
-'  
-' Public Sub Proc_Read() ' Wenn der Prozess Text ausgibt, können Sie dies für Ihre LED überwachen
-'      
-' End
-'  
-' Public Sub Proc_Kill() ' Wenn der Prozess endet
-'     'FMain.Spinner1.Stop()
-'     
-' End
- 
-' Public Sub Proc_Error(ErrorTxt As String) ' Wenn der Prozess fehlerhaft ist
-'     'sInfotext = "Das funktioniert nicht, ein Process Error."
-' End
 
 Public Sub Anzeige()
     'Testfunktion
     Message.Info("Die ausgelagerte Funktion wurde aufgerufen", "OK")  'eine Testfunktion
 End
+
 
 Public Sub Einpacken()
     ''Packfunktion um Daten in ein Archiv zu speichern
@@ -46,15 +21,8 @@ Public Sub Einpacken()
         If Not Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt."
         Try Shell "zip -r ARCHIV.zip " & Shell(FMain.FileView2.Path) Wait 
     Endif
-
 End
 
-' Public Sub Verschieben()
-'     ''Verschieben Funktion
-'     Try Shell "mv " & Shell(FMain.QUELLE) & " " & Shell(FMain.ZIEL) Wait 
-'     If Error Or If Process.LastValue <> 0 Then sInfotext = "Das funktioniert nicht." Else sInfotext = FMain.QUELLE & " >=> wurde verschoben."
-'     ' Die überarbeitete Funktion statt Quote Shell zu nutzen.
-' End
 
 Public Sub Baum()
     'Baum anzeigen
@@ -70,6 +38,7 @@ Public Sub Baum()
         FMain.Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3]
     Endif 
 End
+
 
 Public Sub Killen()
     ''Eine Datei endgültig löschen

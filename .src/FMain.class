@@ -35,7 +35,7 @@ Private pLED_BLAU As Picture = Picture["led_blau.png"]
 Private pLED_GELB As Picture = Picture["led_gelb.png"]
 Private pLED_GRUEN As Picture = Picture["led_gruen.png"]
 'Private pLED_XMAS As Picture = Picture["led_xmas.png"]
-Private pLED_NY As Picture = Picture["led_newyear.png"]
+'Private pLED_NY As Picture = Picture["led_newyear.png"]
 Public sRechte As String
 
 
@@ -454,7 +454,7 @@ End
 
 
 Public Sub ShowSizeFromKey(fv As FileView)
-    'Anzeige der Datei / Ordner -Größen im Textfeld 
+    ''Anzeige der Datei / Ordner -Größen im Textfeld 
   Dim list As String[]
   Dim s As String
   Dim full As String
@@ -542,8 +542,71 @@ Public Function DirSize(path As String) As Long
     Return total
 End
 
+Public Sub OpenWithDialog(full As String)
+    'Öffnen mit Dialog
+    Dim mime As String
+    Dim outputs As String
+    Dim lines As String[]
+    Dim apps As New String[]
+    Dim s As String
 
-'' Feldfunktionen hier machen -------------------------
+    'Sicherheitscheck
+    If full = "" Then Return 
+    If Not Exist(full) Then Return 
+    
+    ' MIME Typ holen
+    mime = GetMimeTyp(full)
+    If mime = "" Then 
+        Message.Warning("Mime-Typ nicht ermittelbar.")
+        Return 
+    Endif
+    
+    'Anwendung über gio abfragen
+    Shell "gio mime " & mime To outputs
+    If outputs = "" Then 
+        Message.Info("KeineAnwenung gefunden.")
+        Return 
+    Endif
+    
+    'Ausgabe zerlegen
+    lines = Split(outputs, gb.NewLine)
+    
+    For Each s In lines
+        s = Trim(s)
+        'nur .desktop-Dateien
+        'If Right(s, 8) = ".desktop" Then 
+          If s Like "*.desktop" Then 
+            apps.Add(s)
+        Endif 
+    Next
+    
+    If apps.Count = 0 Then 
+        Message.Info("Keine passenden Anwendungen gefunden.")
+        Return 
+    Endif
+    
+    'Dialog anzeigen
+    OeffnenMit.Apps = apps
+    OeffnenMit.SelectedApp = ""
+    OeffnenMit.ShowModal
+    
+    Print OeffnenMit.SelectedApp
+    
+    If OeffnenMit.SelectedApp = "" Then Return 
+    
+    Shell "gtk-launch " & OeffnenMit.SelectedApp & " " & Quote(full)
+End
+
+Public Sub GetMimeTyp(path As String) As String
+    'Mime-Typ herausfinden
+    Dim out As String
+    
+    Shell "file --mime-type -b " & Quote(path) To out
+    Return Trim(out)
+End
+
+
+'' Feldfunktionen hier machen ----------------------------------------------------------------------------------------------
 Public Sub FileView2_DblClick()
     'Doppelklick oder Enter rechts
     OpenCurrent()
@@ -681,8 +744,8 @@ Public Sub LCDLabel2_Enter()
     'Uhrzeit zeigen beim Überfahren
     TextLabel1.Background = &H000000
     TextLabel1.Foreground = &H5FFF5F
-    TextLabel1.Text = "Gesundes neues Jahr 2026!"
-    PictureBox2.Picture = pLED_NY
+    TextLabel1.Text = "LC - der einfachste Linux Commander der Welt!"   'Spruch bei Uhranzeige
+    PictureBox2.Picture = pLED_GRUEN                                    'LED Icon bei Uhranzeige
     LCDLabel2.Text = Format(Time(Now), "hh:nn") & " Uhr"
     Zeitfenster.LCDLabel1.Background = iHindergrund
     Zeitfenster.ShowModal
@@ -1720,6 +1783,7 @@ End
 
 Public Sub FileView1_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
+    If Key.Control And Key.Code = Key["o"] Then Menu71_Click
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["#"] Or If Key.Code = Key["m"] Then 
         PictureBox2.Picture = pLED_GELB 
@@ -1730,6 +1794,7 @@ End
 
 Public Sub FileView2_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
+    If Key.Control And Key.Code = Key["o"] Then Menu72_Click
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["m"] Or If Key.Code = Key["#"] Then 
         PictureBox2.Picture = pLED_GELB
@@ -1754,4 +1819,28 @@ Public Sub Menu70_Click()
     Rechte.LoadPermission(sRechte)
     Rechte.ShowModal()
     Menu14_Click()
+End
+
+Public Sub Menu71_Click()
+    ''Öffnen mit ... - links
+    Dim full As String
+    Try full = FileView1.Dir &/ FileView1.Selection[0]
+    If Error Then TextLabel1.Text = "Nix ausgewählt!"
+    If Error Then Return 
+    'nur Dateien
+    If Stat(full).Type = gb.Directory Then Return 
+    'hier Funktion aufrufen
+    OpenWithDialog(full)
+End
+
+Public Sub Menu72_Click()
+     ''Öffnen mit ... - rechts
+    Dim full As String
+    Try full = FileView2.Dir &/ FileView2.Selection[0]
+    If Error Then TextLabel1.Text = "Nix ausgewählt!"
+    If Error Then Return 
+    'nur Dateien
+    If Stat(full).Type = gb.Directory Then Return 
+    'hier Funktion aufrufen
+    OpenWithDialog(full) ''Öffnen mit ... - links
 End

@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,171.375,100)
+  MoveScaled(0,0,171.4286,100)
   Background = &HDFFFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
@@ -10,6 +10,10 @@
   Padding = 5
   { Menu2 Menu
     Text = ("LINKS")
+    { Menu71 Menu
+      Text = ("Öffnen mit ") & "..."
+      Picture = Picture["icon:/medium/open-link"]
+    }
     { Menu21 Menu
       Text = ("Normale Ansicht")
       Picture = Picture["icon:/medium/view-icon"]
@@ -280,6 +284,10 @@
   }
   { Menu15 Menu
     Text = ("RECHTS")
+    { Menu72 Menu
+      Text = ("Öffnen mit ") & "..."
+      Picture = Picture["icon:/medium/open-link"]
+    }
     { Menu25 Menu
       Text = ("Normale Ansicht")
       Picture = Picture["icon:/medium/view-icon"]
