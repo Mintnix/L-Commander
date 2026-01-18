@@ -20,5 +20,4 @@ Public Sub Button1_Click()
     SelectedApp = ListBox1.Text
     'Print SelectedApp
     Me.Close
-    Wait 1
 End

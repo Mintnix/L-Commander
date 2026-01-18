@@ -19,6 +19,7 @@ Address=pcspezialist@arcor.de
 Url=www.openyourlinux.blogspot.de
 License=General Public License V3
 PackageName=l-commander-0.2.1
+PackageVersion=2
 Packager=1
 Systems=ubuntu
 Menus=ubuntu:"Applications/File Management"

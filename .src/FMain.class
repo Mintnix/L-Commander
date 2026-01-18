@@ -581,8 +581,14 @@ Public Sub OpenWithDialog(full As String)
     Next
     
     If apps.Count = 0 Then 
-        Message.Info("Keine passenden Anwendungen gefunden.")
-        Return 
+        If Message.Warning("Keine passenden Anwendungen gefunden", "Versuche Texteditor", "Abbrechen") = 1 Then 
+            Print "Versuch wurde ausgewählt, was aber scheitern kann."
+            Shell "xed" & " " & Quote(full) 
+            Return 
+        Else 
+            Print "Öffnen der Datei wurde abgebrochen."
+            Return 
+        Endif
     Endif
     
     'Dialog anzeigen
@@ -1827,7 +1833,7 @@ Public Sub Menu71_Click()
     Try full = FileView1.Dir &/ FileView1.Selection[0]
     If Error Then TextLabel1.Text = "Nix ausgewählt!"
     If Error Then Return 
-    'nur Dateien
+    'nur Dateien bei Ordnern endet der Aufruf
     If Stat(full).Type = gb.Directory Then Return 
     'hier Funktion aufrufen
     OpenWithDialog(full)
@@ -1839,7 +1845,7 @@ Public Sub Menu72_Click()
     Try full = FileView2.Dir &/ FileView2.Selection[0]
     If Error Then TextLabel1.Text = "Nix ausgewählt!"
     If Error Then Return 
-    'nur Dateien
+    'nur Dateien bei Ordner endet der Aufruf
     If Stat(full).Type = gb.Directory Then Return 
     'hier Funktion aufrufen
     OpenWithDialog(full) ''Öffnen mit ... - links
