@@ -14,6 +14,19 @@
       Text = ("Öffnen mit ") & "..."
       Picture = Picture["icon:/medium/open-link"]
     }
+    { Menu73 Menu
+      Text = ("Kopieren")
+      Picture = Picture["icon:/medium/copy"]
+    }
+    { Menu75 Menu
+      Text = ("Ausschneiden")
+      Picture = Picture["icon:/medium/cut"]
+    }
+    { Menu74 Menu
+      Text = ("Einfügen")
+      Picture = Picture["icon:/medium/paste"]
+      Enabled = False
+    }
     { Menu21 Menu
       Text = ("Normale Ansicht")
       Picture = Picture["icon:/medium/view-icon"]
@@ -288,6 +301,19 @@
       Text = ("Öffnen mit ") & "..."
       Picture = Picture["icon:/medium/open-link"]
     }
+    { Menu76 Menu
+      Text = ("Kopieren")
+      Picture = Picture["icon:/medium/copy"]
+    }
+    { Menu77 Menu
+      Text = ("Ausschneiden")
+      Picture = Picture["icon:/medium/cut"]
+    }
+    { Menu78 Menu
+      Text = ("Einfügen")
+      Picture = Picture["icon:/medium/paste"]
+      Enabled = False
+    }
     { Menu25 Menu
       Text = ("Normale Ansicht")
       Picture = Picture["icon:/medium/view-icon"]
@@ -534,8 +560,9 @@
     { PictureBox2 PictureBox
       MoveScaled(1,1,5,4)
     }
-    { TextLabel1 TextLabel
+    { !TextLabel1 TextLabel
       MoveScaled(7,1,161,4)
+      #Public = True
       Font = Font["Bold"]
       NoTabFocus = True
       Expand = True

@@ -2,6 +2,95 @@
 
 Public sInfotext As String
 
+Public Function ActiveFileView(iLR As Integer, fv1 As FileView, fv2 As FileView) As FileView
+    'Aktives FileView ermitteln
+    If iLR = 1 Then 
+        Print "Linkes Feld aktiv: iLR = " & iLR 
+        Return fv1
+    Else 
+        Return fv2
+        Print "Rechtes Feld aktiv: iLR = " & iLR
+    Endif
+End
+
+Public Sub CopyDir(src As String, dst As String)
+    'Eine Funktion für Verzeichnisse, damit diese rekursiv und richtig kopiert werden.
+    Dim f As String
+    
+    If Not Exist(dst) Then Mkdir dst
+    For Each f In Dir(src)
+        If f = "." Or f = ".." Then Continue        ''Wichtig! um aktuellen Ordner und übergeordneten Ordner auszulassen, sonst Dauerschleife
+        If Stat(src &/ f).Type = gb.Directory Then 
+            CopyDir(src &/ f, dst &/ f)             'Verzeichnis erkennen und Funktion mit neuem Ordnernamen aufrufen
+        Else 
+            Try Copy src &/ f To dst &/ f           'Dateien kopieren
+        Endif
+    Next
+End
+
+
+Public Sub CopySelection(fv As FileView)
+    ''Strg C
+    Dim s As String
+    
+    If fv.Selection.Count = 0 Then Return 
+    FMain.CopyList.Clear
+    For Each s In fv.Selection
+        FMain.CopyList.Add(s)
+        If FMain.CopyOrMove = 1 Then Print "Kopieren <>  " & s
+        If FMain.CopyOrMove = 2 Then Print "Ausschneiden <  " & s
+    Next
+    FMain.CopySourceDir = fv.Dir
+End
+
+Public Sub PasteSelection(fvTarget As FileView)
+    ''Strg + V
+    Dim s As String
+    Dim src As String
+    Dim dst As String
+    
+    If FMain.CopyList.Count = 0 Or FMain.CopySourceDir = "" Then Return 
+
+    For Each s In FMain.CopyList
+        Print "Einfügen >  " & s
+        src = FMain.CopySourceDir &/ s
+        dst = fvTarget.Dir &/ s
+        If FMain.CopyOrMove = 1 Then
+            If Stat(src).Type = gb.Directory Then 
+                Try CopyDir(src, dst)
+                If Error Then Print "Fehler beim Verzeichnis kopieren."
+            Else 
+                Try Copy src To dst
+                If Error Then 
+                    Print "Fehler beim Kopieren aufgetreten, Datei " & s & " existiert schon."
+                    FMain.TextLabel1.Text = "Die Datei  " & s & " existiert schon und wird nicht kopiert."
+                Endif 
+            Endif 
+        Endif 
+        If FMain.CopyOrMove = 2 Then
+            Try Move src To dst
+            If Error Then 
+                Print "Fehler beim Verschieben, es wird die Fehlerbehandlung probiert."
+                Try Copy src To dst
+                If Not Error Then Kill src
+                If Error Then 
+                    Print "Datei " & s & " existiert schon und wird nicht verschoben."
+                    FMain.TextLabel1.Text = "Die Datei  " & s & " existiert schon und wird nicht verschoben."
+                Endif 
+            Endif 
+        Endif
+    Next
+    If FMain.CopyOrMove = 2 Then 
+        FMain.FileView1.Reload
+        FMain.FileView2.Reload
+        FMain.CopyList.Clear        'die Liste leeren
+        FMain.CopySourceDir = ""    'Pfad leeren 
+        FMain.CopyOrMove = 0
+    Else 
+        fvTarget.Reload
+    Endif
+End
+
 
 Public Sub Anzeige()
     'Testfunktion

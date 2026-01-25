@@ -37,6 +37,11 @@ Private pLED_GRUEN As Picture = Picture["led_gruen.png"]
 'Private pLED_XMAS As Picture = Picture["led_xmas.png"]
 'Private pLED_NY As Picture = Picture["led_newyear.png"]
 Public sRechte As String
+Public CopyList As New String[]
+Public CopySourceDir As String
+Public CopyOrMove As Integer = 0    '1 = Kopieren, 2 = Verschieben
+
+ 
 
 
 Public Sub Form_Open()
@@ -173,6 +178,7 @@ Public Sub Form_Open()
     PictureBox2.Picture = pLED_GRAU
     Print "Fontgrade = ", FileView1.Font.Grade
     Menu14_Click()
+    
 End
 
 Public Sub Menu5_Click()
@@ -672,7 +678,7 @@ End
 Public Sub FileView1_Select()
     ''Anzeige bei Auswahl im Feld links - was soll dargestellt werden
     Print FileView1.Current
-    iLR = 1
+    'iLR = 1
     QUELLE = FileView1.Path
     QUELLDATEI = FileView1.Current
     ZIEL = FileView2.Dir
@@ -693,7 +699,7 @@ End
 Public Sub FileView2_Select()
     ''Anzeige bei Auswahl im Feld rechts
     Print FileView2.Current
-    iLR = 2
+    'iLR = 2
     QUELLE = FileView2.Path
     QUELLDATEI = FileView2.Current
     ZIEL = FileView1.Dir
@@ -827,37 +833,47 @@ End
 Public Sub Button7_Click()
     'neuer Ordner erstellen - F7
     If iLR = 1 Then 
-        If Not Exist(FileView1.Dir &/ "Neuer Ordner") Then
-            Mkdir FileView1.Dir &/ "Neuer Ordner"
-            TextLabel1.text = "Ordner wurde angelegt."
-            PictureBox2.Picture = pLED_ROT
-            FileView1.Reload
-            FileView2.Reload 
-            FileView1.SetFocus
-            Wait 1
-        Else 
+        If Exist(FileView1.Dir &/ "Neuer Ordner") Then
             TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher auswählen."
             PictureBox2.Picture = pLED_GELB
             FileView1.SetFocus 
             FileView1.Current = "Neuer Ordner"
             Wait 1
-        Endif 
-    Endif 
-    If iLR = 2 Then 
-        If Not Exist(FileView2.Dir &/ "Neuer Ordner") Then
-            Mkdir FileView2.Dir &/ "Neuer Ordner"
+        Endif
+        If Not Exist(FileView1.Dir &/ "Neuer Ordner") Then
+            Mkdir FileView1.Dir &/ "Neuer Ordner"
             TextLabel1.text = "Ordner wurde angelegt."
             PictureBox2.Picture = pLED_ROT
             FileView2.Reload
-            FileView1.Reload
-            FileView2.SetFocus
+            FileView1.Reload 
+            Wait 
+            FileView1.SetFocus
+            FileView1.Current = "Neuer Ordner"
             Wait 1
         Else 
+            'iLR = 1
+        Endif 
+    Endif 
+    If iLR = 2 Then 
+        If Exist(FileView2.Dir &/ "Neuer Ordner") Then
             TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher auswählen."
             PictureBox2.Picture = pLED_GELB
             FileView2.SetFocus
             FileView2.Current = "Neuer Ordner"
             Wait 1
+        Endif
+        If Not Exist(FileView2.Dir &/ "Neuer Ordner") Then
+            Mkdir FileView2.Dir &/ "Neuer Ordner"
+            TextLabel1.text = "Ordner wurde angelegt."
+            PictureBox2.Picture = pLED_ROT
+            FileView1.Reload
+            FileView2.Reload
+            Wait 
+            FileView2.SetFocus
+            FileView2.Current = "Neuer Ordner"
+            Wait 1
+        Else 
+            'iLR = 2
         Endif 
     Endif 
     ' If FileView1.HasFocus = False And FileView2.HasFocus = False Then Print "FEHLER !!!"
@@ -899,6 +915,12 @@ Public Sub Menu14_Click()
   FileView1.Reload
   FileView2.Reload
   DirView1.Reload
+  CopyList.Clear
+  CopyOrMove = 0
+    If CopyOrMove = 0 Then 
+        Menu78.Enabled = False
+        Menu74.Enabled = False
+    Endif
   PictureBox2.Picture = pLED_BLAU 
   Wait 0.3
   If PictureBox2.Picture = pLED_BLAU Then PictureBox2.Picture = pLED_GRAU
@@ -1411,11 +1433,57 @@ End
 Public Sub FileView1_KeyPress()
     'Tastenabfrage im linken Feld
     If Key.Code = Key.Esc Then Button8_Click()
+    If Key.Control And Key.Code = Key["c"] Then 
+        CopyOrMove = 1
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["x"] Then 
+        CopyOrMove = 2
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["v"] Then 
+        Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove = 0 Then 
+            Menu78.Enabled = False
+            Menu74.Enabled = False
+        Endif
+    Endif 
 End
 
 Public Sub FileView2_KeyPress()
     'Tastenabfrage im rechten Feld
     If Key.Code = Key.Esc Then Button9_Click()
+    If Key.Control And Key.Code = Key["c"] Then 
+        CopyOrMove = 1
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["x"] Then 
+        CopyOrMove = 2
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["v"] Then 
+        Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove = 0 Then 
+            Menu78.Enabled = False
+            Menu74.Enabled = False
+        Endif
+    Endif 
 End
 
 Public Sub Menu48_Click()
@@ -1849,4 +1917,90 @@ Public Sub Menu72_Click()
     If Stat(full).Type = gb.Directory Then Return 
     'hier Funktion aufrufen
     OpenWithDialog(full) ''Öffnen mit ... - links
+End
+
+Public Sub Menu73_Click()
+    'Kopieren wie Strg + C
+    CopyOrMove = 1
+    Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+    If FMain.CopyList.Count > 0 Then 
+        Menu78.Enabled = True 
+        Menu74.Enabled = True 
+    Endif
+End
+
+Public Sub Menu74_Click()
+    'Einfügen wie Strg + V
+    Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))  
+    If CopyOrMove = 0 Then 
+        Menu78.Enabled = False
+        Menu74.Enabled = False
+    Endif
+End
+
+Public Sub Menu75_Click()
+    'Ausschneiden wie Strg + X
+    CopyOrMove = 2
+    Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+    If FMain.CopyList.Count > 0 Then 
+        Menu78.Enabled = True 
+        Menu74.Enabled = True 
+    Endif
+End
+
+Public Sub Menu76_Click()
+    'Kopieren wie Strg + C
+    CopyOrMove = 1
+    Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+    If FMain.CopyList.Count > 0 Then 
+        Menu78.Enabled = True 
+        Menu74.Enabled = True 
+    Endif
+End
+
+Public Sub Menu77_Click()
+    'Ausschneiden wie Strg + X
+    CopyOrMove = 2
+    Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+    If FMain.CopyList.Count > 0 Then 
+        Menu78.Enabled = True 
+        Menu74.Enabled = True 
+    Endif
+End
+
+Public Sub Menu78_Click()
+    'Einfügen wie Strg + V
+    Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+    If CopyOrMove = 0 Then 
+        Menu78.Enabled = False
+        Menu74.Enabled = False
+    Endif
+End
+
+Public Sub FileView1_MouseMove()
+    'Mauscursor im Feld bei Bewegung anpassen
+    If CopyOrMove = 1 Then 
+        FileView1.Mouse = Cursor.Copy
+        FileView2.Mouse = Cursor.Copy
+    Else If CopyOrMove = 2 Then 
+        FileView1.Mouse = Cursor.Copy
+        FileView2.Mouse = Cursor.Copy 
+    Else 
+        FileView1.Mouse = Cursor.Default 
+        FileView2.Mouse = Cursor.Default 
+    Endif 
+End
+
+Public Sub FileView2_MouseMove()
+    'Mauscursor im Feld bei Bewegung anpassen
+    If CopyOrMove = 1 Then 
+        FileView1.Mouse = Cursor.Copy
+        FileView2.Mouse = Cursor.Copy
+    Else If CopyOrMove = 2 Then 
+        FileView1.Mouse = Cursor.Copy
+        FileView2.Mouse = Cursor.Copy
+    Else 
+        FileView1.Mouse = Cursor.Default 
+        FileView2.Mouse = Cursor.Default 
+    Endif 
 End
