@@ -111,7 +111,6 @@ Public Sub Form_Open()
 
     Splitter1.Layout = [0, 48, 4, 48]
     Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
-    TextLabel1.Text = "Bereit für die Arbeit."
     Me.Background = iHindergrund
     Me.Foreground = iVordergrund
     FileView1.Background = iHindergrund
@@ -177,15 +176,36 @@ Public Sub Form_Open()
     'Timer1.Enabled = True
     PictureBox2.Picture = pLED_GRAU
     Print "Fontgrade = ", FileView1.Font.Grade
-    Menu14_Click()
-    
+    Reset()
+    TextLabel1.Text = "Der L-Commander ist bereit für die Arbeit mit Ihren Dateien."
 End
 
 Public Sub Menu5_Click()
     'beenden
-    Wait 0.3
+    Wait 0.2
     Me.Close
 End
+
+Public Sub Reset()
+    'Ansicht Aktualisieren
+    FileView1.Reload
+    FileView2.Reload
+    DirView1.Reload
+    CopyList.Clear
+    CopySourceDir = ""
+    CopyOrMove = 0
+    If CopyOrMove = 0 Then 
+        Menu78.Enabled = False
+        Menu74.Enabled = False
+    Endif
+    TextLabel1.Text = "Speicher freigegeben und Ansicht aktualisiert"
+    PictureBox2.Picture = pLED_BLAU 
+    Wait 1
+    If PictureBox2.Picture = pLED_BLAU Then PictureBox2.Picture = pLED_GRAU
+    Print "RESET - Speicher und Ansicht aktualisiert."
+    TextLabel1.Text = "LC ist bereit."
+End
+
 
 ''Timerfunktion
 Public Sub Timer1_Timer()
@@ -276,7 +296,7 @@ Public Sub Vorschau()
         FileView2.View = 3
         FileView1.MaxPreviewSize = 20000000
         FileView2.MaxPreviewSize = 20000000
-        Menu14_Click
+        Reset()
     Endif
 End
 
@@ -720,7 +740,7 @@ Public Sub FileView1_GotFocus()
     QUELLE = ""
     Wait
     iLR = 1
-    TextLabel1.Text = "Fokus LINKS - rechtes Feld Ziel: " & ZIEL
+    TextLabel1.Text = "Fokus LINKS"
     Print iLR
     'FileView1.SetFocus
 End
@@ -735,7 +755,7 @@ Public Sub FileView2_GotFocus()
     QUELLE = ""
     Wait 
     iLR = 2
-    TextLabel1.Text = "Fokus RECHTS - linkes Feld Ziel: " & ZIEL
+    TextLabel1.Text = "Fokus RECHTS"
     Print iLR
     'FileView2.SetFocus
 End
@@ -748,7 +768,7 @@ Public Sub LCDLabel2_Leave()
     Zeitfenster.Close
     TextLabel1.Background = -1
     TextLabel1.Foreground = -1
-    TextLabel1.Text = "Bereit für die Arbeit."
+    TextLabel1.Text = "LC ist bereit."
     PictureBox2.Picture = pLED_GRAU
 End
 
@@ -756,8 +776,8 @@ Public Sub LCDLabel2_Enter()
     'Uhrzeit zeigen beim Überfahren
     TextLabel1.Background = &H000000
     TextLabel1.Foreground = &H5FFF5F
-    TextLabel1.Text = "LC - der einfachste Linux Commander der Welt!"   'Spruch bei Uhranzeige
-    PictureBox2.Picture = pLED_GRUEN                                    'LED Icon bei Uhranzeige
+    TextLabel1.Text = "L-Commander ist der einfachste Linux Commander der Welt!"     'Spruch bei Uhranzeige
+    PictureBox2.Picture = pLED_GRUEN                                                 'LED Icon bei Uhranzeige
     LCDLabel2.Text = Format(Time(Now), "hh:nn") & " Uhr"
     Zeitfenster.LCDLabel1.Background = iHindergrund
     Zeitfenster.ShowModal
@@ -911,19 +931,8 @@ Public Sub Menu13_Click()
 End
 
 Public Sub Menu14_Click()
-  'Ansicht Aktualisieren
-  FileView1.Reload
-  FileView2.Reload
-  DirView1.Reload
-  CopyList.Clear
-  CopyOrMove = 0
-    If CopyOrMove = 0 Then 
-        Menu78.Enabled = False
-        Menu74.Enabled = False
-    Endif
-  PictureBox2.Picture = pLED_BLAU 
-  Wait 0.3
-  If PictureBox2.Picture = pLED_BLAU Then PictureBox2.Picture = pLED_GRAU
+    'Aktualisieren
+    Reset()
 End
 
 Public Sub Menu18_Click()
@@ -1045,6 +1054,7 @@ End
 
 Public Sub Menu33_Click()
     'Bildvorschau
+    FileView1.SetFocus
     If Menu33.Checked = True Then FileView1.MaxPreviewSize = 15000000 Else FileView1.MaxPreviewSize = 3000000
     If Menu33.Checked = True Then Splitter1.Layout = [0, 20, 4, 76] Else Splitter1.Layout = [0, 48, 4, 48]
     If Menu33.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
@@ -1059,6 +1069,7 @@ End
 
 Public Sub Menu19_Click()
     ''Details rechts anzeigen
+    FileView1.SetFocus
     Dim hFont As Font
     hFont = Font[", Bold,12"]
     FileProperties1.Font = hFont
@@ -1084,6 +1095,7 @@ Public Sub Menu34_Click()
     If Menu34.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
     If Menu34.Checked = True Then Button10.Enabled = False Else Button10.Enabled = True
     If Menu19.Checked = True Then Menu19.Checked = False
+    If Menu34.Checked = True Then DirView1.SetFocus Else FileView1.SetFocus             ''SetFocus setzt das jeweilige Fenster aktiv, wichtig um die Tastenbedienung zu erhalten
     If FMain.Maximized = True Then DirView1.Font.Grade = 2
 End
 
@@ -1100,7 +1112,7 @@ Public Sub Menu20_Click()
     If FileView1.View = 2 Then FileView1.Font.Grade += 1 
     If FileView2.View = 2 Then FileView2.Font.Grade += 1 
     Print FileView1.IconSize 
-    Menu14_Click
+    Reset()
 End
 
 Public Sub Menu24_Click()
@@ -1110,7 +1122,7 @@ Public Sub Menu24_Click()
     If FileView1.View = 2 Then FileView1.Font.Grade -= 1 
     If FileView2.View = 2 Then FileView2.Font.Grade -= 1 
     Print FileView1.IconSize 
-    Menu14_Click
+    Reset()
 End
 
 Public Sub Menu21_Click()
@@ -1346,7 +1358,7 @@ Public Sub Menu10_Click()
     Funktionen.Spruch()
     TextLabel1.Font.Bold = True
     TextLabel1.Background = &HFFFF00
-    TextLabel1.Foreground = &H0000FF
+    TextLabel1.Foreground = &H0000A0
     TextLabel1.Text = "L-Commander Version:  " & Application.Version & "  -   Besuchen Sie die Seite openyourlinux.de für Neuigkeiten."
     PictureBox2.Picture = pLED_GRUEN
     Wait 2
@@ -1354,7 +1366,7 @@ Public Sub Menu10_Click()
     TextLabel1.Foreground = -1
     'TextLabel1.Font.Bold = False
     PictureBox2.Picture = pLED_GRAU
-    TextLabel1.Text = "Bereit für die Arbeit."
+    TextLabel1.Text = "LC ist bereit."
 End
 
 Public Sub Menu45_Click()
@@ -1433,57 +1445,11 @@ End
 Public Sub FileView1_KeyPress()
     'Tastenabfrage im linken Feld
     If Key.Code = Key.Esc Then Button8_Click()
-    If Key.Control And Key.Code = Key["c"] Then 
-        CopyOrMove = 1
-        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
-        If CopyOrMove > 0 Then 
-            Menu78.Enabled = True
-            Menu74.Enabled = True
-        Endif
-    Endif
-    If Key.Control And Key.Code = Key["x"] Then 
-        CopyOrMove = 2
-        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))
-        If CopyOrMove > 0 Then 
-            Menu78.Enabled = True
-            Menu74.Enabled = True
-        Endif
-    Endif
-    If Key.Control And Key.Code = Key["v"] Then 
-        Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
-        If CopyOrMove = 0 Then 
-            Menu78.Enabled = False
-            Menu74.Enabled = False
-        Endif
-    Endif 
 End
 
 Public Sub FileView2_KeyPress()
     'Tastenabfrage im rechten Feld
     If Key.Code = Key.Esc Then Button9_Click()
-    If Key.Control And Key.Code = Key["c"] Then 
-        CopyOrMove = 1
-        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
-        If CopyOrMove > 0 Then 
-            Menu78.Enabled = True
-            Menu74.Enabled = True
-        Endif
-    Endif
-    If Key.Control And Key.Code = Key["x"] Then 
-        CopyOrMove = 2
-        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))
-        If CopyOrMove > 0 Then 
-            Menu78.Enabled = True
-            Menu74.Enabled = True
-        Endif
-    Endif
-    If Key.Control And Key.Code = Key["v"] Then 
-        Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
-        If CopyOrMove = 0 Then 
-            Menu78.Enabled = False
-            Menu74.Enabled = False
-        Endif
-    Endif 
 End
 
 Public Sub Menu48_Click()
@@ -1693,7 +1659,7 @@ Public Sub Form_State()
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
     If FMain.Maximized = True Then FileView1.Font.Grade = 3 Else FileView1.Font.Grade = 2
     If FMain.Maximized = True Then FileView2.Font.Grade = 3 Else FileView2.Font.Grade = 2
-    Menu14_Click()
+    Reset()
 End
 
 Public Sub Form_KeyPress()
@@ -1864,6 +1830,29 @@ Public Sub FileView1_KeyRelease()
         Wait 
         ShowSizeFromKey(FileView1)  
     Endif
+    If Key.Control And Key.Code = Key["c"] Then 
+        CopyOrMove = 1
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["x"] Then 
+        CopyOrMove = 2
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["v"] Then 
+        Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove = 0 Then 
+            Menu78.Enabled = False
+            Menu74.Enabled = False
+        Endif
+    Endif 
 End
 
 Public Sub FileView2_KeyRelease()
@@ -1874,6 +1863,29 @@ Public Sub FileView2_KeyRelease()
         PictureBox2.Picture = pLED_GELB
         Wait 
         ShowSizeFromKey(FileView2)
+    Endif 
+    If Key.Control And Key.Code = Key["c"] Then 
+        CopyOrMove = 1
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["x"] Then 
+        CopyOrMove = 2
+        Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))
+        If CopyOrMove > 0 Then 
+            Menu78.Enabled = True
+            Menu74.Enabled = True
+        Endif
+    Endif
+    If Key.Control And Key.Code = Key["v"] Then 
+        Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
+        If CopyOrMove = 0 Then 
+            Menu78.Enabled = False
+            Menu74.Enabled = False
+        Endif
     Endif 
 End
 
@@ -1925,7 +1937,8 @@ Public Sub Menu73_Click()
     Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
     If FMain.CopyList.Count > 0 Then 
         Menu78.Enabled = True 
-        Menu74.Enabled = True 
+        Menu74.Enabled = True
+        TextLabel1.Text = "Kopieren  <>  "
     Endif
 End
 
@@ -1945,6 +1958,7 @@ Public Sub Menu75_Click()
     If FMain.CopyList.Count > 0 Then 
         Menu78.Enabled = True 
         Menu74.Enabled = True 
+        TextLabel1.Text = "Verschieben  >  "
     Endif
 End
 
@@ -1955,6 +1969,7 @@ Public Sub Menu76_Click()
     If FMain.CopyList.Count > 0 Then 
         Menu78.Enabled = True 
         Menu74.Enabled = True 
+        TextLabel1.Text = "Kopieren  <>  "
     Endif
 End
 
@@ -1965,6 +1980,7 @@ Public Sub Menu77_Click()
     If FMain.CopyList.Count > 0 Then 
         Menu78.Enabled = True 
         Menu74.Enabled = True 
+        TextLabel1.Text = "Verschieben  >  "
     Endif
 End
 
@@ -2003,4 +2019,14 @@ Public Sub FileView2_MouseMove()
         FileView1.Mouse = Cursor.Default 
         FileView2.Mouse = Cursor.Default 
     Endif 
+End
+
+Public Sub DirView1_GotFocus()
+    'Fokus auf Baum
+    DirView1.Background = iStandardfarbe 
+End
+
+Public Sub DirView1_LostFocus()
+    'Fokus auf Baum verlieren
+    DirView1.Background = iHindergrund
 End

@@ -19,7 +19,7 @@ Public Sub ComboBox1_Click()
     If ComboBox1.Text = "Rot" Then 
         'rot
         FMain.iHindergrund = &HFFDFDF
-        FMain.iVordergrund = &H0000FF
+        FMain.iVordergrund = &H000060
         FMain.iStandardfarbe = &FFBFBF
         'FMain.FileView1.Foreground = FMain.iVordergrund
         FMain.FileView1.Background = FMain.iHindergrund
@@ -31,9 +31,9 @@ Public Sub ComboBox1_Click()
     Endif
     If ComboBox1.Text = "Grün" Then
         'grün
-        FMain.iHindergrund = &HDFFFE7
+        FMain.iHindergrund = &HDFFFDF
         FMain.iVordergrund = &H6C00E0
-        FMain.iStandardfarbe = &HDFFFFF
+        FMain.iStandardfarbe = &HF7FFDF
         'FMain.FileView1.Foreground = FMain.iVordergrund
         FMain.FileView1.Background = FMain.iHindergrund
         'FMain.FileView2.Foreground = FMain.iVordergrund
@@ -72,7 +72,7 @@ Public Sub ComboBox1_Click()
         'grau
         FMain.iHindergrund = &H808080
         FMain.iVordergrund = &HFFFFFF
-        FMain.iStandardfarbe = &A0A09B
+        FMain.iStandardfarbe = &H806F5F
         'FMain.FileView1.Foreground = FMain.iVordergrund
         FMain.FileView1.Background = FMain.iHindergrund
         'FMain.FileView2.Foreground = FMain.iVordergrund
@@ -83,9 +83,9 @@ Public Sub ComboBox1_Click()
     Endif
         If ComboBox1.Text = "Retroblau" Then 
         'retroblau
-        FMain.iHindergrund = &H0000FF
+        FMain.iHindergrund = &H003060
         FMain.iVordergrund = &HFFFF00
-        FMain.iStandardfarbe = &3F9FFF
+        FMain.iStandardfarbe = &H2F5780
         'FMain.FileView1.Foreground = FMain.iVordergrund
         FMain.FileView1.Background = FMain.iHindergrund
         'FMain.FileView2.Foreground = FMain.iVordergrund

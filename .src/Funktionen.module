@@ -24,6 +24,8 @@ Public Sub CopyDir(src As String, dst As String)
             CopyDir(src &/ f, dst &/ f)             'Verzeichnis erkennen und Funktion mit neuem Ordnernamen aufrufen
         Else 
             Try Copy src &/ f To dst &/ f           'Dateien kopieren
+            If Not Error Then FMain.TextLabel1.Text = "Verzeichnis kopiert. Speicher über Taste R freigeben." 
+            If Error Then FMain.TextLabel1.Text = "Verzeichnis kopieren fehlgeschlagen."
         Endif
     Next
 End
@@ -63,29 +65,33 @@ Public Sub PasteSelection(fvTarget As FileView)
                 Try Copy src To dst
                 If Error Then 
                     Print "Fehler beim Kopieren aufgetreten, Datei " & s & " existiert schon."
-                    FMain.TextLabel1.Text = "Die Datei  " & s & " existiert schon und wird nicht kopiert."
+                    FMain.TextLabel1.Text = "Bereits existierende Dateien wurden nicht kopiert."
                 Endif 
+                If Not Error Then FMain.TextLabel1.Text = "Kopieren abgeschlossen. Speicher über Taste R freigeben."
             Endif 
         Endif 
         If FMain.CopyOrMove = 2 Then
             Try Move src To dst
+            If Not Error Then FMain.TextLabel1.Text = "Verschieben abgeschlossen."
             If Error Then 
                 Print "Fehler beim Verschieben, es wird die Fehlerbehandlung probiert."
                 Try Copy src To dst
                 If Not Error Then Kill src
                 If Error Then 
                     Print "Datei " & s & " existiert schon und wird nicht verschoben."
-                    FMain.TextLabel1.Text = "Die Datei  " & s & " existiert schon und wird nicht verschoben."
+                    FMain.TextLabel1.Text = "Existierende Dateien wurden nicht verschoben."
                 Endif 
             Endif 
         Endif
     Next
     If FMain.CopyOrMove = 2 Then 
-        FMain.FileView1.Reload
-        FMain.FileView2.Reload
-        FMain.CopyList.Clear        'die Liste leeren
-        FMain.CopySourceDir = ""    'Pfad leeren 
-        FMain.CopyOrMove = 0
+        ' FMain.FileView1.Reload
+        ' FMain.FileView2.Reload
+        ' FMain.CopyList.Clear        'die Liste leeren
+        ' FMain.CopySourceDir = ""    'Pfad leeren 
+        ' FMain.CopyOrMove = 0
+        Wait 0.8
+        FMain.Reset
     Else 
         fvTarget.Reload
     Endif

@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,171.375,100)
+  MoveScaled(0,0,171.4286,100)
   Background = &HDFFFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
@@ -27,29 +27,32 @@
       Picture = Picture["icon:/medium/paste"]
       Enabled = False
     }
-    { Menu21 Menu
-      Text = ("Normale Ansicht")
-      Picture = Picture["icon:/medium/view-icon"]
-    }
-    { Menu22 Menu
-      Text = ("Kompakte Ansicht")
-      Picture = Picture["icon:/medium/view-compact"]
-    }
-    { Menu23 Menu
-      Text = ("Detaillierte Ansicht")
-      Picture = Picture["icon:/medium/view-detail"]
-    }
-    { Menu42 Menu
-      Text = ("Vorschau Ansicht")
-      Picture = Picture["icon:/medium/view-preview"]
-    }
-    { Menu36 Menu
-      Text = ("Ansicht vergrößern")
-      Picture = Picture["icon:/medium/add"]
-    }
-    { Menu47 Menu
-      Text = ("Ansicht verkleinern")
-      Picture = Picture["icon:/medium/remove"]
+    { Menu79 Menu
+      Text = ("Feldansicht")
+      { Menu21 Menu
+        Text = ("Normale Ansicht")
+        Picture = Picture["icon:/medium/view-icon"]
+      }
+      { Menu22 Menu
+        Text = ("Kompakte Ansicht")
+        Picture = Picture["icon:/medium/view-compact"]
+      }
+      { Menu23 Menu
+        Text = ("Detaillierte Ansicht")
+        Picture = Picture["icon:/medium/view-detail"]
+      }
+      { Menu42 Menu
+        Text = ("Vorschau Ansicht")
+        Picture = Picture["icon:/medium/view-preview"]
+      }
+      { Menu36 Menu
+        Text = ("Ansicht vergrößern")
+        Picture = Picture["icon:/medium/add"]
+      }
+      { Menu47 Menu
+        Text = ("Ansicht verkleinern")
+        Picture = Picture["icon:/medium/remove"]
+      }
     }
     { Menu16 Menu
       Text = ("Datei löschen")
@@ -108,7 +111,7 @@
   { Menu3 Menu
     Text = Shortcut(("Ansicht"), "A")
     { Menu14 Menu
-      Text = ("Ansicht Aktualisieren")
+      Text = ("Ansicht aktualisieren und Speicher leeren")
       Picture = Picture["icon:/medium/refresh"]
       Shortcut = "R"
     }
@@ -314,29 +317,32 @@
       Picture = Picture["icon:/medium/paste"]
       Enabled = False
     }
-    { Menu25 Menu
-      Text = ("Normale Ansicht")
-      Picture = Picture["icon:/medium/view-icon"]
-    }
-    { Menu26 Menu
-      Text = ("Kompakte Ansicht")
-      Picture = Picture["icon:/medium/view-compact"]
-    }
-    { Menu27 Menu
-      Text = ("Detaillierte Ansicht")
-      Picture = Picture["icon:/medium/view-detail"]
-    }
-    { Menu43 Menu
-      Text = ("Vorschau Ansicht")
-      Picture = Picture["icon:/medium/view-preview"]
-    }
-    { Menu11 Menu
-      Text = ("Ansicht vergrößern")
-      Picture = Picture["icon:/medium/add"]
-    }
-    { Menu13 Menu
-      Text = ("Ansicht verkleinern")
-      Picture = Picture["icon:/medium/remove"]
+    { Menu80 Menu
+      Text = ("Feldansicht")
+      { Menu25 Menu
+        Text = ("Normale Ansicht")
+        Picture = Picture["icon:/medium/view-icon"]
+      }
+      { Menu26 Menu
+        Text = ("Kompakte Ansicht")
+        Picture = Picture["icon:/medium/view-compact"]
+      }
+      { Menu27 Menu
+        Text = ("Detaillierte Ansicht")
+        Picture = Picture["icon:/medium/view-detail"]
+      }
+      { Menu43 Menu
+        Text = ("Vorschau Ansicht")
+        Picture = Picture["icon:/medium/view-preview"]
+      }
+      { Menu11 Menu
+        Text = ("Ansicht vergrößern")
+        Picture = Picture["icon:/medium/add"]
+      }
+      { Menu13 Menu
+        Text = ("Ansicht verkleinern")
+        Picture = Picture["icon:/medium/remove"]
+      }
     }
     { Menu46 Menu
       Text = ("Datei löschen")
@@ -441,7 +447,6 @@
       MoveScaled(4,8,35,14)
       #Public = True
       Visible = False
-      NoTabFocus = True
       ToolTip = ("F4 beendet die Funktion.\n\nDoppelklick um Ordner als \nFavorit 1 bzw. Favorit 2\nfür Schnellzugriff zu \nmarkieren.")
     }
     { !FileView1 FileView
@@ -532,14 +537,14 @@
       ShowDirectory = True
     }
     { TextArea1 TextArea
-      MoveScaled(131,36,35,11)
+      MoveScaled(131,37,35,11)
       Visible = False
       NoTabFocus = True
       ToolTip = ("F beendet die Funktion.")
       Text = ("Dies ist ein Text, der hier angezeigt wird.")
     }
     { PictureBox1 PictureBox
-      MoveScaled(131,20,35,14)
+      MoveScaled(131,21,35,14)
       Visible = False
       NoTabFocus = True
       ToolTip = ("F3 beendet die Funktion.")
@@ -547,7 +552,7 @@
       Border = Border.Plain
     }
     { FileProperties1 FileProperties
-      MoveScaled(131,1,35,18)
+      MoveScaled(131,2,35,18)
       Visible = False
       NoTabFocus = True
       ToolTip = ("F2 beendet die Funktion.")
@@ -555,6 +560,7 @@
   }
   { HBox2 HBox
     MoveScaled(1,83,169,6)
+    NoTabFocus = True
     Centered = True
     Padding = 5
     { PictureBox2 PictureBox
