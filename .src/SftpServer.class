@@ -12,7 +12,7 @@ Public Sub btnOK_Click()
     
     '----- SSH-Key prüfen -----
     If Not Exist(User.Home & "/.ssh/id_ed25519") Then 
-        Message.Error("Kein SSH-Key gefunden.")
+        Message.Error("Kein SSH-Key gefunden.\n\n Sie können einen SSH-Key für den Zugriff generieren und\n anschließend den öffentlichen Schlüssel, an die richtige\n Stelle auf dem Server, übertragen.\n Damit sollte die Verbindung funktionieren.\n Beachten Sie, das die eingetragenen Server Daten\n aus den Textboxen richtig und wichtig sind.")
         Return 
     Endif
     
@@ -59,8 +59,7 @@ Public Sub btnKey_Click()
     cmd = "gnome-terminal -- ssh-keygen -t ed25519 -f " & keyFile
     Print cmd
     Shell cmd
-    
-    Message.Info("Key wird erzeugt. Bitte den Anweisungen im Terminal folgen")
+    Message.Info("Die SSH-Schlüssel werden erzeugt. Bitte den Anweisungen im Terminal folgen.\n Wichtig, nach dieser Aktion den öffentlichen Schlüssel auf den Server übertragen.")
 End
 
 Public Sub btnKeyCopy_Click()

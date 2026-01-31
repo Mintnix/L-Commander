@@ -34,6 +34,8 @@ Private pLED_GRAU As Picture = Picture["led_grau.png"]
 Private pLED_BLAU As Picture = Picture["led_blau.png"]
 Private pLED_GELB As Picture = Picture["led_gelb.png"]
 Private pLED_GRUEN As Picture = Picture["led_gruen.png"]
+Private pLED_SFTP As Picture = Picture["led_sftp.png"]
+Public pLED_Status As Picture
 'Private pLED_XMAS As Picture = Picture["led_xmas.png"]
 'Private pLED_NY As Picture = Picture["led_newyear.png"]
 Public sRechte As String
@@ -178,11 +180,21 @@ Public Sub Form_Open()
     Print "Fontgrade = ", FileView1.Font.Grade
     Reset()
     TextLabel1.Text = "Der L-Commander ist bereit für die Arbeit mit Ihren Dateien."
+    
+    Dim mountsftp As String = User.Home & "/.lcommander_sftp" 
+    If Funktionen.IsMounted(mountsftp) Then 
+        Print "SFTP ist eingehängt"
+        Me.Title = "L-Commander - der einfachste Dateimanager der Welt! <> Aktuell mit einem Server verbunden."
+        PictureBox2.Picture = pLED_SFTP
+    Else 
+        Print "SFTP ist nicht eingehängt"
+        Me.Title = "L-Commander - der einfachste Dateimanager der Welt!"
+        PictureBox2.Picture = pLED_GRAU
+    Endif
 End
 
 Public Sub Menu5_Click()
     'beenden
-    Try Shell "umount " & User.Home & "/.lcommander_sftp"
     Wait 0.2
     Me.Close
 End
@@ -200,9 +212,10 @@ Public Sub Reset()
         Menu74.Enabled = False
     Endif
     TextLabel1.Text = "Speicher freigegeben und Ansicht aktualisiert"
+    pLED_Status = PictureBox2.Picture
     PictureBox2.Picture = pLED_BLAU 
     Wait 1
-    If PictureBox2.Picture = pLED_BLAU Then PictureBox2.Picture = pLED_GRAU
+    PictureBox2.Picture = pLED_Status
     Print "RESET - Speicher und Ansicht aktualisiert."
     TextLabel1.Text = "LC ist bereit."
 End
@@ -501,6 +514,7 @@ Public Sub ShowSizeFromKey(fv As FileView)
         list = [fv.Current]
     Else 
         Print "NICHTS AUSGEWÄHLT"
+        PictureBox2.Picture = pLED_Status
         Return 
     Endif 
     
@@ -527,7 +541,7 @@ Public Sub ShowSizeFromKey(fv As FileView)
     Print "Bytes = "; total
     Print " END "
     TextLabel1.Text = dirs & " Ordner / " & files & " Dateien - " & FormatSize(total)
-    PictureBox2.Picture = pLED_GRAU
+    PictureBox2.Picture = pLED_Status
 End
 
 Public Function FormatSize(bytes As Long) As String
@@ -770,11 +784,12 @@ Public Sub LCDLabel2_Leave()
     TextLabel1.Background = -1
     TextLabel1.Foreground = -1
     TextLabel1.Text = "LC ist bereit."
-    PictureBox2.Picture = pLED_GRAU
+    PictureBox2.Picture = pLED_Status
 End
 
 Public Sub LCDLabel2_Enter()
     'Uhrzeit zeigen beim Überfahren
+    pLED_Status = PictureBox2.Picture
     TextLabel1.Background = &H000000
     TextLabel1.Foreground = &H5FFF5F
     TextLabel1.Text = "L-Commander ist der einfachste Linux Commander der Welt!"     'Spruch bei Uhranzeige
@@ -1361,12 +1376,13 @@ Public Sub Menu10_Click()
     TextLabel1.Background = &HFFFF00
     TextLabel1.Foreground = &H0000A0
     TextLabel1.Text = "L-Commander Version:  " & Application.Version & "  -   Besuchen Sie die Seite openyourlinux.de für Neuigkeiten."
+    pLED_Status = PictureBox2.Picture
     PictureBox2.Picture = pLED_GRUEN
     Wait 2
     TextLabel1.Background = -1
     TextLabel1.Foreground = -1
     'TextLabel1.Font.Bold = False
-    PictureBox2.Picture = pLED_GRAU
+    PictureBox2.Picture = pLED_Status
     TextLabel1.Text = "LC ist bereit."
 End
 
@@ -1374,6 +1390,7 @@ Public Sub Menu45_Click()
     'Schriftvorschau
     Dim sBeispieltext As String 
 
+    FileView1.SetFocus
     If Menu45.Checked = True Then Menu33.Visible = False Else Menu33.Visible = True
     If Menu45.Checked = True Then Menu19.Visible = False Else Menu19.Visible = True
     If Menu45.Checked = True Then Menu34.Visible = False Else Menu34.Visible = True
@@ -1456,13 +1473,19 @@ End
 Public Sub Menu48_Click()
     'Schriftart lokal installieren
     If Menu45.Checked = True Then 
-         If IsDir(FileView1.Path) = False Then
-              If Not Exist("~/.lokal/share/fonts" &/ FileView1.Current) Then
-                 Try Copy FileView1.Path To "~/.local/share/fonts" &/ FileView1.Current
-              Endif 
-         Endif 
-         TextLabel1.Text = "SCHRIFTART wurde in das lokale Verzeichnis kopiert."
+        If IsDir(FileView1.Path) = False Then
+            If Not Exist("~/.local/share/fonts") Then 
+                Mkdir "~/.local/share/fonts"  
+            Endif 
+            If Not Exist("~/.lokal/share/fonts" &/ FileView1.Current) Then
+                Try Copy FileView1.Path To "~/.local/share/fonts" &/ FileView1.Current
+                If Error Then Print "Font-Pfad nicht vorhanden."
+                If Not Error Then TextLabel1.Text = "SCHRIFTART wurde in das lokale Verzeichnis kopiert."
+            Endif 
+        Endif 
     Endif 
+    Try Shell "fc-cache -fv" Wait 
+    If Error Then Print "Font Cache aktualisieren gescheitert."
 End
 
 
@@ -1606,25 +1629,58 @@ Public Sub Menu55_Click()
 End
 
 Public Sub Menu56_Click()
-    'SFTP Verbindung aufbauen 
-    Dim dlg As New SftpServer
-    Dim sftp As CSftpData
+    ''SFTP Verbindung
+    Dim dlg As New SftpServer           'mit New erzeugen
+    Dim sftp As CSftpData               'Klasse mit den Variablen
     Dim cmd As String
     Dim MountDir As String
+    Dim mountsftp As String
+    
+    'Mount Verzeichnis prüfen
+    MountDir = User.Home & "/.lcommander_sftp"
+    Print MountDir
+    If Not Exist(MountDir) Then Mkdir MountDir
+    
+    mountsftp = MountDir
+    If Funktionen.IsMounted(mountsftp) Then 
+        Print "SFTP ist eingehängt"
+        Me.Title = "L-Commander - der einfachste Dateimanager der Welt! <> Aktuell mit einem Server verbunden."
+        PictureBox2.Picture = pLED_SFTP
+    Else 
+        Print "SFTP ist nicht eingehängt"
+        Me.Title = "L-Commander - der einfachste Dateimanager der Welt!"
+        PictureBox2.Picture = pLED_GRAU
+    Endif
+    'SFTP Verbindung aufbauen 
+    Print "Mount aktiv:"; Funktionen.IsMounted(User.Home & "/.lcommander_sftp")
+    
+    If Funktionen.IsMounted(User.Home & "/.lcommander_sftp") = True Then 
+        'FileView Ansicht füllen
+        FileView2.Dir = MountDir
+        FileView2.SetFocus
+        Return 
+    Endif
 
-    sftp = dlg.Run()
+    sftp = dlg.Run()                    'sftp holt die Variablenwerte aus dem laufenden SftpServer-Dialog in die CSftpData-Klasse
     If sftp = Null Then Return 
     Print sftp.Server
     Print sftp.UserName
     Print sftp.Port
 
-    'Mount Verzeichnis prüfen
-    MountDir = User.Home & "/.lcommander_sftp"
-    Print MountDir
-    If Not Exist(MountDir) Then Mkdir MountDir
-
+    'Prüfen ob sshfs installiert ist
+    If Not Exist("/usr/bin/sshfs") Then 
+        If Message.Warning("Das Paket SSHFS ist noch nicht vorhanden,\n für die richtige Funktion aber essentiell.", "SSHFS installieren", "Abbrechen") = 1 Then 
+            Me.Hide
+            Shell "gnome-terminal -- apt install sshfs" Wait 
+            Wait 5
+            Me.Show 
+        Else 
+            Return 
+        Endif
+    Endif
+    
     'Shell Befehl basteln
-    cmd = "/usr/bin/sshfs -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & ":/ " & MountDir & " -o reconnect"
+    cmd = "/usr/bin/sshfs -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & ":/" & User.Home & " " & MountDir & " -o reconnect"
     Print cmd
     'Befehl aufrufen
     Try Shell cmd 
@@ -1632,9 +1688,25 @@ Public Sub Menu56_Click()
         Message.Error("SFTP-Verbindung fehlgeschlagen")
         Return 
     Endif 
-    
+    'FileView Ansicht füllen
+    Me.Title = "L-Commander - der einfachste Dateimanager der Welt! <> Aktuell mit einem Server verbunden."
+    PictureBox2.Picture = pLED_SFTP
     FileView2.Dir = MountDir
-    FileView2.Reload
+    FileView2.SetFocus
+End
+
+Public Sub UnmountSftp()
+    'Sftp sauber aushängen
+    Dim MountDir As String
+    MountDir = User.Home & "/.lcommander_sftp"
+    
+    If MountDir <> "" Then 
+        Try Shell "umount " & User.Home & "/.lcommander_sftp"
+        If Error Then Print "Nichts eingehängt gewesen."
+        FileView2.Dir = User.Home
+        FileView2.Reload
+        Print "SFTP-Verbindung getrennt"
+    Endif
 End
 
 Public Sub Menu57_Click()
@@ -1830,7 +1902,7 @@ Public Sub Menu67_Click()
     'freien Speicher anzeigen
     Dim sInfo As String
     Dim sResult As String
-
+    pLED_Status = PictureBox2.Picture
     PictureBox2.Picture = pLED_GRUEN
     sInfo = TextLabel1.Text
     TextLabel1.Background = &H0000FF
@@ -1839,7 +1911,7 @@ Public Sub Menu67_Click()
     Wait 2
     TextLabel1.Text = sInfo
     TextLabel1.Background = -1
-    PictureBox2.Picture = pLED_GRAU
+    PictureBox2.Picture = pLED_Status
 End
 
 Public Sub Menu68_Click()
@@ -1853,6 +1925,7 @@ Public Sub FileView1_KeyRelease()
     If Key.Control And Key.Code = Key["o"] Then Menu71_Click
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["#"] Or If Key.Code = Key["m"] Then 
+        pLED_Status = PictureBox2.Picture
         PictureBox2.Picture = pLED_GELB 
         Wait 
         ShowSizeFromKey(FileView1)  
@@ -1887,6 +1960,7 @@ Public Sub FileView2_KeyRelease()
     If Key.Control And Key.Code = Key["o"] Then Menu72_Click
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["m"] Or If Key.Code = Key["#"] Then 
+        pLED_Status = PictureBox2.Picture
         PictureBox2.Picture = pLED_GELB
         Wait 
         ShowSizeFromKey(FileView2)
@@ -2060,6 +2134,15 @@ End
 
 Public Sub Form_Close()
     'Form Schließen über X
-    Try Shell "umount " & User.Home & "/.lcommander_sftp"
-    Wait 0.3
+    UnmountSftp()
+    Wait 0.5
+End
+
+Public Sub PictureBox2_Enter()
+    ' LED Icon überfahren & Infos anzeigen
+    If PictureBox2.Picture = pLED_SFTP Then
+        PictureBox2.Tooltip = "Sie sind aktuell mit einem Server verbunden.\n Im rechten Feld wir der Server-Home-Ordner angezeigt."
+        FileView2.Dir = User.Home & "/.lcommander_sftp"
+        FileView2.SetFocus
+    Endif 
 End

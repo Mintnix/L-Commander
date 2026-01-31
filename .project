@@ -2,7 +2,7 @@
 Title=L-Commander
 Startup=FMain
 Icon=LC_Icon.png
-Version=0.2.2
+Version=0.2.3
 Component=gb.image
 Component=gb.gtk3
 Component=gb.form

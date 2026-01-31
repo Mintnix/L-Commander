@@ -1,36 +1,48 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,59,23)
+  MoveScaled(0,0,59,28)
   Background = &H00FFFF
   Text = ("SFTP-Server")
   Utility = True
   { btnOK Button
-    MoveScaled(21,12,16,4)
+    MoveScaled(21,22,17,4)
+    ToolTip = ("Vebindung zum eingetragenen Server herstellen.")
     Text = ("OK")
   }
   { txtServer TextBox
-    MoveScaled(2,2,16,4)
+    MoveScaled(2,12,16,4)
+    ToolTip = ("Servername oder Server-IP-Adresse")
     Text = ("mintnixserver")
   }
   { txtUser TextBox
-    MoveScaled(2,7,16,4)
+    MoveScaled(2,17,16,4)
+    ToolTip = ("Benutzername auf dem Server")
     Text = ("oliver")
   }
   { txtPort TextBox
-    MoveScaled(2,12,16,4)
+    MoveScaled(2,22,16,4)
+    ToolTip = ("Server SSH-Portangabe\n(Standardport ist 22)")
     Text = ("33322")
   }
   { btnCancel Button
-    MoveScaled(41,12,16,4)
+    MoveScaled(40,22,17,4)
+    ToolTip = ("Verbindungsaufbau abbrechen.")
     Text = ("Abbrechen")
   }
   { btnKey Button
-    MoveScaled(21,2,36,4)
+    MoveScaled(21,12,36,4)
+    ToolTip = ("Einfach einen SSH Zugangsschlüssel für den Server anlegen, damit\neine zukünftige Passworteingabe beim Verbindungsaufbau entfallen kann.")
     Text = ("SSH-Key anlegen")
   }
   { btnKeyCopy Button
-    MoveScaled(21,7,36,4)
+    MoveScaled(21,17,36,4)
+    ToolTip = ("Den öffentlichen Schlüssel dem Server bekannt machen, damit\nzukünftig eine sichere, passwortlose Verbindung erfolgen kann.")
     Text = ("Public Key auf Server übertragen")
+  }
+  { Label1 Label
+    MoveScaled(2,1,55,10)
+    Alignment = Align.Center
+    Text = ("Verbinden Sie sich per SSHFS mit einem SFTP-Server.\nLegen Sie dazu einen SSH-Key an und machen Sie diesen\ndem Server bekannt. ")
   }
 }
