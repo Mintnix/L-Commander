@@ -1,0 +1,73 @@
+' Gambas class file
+
+Public Data As CSftpData
+
+
+Public Sub btnOK_Click()
+    'Verbindung aufbauen
+    If txtServer.Text = "" Or txtUser.Text = "" Then 
+        Message.Error("Server und Benutzer müssen angegeben werden.")
+        Return 
+    Endif
+    
+    '----- SSH-Key prüfen -----
+    If Not Exist(User.Home & "/.ssh/id_ed25519") Then 
+        Message.Error("Kein SSH-Key gefunden.")
+        Return 
+    Endif
+    
+    Data.Server = txtServer.Text
+    Data.UserName = txtUser.Text
+    Data.Port = Val(txtPort.Text)
+    If Data.Port = 0 Then Data.Port = 22
+    Wait 
+    
+    Me.Close(True)
+End
+
+Public Function Run() As CSftpData
+    'das Wichtigste
+    Data = New CSftpData
+    
+    If Me.ShowModal() = False Then 
+        Return Null
+    Endif
+    
+    Return Data
+End
+
+
+
+Public Sub btnCancel_Click()
+    'Abbruch
+    Me.Close(False)
+
+End
+
+Public Sub btnKey_Click()
+    'SSH Key erzeugen
+    Dim cmd As String
+    Dim keyFile As String
+    
+    keyFile = User.Home & "/.ssh/id_ed25519"
+    
+    If Exist(keyFile) Then 
+        Message.Warning("Ein SSH-Schlüssel existiert bereits: " & keyFile)
+        Return 
+    Endif
+    'SSH Key im Terminal erstellen
+    cmd = "gnome-terminal -- ssh-keygen -t ed25519 -f " & keyFile
+    Print cmd
+    Shell cmd
+    
+    Message.Info("Key wird erzeugt. Bitte den Anweisungen im Terminal folgen")
+End
+
+Public Sub btnKeyCopy_Click()
+    'SSH-Key (Public-Key) auf Server übertragen
+    Dim cmd As String
+    
+    cmd = "gnome-terminal -- ssh-copy-id -i " & User.Home & "/.ssh/id_ed25519" & " -p " & txtPort.Text & " " & txtUser.Text & "@" & txtServer.Text
+    Print cmd
+    Shell cmd
+End

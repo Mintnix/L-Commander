@@ -193,3 +193,26 @@ Public Sub Spruch()
     If x = 25 Then FMain.Label1.Text = "Wer den Pfennig nicht ehrt, ist des Talers nicht wert."
     If x = 26 Then FMain.Label1.Text = "Wo Rauch aufsteigt, da ist auch Feuer."
 End
+
+Public Function FindSftpMount(host As String, user As String, port As Integer) As String
+    'MOUNTPFAD FINDEN
+    Dim base As String
+    Dim entry As String
+    Dim uid As String
+    
+    uid = Trim(Shell("id -u"))
+    base = "run/user/" & uid & "/gvfs"
+    
+    For Each entry In Dir(base)
+        If entry Like "sftp:host=" & host & "*" Then 
+            If entry Like "*user=" & user & "*" And entry Like "*port=" & port & "*" Then 
+                Print base, entry
+                Return base & "/" & entry
+            Endif
+        Endif
+    Next
+    
+    Return ""
+End
+
+

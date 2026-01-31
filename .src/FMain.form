@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,171.4286,100)
+  MoveScaled(0,0,171.375,100)
   Background = &HDFFFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
@@ -227,8 +227,8 @@
       Shortcut = "Alt+N"
     }
     { Menu56 Menu
-      Text = ("Fritzbox NAS")
-      Picture = Picture["icon:/medium/folder-network"]
+      Text = ("SFTP Verbindung")
+      Picture = Picture["icon:/medium/folder-remote"]
       Shortcut = "Alt+R"
     }
     { Menu32 Menu

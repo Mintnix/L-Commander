@@ -1,0 +1,36 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,59,23)
+  Background = &H00FFFF
+  Text = ("SFTP-Server")
+  Utility = True
+  { btnOK Button
+    MoveScaled(21,12,16,4)
+    Text = ("OK")
+  }
+  { txtServer TextBox
+    MoveScaled(2,2,16,4)
+    Text = ("mintnixserver")
+  }
+  { txtUser TextBox
+    MoveScaled(2,7,16,4)
+    Text = ("oliver")
+  }
+  { txtPort TextBox
+    MoveScaled(2,12,16,4)
+    Text = ("33322")
+  }
+  { btnCancel Button
+    MoveScaled(41,12,16,4)
+    Text = ("Abbrechen")
+  }
+  { btnKey Button
+    MoveScaled(21,2,36,4)
+    Text = ("SSH-Key anlegen")
+  }
+  { btnKeyCopy Button
+    MoveScaled(21,7,36,4)
+    Text = ("Public Key auf Server übertragen")
+  }
+}

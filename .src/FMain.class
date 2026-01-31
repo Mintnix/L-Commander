@@ -182,6 +182,7 @@ End
 
 Public Sub Menu5_Click()
     'beenden
+    Try Shell "umount " & User.Home & "/.lcommander_sftp"
     Wait 0.2
     Me.Close
 End
@@ -1598,16 +1599,42 @@ End
 
 Public Sub Menu55_Click()
     'Computer anzeigen ( über nemo )
-    Desktop.UsePortal = False
-    Try Desktop.Open("computer:///")
-    If Error Then Return 
+    ' Desktop.UsePortal = False
+    ' Try Desktop.Open("computer:///")
+    ' If Error Then Return 
+    Funktionen.OpenGVFSInFileView("computer://", FileView2)
 End
 
 Public Sub Menu56_Click()
-    'Fritzbox anzeigen ( über nemo )
-    Desktop.UsePortal = False
-    Try Desktop.Open("smb://fritz.box/fritz.nas")
-    If Error Then Print "Fehler!"
+    'SFTP Verbindung aufbauen 
+    Dim dlg As New SftpServer
+    Dim sftp As CSftpData
+    Dim cmd As String
+    Dim MountDir As String
+
+    sftp = dlg.Run()
+    If sftp = Null Then Return 
+    Print sftp.Server
+    Print sftp.UserName
+    Print sftp.Port
+
+    'Mount Verzeichnis prüfen
+    MountDir = User.Home & "/.lcommander_sftp"
+    Print MountDir
+    If Not Exist(MountDir) Then Mkdir MountDir
+
+    'Shell Befehl basteln
+    cmd = "/usr/bin/sshfs -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & ":/ " & MountDir & " -o reconnect"
+    Print cmd
+    'Befehl aufrufen
+    Try Shell cmd 
+    If Error Then 
+        Message.Error("SFTP-Verbindung fehlgeschlagen")
+        Return 
+    Endif 
+    
+    FileView2.Dir = MountDir
+    FileView2.Reload
 End
 
 Public Sub Menu57_Click()
@@ -2029,4 +2056,10 @@ End
 Public Sub DirView1_LostFocus()
     'Fokus auf Baum verlieren
     DirView1.Background = iHindergrund
+End
+
+Public Sub Form_Close()
+    'Form Schließen über X
+    Try Shell "umount " & User.Home & "/.lcommander_sftp"
+    Wait 0.3
 End

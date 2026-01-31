@@ -1,0 +1,5 @@
+' Gambas class file
+
+Public Server As String
+Public UserName As String
+Public Port As Integer
