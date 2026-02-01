@@ -70,3 +70,10 @@ Public Sub btnKeyCopy_Click()
     Print cmd
     Shell cmd
 End
+
+Public Sub Form_Open()
+    'Nach Öffnen das machen
+    txtServer.Text = FMain.sServerID
+    txtUser.Text = FMain.sServerUser
+    txtPort.Text = FMain.iServerPort
+End

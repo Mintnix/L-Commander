@@ -13,8 +13,8 @@ Public sTDatei As String                    'eine Trashvariable
 Public lOrdner As String
 Public rOrdner As String
 Public iStandardfarbe As Integer = &HBFFFFF 'Standardfarbe
-Public iHindergrund As Integer = &HDFF7FF   
-Public iVordergrund As Integer
+Public iHindergrund As Integer = &HDFF7FF   'Hintergrundfarbe
+Public iVordergrund As Integer              'Schriftfarbe
 Public sEditfile As String
 Public iLR As Integer = 0                   'linkes oder rechtes Feld zuletzt gewählt
 Public bRand As Boolean                     'Ränder anzeigen ja oder nein
@@ -42,6 +42,9 @@ Public sRechte As String
 Public CopyList As New String[]
 Public CopySourceDir As String
 Public CopyOrMove As Integer = 0    '1 = Kopieren, 2 = Verschieben
+Public sServerID As String                      'Servername oder IP
+Public sServerUser As String                    'Server Benutzername
+Public iServerPort As Integer                   'Server SSH-Port
 
  
 
@@ -61,6 +64,9 @@ Public Sub Form_Open()
     Dim sLine10 As String
     Dim sLine11 As String
     Dim sLine12 As String
+    Dim sLine13 As String
+    Dim sLine14 As String
+    Dim sLine15 As String
 
     ''Konfigurationsdatei wird automatisch angelegt
     If Exist("~/.lc_config.txt") = False Then Shell "touch ~/.lc_config.txt" Wait 
@@ -83,6 +89,9 @@ Public Sub Form_Open()
     Line Input #hFile, sLine10  'Fav 1
     Line Input #hFile, sLine11  'Fav 2
     Line Input #hFile, sLine12  'Fav 3
+    Line Input #hFile, sLine13  'ServerID
+    Line Input #hFile, sLine14  'ServerUser
+    Line Input #hFile, sLine15  'ServerPort
     Close #hFile
     Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
     ''Laden Ende
@@ -96,6 +105,9 @@ Public Sub Form_Open()
     If sLine7 = "" Then sLine7 = 0
     If sLine8 = "" Then sLine8 = 0
     If sLine9 = "" Then sLine9 = 0
+    If sLine13 = "" Then sLine13 = "Server" Else sServerID = sLine13
+    If sLine14 = "" Then sLine14 = "User" Else sServerUser = sLine14
+    If sLine15 = "" Then sLine15 = "22" Else iServerPort = sLine15
 
     iStandardfarbe = sLine1
     iHindergrund = sLine2
@@ -109,6 +121,9 @@ Public Sub Form_Open()
     sLiebling1 = sLine10
     sLiebling2 = sLine11
     sLiebling3 = sLine12
+    Einstellungen.ServerBox.Text = sLine13
+    Einstellungen.UserBox.Text = sLine14
+    Einstellungen.PortBox.Text = sLine15
     Wait 'Abwarten, damit alle Zeilen geladen sind, sonst stürzt scheinbar das Programm beim Aufbau ab!
 
     Splitter1.Layout = [0, 48, 4, 48]

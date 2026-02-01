@@ -1,48 +1,51 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,59,28)
+  MoveScaled(0,0,59,32)
   Background = &H00FFFF
-  Text = ("SFTP-Server")
+  Text = ("Serververbindung herstellen ") & "..."
   Utility = True
   { btnOK Button
-    MoveScaled(21,22,17,4)
+    MoveScaled(21,26,17,4)
     ToolTip = ("Vebindung zum eingetragenen Server herstellen.")
     Text = ("OK")
   }
-  { txtServer TextBox
-    MoveScaled(2,12,16,4)
+  { !txtServer TextBox
+    MoveScaled(2,16,16,4)
+    #Public = True
     ToolTip = ("Servername oder Server-IP-Adresse")
     Text = ("Server")
   }
-  { txtUser TextBox
-    MoveScaled(2,17,16,4)
+  { !txtUser TextBox
+    MoveScaled(2,21,16,4)
+    #Public = True
     ToolTip = ("Benutzername auf dem Server")
     Text = ("User")
   }
-  { txtPort TextBox
-    MoveScaled(2,22,16,4)
+  { !txtPort TextBox
+    MoveScaled(2,26,16,4)
+    #Public = True
     ToolTip = ("Server SSH-Portangabe\n(Standardport ist 22)")
     Text = ("22")
   }
   { btnCancel Button
-    MoveScaled(40,22,17,4)
+    MoveScaled(40,26,17,4)
     ToolTip = ("Verbindungsaufbau abbrechen.")
     Text = ("Abbrechen")
   }
   { btnKey Button
-    MoveScaled(21,12,36,4)
+    MoveScaled(21,16,36,4)
     ToolTip = ("Einfach einen SSH Zugangsschlüssel für den Server anlegen, damit\neine zukünftige Passworteingabe beim Verbindungsaufbau entfallen kann.")
     Text = ("SSH-Key anlegen")
   }
   { btnKeyCopy Button
-    MoveScaled(21,17,36,4)
+    MoveScaled(21,21,36,4)
     ToolTip = ("Den öffentlichen Schlüssel dem Server bekannt machen, damit\nzukünftig eine sichere, passwortlose Verbindung erfolgen kann.")
     Text = ("Public Key auf Server übertragen")
   }
   { Label1 Label
-    MoveScaled(2,1,55,10)
+    MoveScaled(2,1,55,14)
     Alignment = Align.Center
-    Text = ("Verbinden Sie sich per SSHFS mit einem SFTP-Server.\nLegen Sie dazu einen SSH-Key an und machen Sie diesen\ndem Server bekannt. ")
+    Text = ("Verbinden Sie sich per SSHFS mit einem SFTP-Server.\nLegen Sie dazu einen SSH-Key an und machen Sie diesen\ndem Server bekannt. \nAchten Sie auf korrekte Verbindungsdaten.")
   }
 }
