@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,100,64)
+  MoveScaled(0,0,100,70)
   Background = &HDFFFFF
   Text = ("Programmeinstellungen")
   Resizable = False
@@ -20,42 +20,77 @@
     List = [("Blau"), ("Rot"), ("Grün"), ("Gelb"), ("Grau"), ("Dunkelgrau"), ("Retroblau"), ("Schwarz"), ("Weiss")]
   }
   { Frame2 Frame
-    MoveScaled(1,12,98,44)
+    MoveScaled(1,12,98,49)
     Text = ("Sonstige Einstellungen")
     { !CheckBox1 CheckBox
-      MoveScaled(3,4,92,5)
+      MoveScaled(3,3,92,5)
       #Public = True
       Text = ("TABULATOR - Fokus der beiden Textboxen einschalten.")
     }
     { !CheckBox2 CheckBox
-      MoveScaled(3,10,92,5)
+      MoveScaled(3,9,92,5)
       #Public = True
       Text = ("VORSCHAU - Dateianzeige standardmäßig als Vorschau anzeigen.")
     }
     { !CheckBox3 CheckBox
-      MoveScaled(3,16,92,5)
+      MoveScaled(3,15,92,5)
       #Public = True
       ToolTip = ("VORSCHAU hat Vorrang.")
       Text = ("LISTEN - Dateianzeige standardmäßig als detaillierte Liste anzeigen. ")
     }
     { !CheckBox4 CheckBox
-      MoveScaled(3,22,92,5)
+      MoveScaled(3,21,92,5)
       #Public = True
       Text = ("MAXIMIERT - Programm entsprechend der Bildschirmgröße darstellen.")
     }
     { !CheckBox5 CheckBox
-      MoveScaled(3,28,92,5)
+      MoveScaled(3,27,92,5)
       #Public = True
       Text = ("RAND - Ränder der Steuerelemente verbergen. ")
     }
     { !CheckBox6 CheckBox
-      MoveScaled(3,34,92,5)
+      MoveScaled(3,33,92,5)
       #Public = True
       Text = ("BAUM - Verzeichnisbaum bei Start eingeschaltet.")
     }
+    { Frame3 Frame
+      MoveScaled(0,40,98,9)
+      Text = ("Server Daten")
+      { ServerBox TextBox
+        MoveScaled(15,3,21,4)
+        ToolTip = ("Servername oder Server-IP-Adresse")
+        Text = ("Server")
+      }
+      { UserBox TextBox
+        MoveScaled(52,3,21,4)
+        ToolTip = ("Benutzername auf dem Server")
+        Text = ("User")
+      }
+      { PortBox ValueBox
+        MoveScaled(83,3,14,4)
+        ToolTip = ("SSH-Port des Server")
+        Text = ("22")
+        Alignment = Align.Center
+      }
+      { TextLabel2 TextLabel
+        MoveScaled(0,3,14,4)
+        Text = ("Servername")
+        Alignment = Align.Right
+      }
+      { TextLabel3 TextLabel
+        MoveScaled(37,3,14,4)
+        Text = ("Nutzername")
+        Alignment = Align.Right
+      }
+      { TextLabel4 TextLabel
+        MoveScaled(73,3,9,4)
+        Text = ("Port")
+        Alignment = Align.Right
+      }
+    }
   }
   { Button1 Button
-    MoveScaled(1,58,98,5)
+    MoveScaled(1,63,98,5)
     ToolTip = ("Einige Einstellungen werden\nerst nach einem Neustart der\nAnwendung aktiv. ")
     Text = ("Speichern !")
   }

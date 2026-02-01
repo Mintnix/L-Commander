@@ -127,3 +127,9 @@ Public Sub Button1_Click()
     File.Save("~/.lc_config.txt", FMain.iStandardfarbe & gb.NewLine & FMain.iHindergrund & gb.NewLine & FMain.iVordergrund & gb.NewLine & CheckBox1.Value & gb.NewLine & CheckBox2.Value & gb.NewLine & CheckBox3.Value & gb.NewLine & CheckBox4.Value & gb.NewLine & CheckBox5.Value & gb.NewLine & CheckBox6.Value & gb.NewLine & FMain.sLiebling1 & gb.NewLine & FMain.sLiebling2 & gb.NewLine & FMain.sLiebling3 & gb.NewLine)
     Me.Close
 End
+
+Public Sub Frame3_MouseDown()
+
+    
+
+End

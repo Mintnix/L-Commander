@@ -85,11 +85,6 @@ Public Sub PasteSelection(fvTarget As FileView)
         Endif
     Next
     If FMain.CopyOrMove = 2 Then 
-        ' FMain.FileView1.Reload
-        ' FMain.FileView2.Reload
-        ' FMain.CopyList.Clear        'die Liste leeren
-        ' FMain.CopySourceDir = ""    'Pfad leeren 
-        ' FMain.CopyOrMove = 0
         Wait 0.8
         FMain.Reset
     Else 
@@ -220,11 +215,11 @@ Public Function IsMounted(mountsftp As String) As Boolean
     Dim out As String
     
     Shell "mountpoint " & Quote(mountsftp) To out
-    'Print out
     
     If InStr(out, "ist ein Einhängepunkt") > 0 Then 
         Return True
     Endif
-   Return False
+    
+    Return False
 End
 

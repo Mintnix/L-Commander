@@ -1622,10 +1622,10 @@ End
 
 Public Sub Menu55_Click()
     'Computer anzeigen ( über nemo )
-    ' Desktop.UsePortal = False
-    ' Try Desktop.Open("computer:///")
-    ' If Error Then Return 
-    Funktionen.OpenGVFSInFileView("computer://", FileView2)
+    Desktop.UsePortal = False
+    Try Desktop.Open("computer:///")
+    If Error Then Return 
+    'Funktionen.OpenGVFSInFileView("computer://", FileView2)
 End
 
 Public Sub Menu56_Click()
@@ -1651,6 +1651,7 @@ Public Sub Menu56_Click()
         Me.Title = "L-Commander - der einfachste Dateimanager der Welt!"
         PictureBox2.Picture = pLED_GRAU
     Endif
+   
     'SFTP Verbindung aufbauen 
     Print "Mount aktiv:"; Funktionen.IsMounted(User.Home & "/.lcommander_sftp")
     
@@ -1680,19 +1681,24 @@ Public Sub Menu56_Click()
     Endif
     
     'Shell Befehl basteln
-    cmd = "/usr/bin/sshfs -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & ":/" & User.Home & " " & MountDir & " -o reconnect"
+    cmd = "/usr/bin/sshfs -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & ":/home/" & sftp.UserName & " " & MountDir & " -o reconnect &"
     Print cmd
+
     'Befehl aufrufen
-    Try Shell cmd 
-    If Error Then 
-        Message.Error("SFTP-Verbindung fehlgeschlagen")
-        Return 
+    Shell cmd
+    Wait
+    
+    'Fehlerbehandlung: ist eingehängt ?
+    If Funktionen.IsMounted(mountsftp) Then
+        Print "Kein Fehler"
+        'FileView Ansicht füllen
+        Me.Title = "L-Commander - der einfachste Dateimanager der Welt! <> Aktuell mit einem Server verbunden."
+        PictureBox2.Picture = pLED_SFTP
+        FileView2.Dir = MountDir
+        FileView2.SetFocus
+    Else 
+        Message.Error("SFTP-Verbindung fehlgeschlagen.")
     Endif 
-    'FileView Ansicht füllen
-    Me.Title = "L-Commander - der einfachste Dateimanager der Welt! <> Aktuell mit einem Server verbunden."
-    PictureBox2.Picture = pLED_SFTP
-    FileView2.Dir = MountDir
-    FileView2.SetFocus
 End
 
 Public Sub UnmountSftp()
@@ -2141,7 +2147,7 @@ End
 Public Sub PictureBox2_Enter()
     ' LED Icon überfahren & Infos anzeigen
     If PictureBox2.Picture = pLED_SFTP Then
-        PictureBox2.Tooltip = "Sie sind aktuell mit einem Server verbunden.\n Im rechten Feld wir der Server-Home-Ordner angezeigt."
+        PictureBox2.Tooltip = "Sie sind aktuell mit einem Server verbunden.\n Im rechten Feld wird der Server-Home-Ordner angezeigt."
         FileView2.Dir = User.Home & "/.lcommander_sftp"
         FileView2.SetFocus
     Endif 
