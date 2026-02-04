@@ -189,6 +189,20 @@ Public Sub Spruch()
     If x = 26 Then FMain.Label1.Text = "Wo Rauch aufsteigt, da ist auch Feuer."
 End
 
+Public Function IsMounted(mountsftp As String) As Boolean
+    ' Prüfen ob SFTP Verbindung da und eingehangen ist
+    Dim out As String
+    
+    Shell "mountpoint " & Quote(mountsftp) To out
+    
+    If InStr(out, "ist ein Einhängepunkt") > 0 Then 
+        Return True
+    Endif
+    
+    Return False
+End
+
+
 ' Public Function FindSftpMount(host As String, usern As String, port As Integer) As String
 '     'MOUNTPFAD FINDEN
 '     Dim base As String
@@ -209,17 +223,3 @@ End
 '     
 '     Return ""
 ' End
-
-Public Function IsMounted(mountsftp As String) As Boolean
-    ' Prüfen ob SFTP Verbindung da und eingehangen ist
-    Dim out As String
-    
-    Shell "mountpoint " & Quote(mountsftp) To out
-    
-    If InStr(out, "ist ein Einhängepunkt") > 0 Then 
-        Return True
-    Endif
-    
-    Return False
-End
-

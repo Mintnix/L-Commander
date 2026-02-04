@@ -303,6 +303,7 @@ End
 Public Sub InAction()
     'Funktionsanzeige, das etwas gerade in Arbeit ist
     If Timer1.Enabled = False Then 
+        pLED_Status = PictureBox2.Picture
         Timer1.Start 
         Label1.Text = "Bitte warten! Dies kann eine Weile dauern, auch wenn sich die Anzeige scheinbar nicht bewegt."
         Label1.Foreground = &HFF003F
@@ -311,7 +312,7 @@ Public Sub InAction()
     Else 
         Wait 0.8
         Timer1.Stop
-        PictureBox2.Picture = pLED_GRAU
+        PictureBox2.Picture = pLED_Status
         Label1.Foreground = &H808080
         Funktionen.Spruch()
     Endif 
@@ -338,7 +339,7 @@ Public Sub Loeschen()
     If iLR = 1 Then 
         If FileView1.Dir Begins "/media" &/ User.Name Then 
             aPfadArray = Split(FileView1.Dir, "/") 
-            Try Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
+            Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
             Trash_Info = Trash_Dir &/ "info"
             Trash_Files = Trash_Dir &/ "files"
             Print Trash_Dir
@@ -355,13 +356,17 @@ Public Sub Loeschen()
     If iLR = 2 Then 
         If FileView2.Dir Begins "/media" &/ User.Name Then 
             aPfadArray = Split(FileView2.Dir, "/") 
-            Try Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
+            Trash_Dir = "/" & aPfadArray[1] &/ aPfadArray[2] &/ aPfadArray[3] &/ ".Trash-1000"
             Trash_Info = Trash_Dir &/ "info"
             Trash_Files = Trash_Dir &/ "files"
             Print Trash_Dir
             Print Trash_Info
             Print Trash_Files
         Endif 
+        If FileView2.Dir Begins User.Home & "/.lcommander_sftp" Then 
+            Message.Info("Dateien auf dem Server können nicht in den Papierkorb wandern.\n Diese müssen endgültig gelöscht werden.")
+            Return 
+        Endif
         If FileView2.Dir Not Begins "/media" &/ User.Name Then 
             Trash_Dir = "~/.local/share/Trash"
             Trash_Info = Trash_Dir &/ "info"
@@ -994,7 +999,7 @@ Public Sub Menu16_Click()
         QUELLPFAD = FileView1.Dir
         QUELLDATEI = FileView1.Current
         Try Loeschen
-        Print "Es wurde gelöscht!"
+        Print "Info: Löschbefehl Einzel-Datei beendet"
     Endif 
     TextBox1.Text = ""
     FileView2.Enabled = True
@@ -1457,13 +1462,12 @@ Public Sub Menu46_Click()
             Try Loeschen 
             Wait 0.5
         Next
-    
     Else 
     'eine Datei löschen
         QUELLPFAD = FileView2.Dir
         QUELLDATEI = FileView2.Current
         Try Loeschen
-        Print "Es wurde gelöscht!"
+        Print "Info: Löschbefehl Einzel-Datei beendet"
     Endif 
     TextBox2.Text = ""
     FileView2.Enabled = True
@@ -1747,7 +1751,7 @@ Public Sub Menu31_Click()
     'Textdatei erstellen
     If FileView1.HasFocus Then 
         If Not Exist(FileView1.Dir &/ "text.txt") Then 
-            Try Shell "touch " & FileView1.Dir &/ "text.txt" Wait
+            Try Shell "touch " & Quote(FileView1.Dir) &/ "text.txt" Wait
             TextLabel1.Text = "Eine Datei → text.txt ← wurde erstellt."
         Else
             TextLabel1.Text = "Die Datei → text.txt ← existiert leider schon und wird daher nicht angelegt."
@@ -1757,7 +1761,7 @@ Public Sub Menu31_Click()
     
     If FileView2.HasFocus Then 
         If Not Exist(FileView2.Dir &/ "text.txt") Then 
-            Try Shell "touch " & FileView2.Dir &/ "text.txt" Wait
+            Try Shell "touch " & Quote(FileView2.Dir) &/ "text.txt" Wait
             TextLabel1.Text = "Eine Datei → text.txt ← wurde erstellt."
         Else
             TextLabel1.Text = "Die Datei → text.txt ← existiert leider schon und wird daher nicht angelegt."

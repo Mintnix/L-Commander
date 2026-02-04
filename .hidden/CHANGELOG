@@ -1,3 +1,6 @@
+* Wed Feb 04 2026 Mintnix <pcspezialist@arcor.de> 0.2.3
+- Fehlerkorrekturen Löschfunktion, LED-Anzeige
+
 * Sun Feb 01 2026 Mintnix <pcspezialist@arcor.de> 0.2.3
 - Serverdaten können in den Einstellungen hinterlegt und abgespeichert werden
 - Fehlerbehandlung bei falschen Serverangaben angepasst
