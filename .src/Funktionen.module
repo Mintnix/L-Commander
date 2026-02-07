@@ -202,24 +202,35 @@ Public Function IsMounted(mountsftp As String) As Boolean
     Return False
 End
 
-
-' Public Function FindSftpMount(host As String, usern As String, port As Integer) As String
-'     'MOUNTPFAD FINDEN
-'     Dim base As String
-'     Dim entry As String
-'     Dim uid As String
-'     
-'     uid = Trim(Shell("id -u"))
-'     base = "run/user/" & uid & "/gvfs"
-'     
-'     For Each entry In Dir(base)
-'         If entry Like "sftp:host=" & host & "*" Then 
-'             If entry Like "*user=" & usern & "*" And entry Like "*port=" & port & "*" Then 
-'                 Print base, entry
-'                 Return base & "/" & entry
-'             Endif
-'         Endif
-'     Next
-'     
-'     Return ""
-' End
+Public Sub PerMailSenden()
+    'Function Datei per Mail-Anhang zu senden
+    If FMain.iLR = 1 Then 
+        If FMain.FileView1.Current Then 
+            If IsDir(FMain.FileView1.Path) Then 
+                FMain.TextLabel1.Text = "Verzeichnis kann nicht versendet werden, nur eine Datei."
+                Return 
+            Endif
+            Shell ("xdg-email --attach " & Quote(FMain.FileView1.Path)) 
+            Print "Mail-Anhang: " & FMain.FileView1.Path
+        Else
+            Print "Nichts ausgewählt"
+            FMain.TextLabel1.Text = "Keine Datei ausgewählt."
+            Return 
+        Endif
+    Endif 
+    
+    If FMain.iLR = 2 Then 
+        If FMain.FileView2.Current Then 
+            If IsDir(FMain.FileView2.Path) Then 
+                FMain.TextLabel1.Text = "Verzeichnis kann nicht versendet werden, nur eine Datei."
+                Return 
+            Endif
+            Shell ("xdg-email --attach " & Quote(FMain.FileView2.Path)) 
+            Print "Mail-Anhang: " & FMain.FileView1.Path
+        Else
+            Print "Nichts ausgewählt"
+            FMain.TextLabel1.Text = "Keine Datei ausgewählt."
+            Return
+        Endif  
+    Endif
+End

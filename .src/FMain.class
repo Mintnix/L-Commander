@@ -861,8 +861,7 @@ Public Sub Button6_Click()
         PictureBox2.Picture = pLED_GELB
         TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
         TextLabel1.Foreground = 0
-        
-        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher auswählen, dann klappt auch das Umbenennen."
+        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher aktiv auswählen, dann klappt auch das Umbenennen."
         If sEditfile = "" Then TextLabel1.Foreground = 16711680
         Wait 1
         TextLabel1.Foreground = iVordergrund
@@ -876,7 +875,7 @@ Public Sub Button6_Click()
         PictureBox2.Picture = pLED_GELB
         TextLabel1.Foreground = 0
         TextLabel1.Text = "Umbenennen und mit Enter bestätigen."
-        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher auswählen, dann klappt auch das Umbenennen."
+        If sEditfile = "" Then TextLabel1.Text = "Datei/Ordner vorher aktiv auswählen, dann klappt auch das Umbenennen."
         If sEditfile = "" Then TextLabel1.Foreground = 16711680
         Wait 1
         TextLabel1.Foreground = iVordergrund
@@ -888,11 +887,12 @@ End
 
 Public Sub Button7_Click()
     'neuer Ordner erstellen - F7
+    
     If iLR = 1 Then 
         If Exist(FileView1.Dir &/ "Neuer Ordner") Then
-            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher auswählen."
+            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher aktiv auswählen."
             PictureBox2.Picture = pLED_GELB
-            FileView1.SetFocus 
+            FileView1.SetFocus
             FileView1.Current = "Neuer Ordner"
             Wait 1
         Endif
@@ -902,17 +902,17 @@ Public Sub Button7_Click()
             PictureBox2.Picture = pLED_ROT
             FileView2.Reload
             FileView1.Reload 
-            Wait 
+            Wait
             FileView1.SetFocus
             FileView1.Current = "Neuer Ordner"
             Wait 1
-        Else 
-            'iLR = 1
+        Else
+            Print "Neuer Ordner angelegt"
         Endif 
     Endif 
     If iLR = 2 Then 
         If Exist(FileView2.Dir &/ "Neuer Ordner") Then
-            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher auswählen."
+            TextLabel1.text = "Ordner existiert bereits. Zum Umbenennen den Ordner vorher aktiv auswählen."
             PictureBox2.Picture = pLED_GELB
             FileView2.SetFocus
             FileView2.Current = "Neuer Ordner"
@@ -928,11 +928,10 @@ Public Sub Button7_Click()
             FileView2.SetFocus
             FileView2.Current = "Neuer Ordner"
             Wait 1
-        Else 
-            'iLR = 2
+        Else
+            Print "Neuer Ordner angelgt"
         Endif 
     Endif 
-    ' If FileView1.HasFocus = False And FileView2.HasFocus = False Then Print "FEHLER !!!"
     DirView1.Reload
     PictureBox2.Picture = pLED_GRAU
 End
@@ -1948,6 +1947,7 @@ End
 Public Sub FileView1_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
     If Key.Control And Key.Code = Key["o"] Then Menu71_Click
+    If Key.Control And Key.Code = Key["s"] Then Funktionen.PerMailSenden()
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["#"] Or If Key.Code = Key["m"] Then 
         pLED_Status = PictureBox2.Picture
@@ -1983,6 +1983,7 @@ End
 Public Sub FileView2_KeyRelease()
     'Tastenfunktionen auch bei Detailliste des FileView
     If Key.Control And Key.Code = Key["o"] Then Menu72_Click
+    If Key.Control And Key.Code = Key["s"] Then Funktionen.PerMailSenden()
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
     If Key.Code = Key["m"] Or If Key.Code = Key["#"] Then 
         pLED_Status = PictureBox2.Picture
@@ -2170,4 +2171,14 @@ Public Sub PictureBox2_Enter()
         FileView2.Dir = User.Home & "/.lcommander_sftp"
         FileView2.SetFocus
     Endif 
+End
+
+Public Sub Menu81_Click()
+   'im Feld links die Datei per Mailanhang versenden
+   Funktionen.PerMailSenden
+End
+
+Public Sub Menu82_Click()
+   'im Feld links die Datei per Mailanhang versenden
+   Funktionen.PerMailSenden
 End
