@@ -176,7 +176,7 @@ Public Sub Form_Open()
     If FMain.Maximized = True Then FileView2.Font.Grade = 3 Else FileView2.Font.Grade = 2
     
     LCDLabel2.Text = Format(Date(Now), "dddd,dd,mm,yyyy")
-    If FMain.iHindergrund = &H000000 Then
+    If FMain.iHindergrund = &H000000 Or If FMain.iHindergrund = &H003060 Then
         LCDLabel2.Foreground = iVordergrund
         Button8.Foreground = iVordergrund
         Button9.Foreground = iVordergrund
