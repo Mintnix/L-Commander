@@ -68,6 +68,7 @@ Public Sub PasteSelection(fvTarget As FileView)
                     FMain.TextLabel1.Text = "Bereits existierende Dateien wurden nicht kopiert."
                 Endif 
                 If Not Error Then FMain.TextLabel1.Text = "Kopieren abgeschlossen. Speicher über Taste R freigeben."
+                Wait 1
             Endif 
         Endif 
         If FMain.CopyOrMove = 2 Then
@@ -80,6 +81,7 @@ Public Sub PasteSelection(fvTarget As FileView)
                 If Error Then 
                     Print "Datei " & s & " existiert schon und wird nicht verschoben."
                     FMain.TextLabel1.Text = "Existierende Dateien wurden nicht verschoben."
+                    Wait 1
                 Endif 
             Endif 
         Endif

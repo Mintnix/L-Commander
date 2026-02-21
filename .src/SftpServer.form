@@ -2,7 +2,7 @@
 
 { Form Form
   MoveScaled(0,0,59,32)
-  Background = &H00FFFF
+  Background = &HBFEFFF
   Text = ("Serververbindung herstellen ") & "..."
   Utility = True
   { btnOK Button

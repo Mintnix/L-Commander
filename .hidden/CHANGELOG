@@ -1,3 +1,7 @@
+* Sat Feb 21 2026 Mintnix <pcspezialist@arcor.de> 0.2.5
+- Kopieren über F5 berücksichtigt nun vorhandene Dateien und fragt ab
+- kleinere Farbanpassungen der Dialogfelder
+
 * Sat Feb 07 2026 Mintnix <pcspezialist@arcor.de> 0.2.4
 - neue Funktion im Kontextmenü und über Strg + S "Datei als Mail-Anhang versenden" hinzugefügt (keine Multiauswahl)
 - Hilfefenster ergänzt

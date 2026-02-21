@@ -2,14 +2,14 @@
 
 { Form Form
   MoveScaled(0,0,82,89)
-  Background = &HDFFFFF
+  Background = &HBFEFFF
   Text = ("Informationen zu Tastenbelegungen und Schnellzugriffen")
   Resizable = False
   Utility = True
   { TextArea1 TextArea
     MoveScaled(3,3,77,83)
     Font = Font["11"]
-    Background = &HDFFFFF
+    Background = &HBFEFFF
     Drop = False
     Text = ("Funktionstasten\n------------------------------------------------------------------------------------------------------------------\nF1\t\t=\tHilfefenster\nF2\t\t=\tDetails anzeigen\nF3\t\t=\tBildvorschau\t\t\nF4\t\t=\tVerzeichnisbaum anzeigen\n\nF5\t\t=\tDatei kopieren\t\t\t\t\t\nF6\t\t=\tDatei verschieben\t\t\t\t\nF7\t\t=\tVerzeichnis erstellen\t\t\nF8\t\t=\tDatei/Ordner umbenennen\t\n\nF9\t\t=\tTextdatei anlegen (text.txt)\t\t\t\nF10\t=\tProgramm beenden\t\t\nF11\t=\tARCHIV.zip anlegen und Datei/Ordner in Archiv kopieren\t*\nF12\t=\tZugriff USB/Ext. Datenträger\t*\t\n\n\nTastenkombinationen\n------------------------------------------------------------------------------------------------------------------\nStrg C\t\t=\tAuswahl kopieren\nStrg Entf\t=\tDatei/Ordner endgültig und unwiderruflich löschen\nStrg +\t\t=\tBaumansicht vergrößern\nStrg -\t\t=\tBaumansicht verkleinern\nStrg L\t\t=\tLieblinge zum Neubelegen auf einmal löschen\nStrg O\t\t=\tDatei \"Öffnen mit ...\"\nStrg S\t\t=\tDatei als Mail-Anhang versenden\nStrg V\t\t=\tAuswahl einfügen \nStrg X\t\t=\tAuswahl ausschneiden \n\nAlt C\t\t=\tComputer\t\t\t*\nAlt N\t\t=\tNetzwerk\t\t\t*\nAlt S\t\t=\tServer Verbindung\t\nAlt E\t\t=\tEinstellungsdialog öffnen\nAlt I\t\t=\tProgramminfo im Internet aufrufen\n\n\nTastencodierung\n------------------------------------------------------------------------------------------------------------------\nReturn\t\t=\tDoppelklick\nEnter\t\t=\tDoppelklick\nEsc\t\t\t=\tZurück\nEntf\t\t=\tDatei/Ordner löschen\nF\t\t\t=\t(Font) Schriftvorschau\nH\t\t\t=\t(Hidden) Versteckte Dateien anzeigen\nI\t\t\t=\t(Information) Freien Speicherplatz anzeigen\nM/#\t\t=\t(Memory) Ordner-/Dateigrößen berechnen\nR\t\t\t=\t(Refresh) Ansicht aktualisieren und Speicher leeren\nT\t\t\t=\t(Trash) Papierkorb durchsuchen\nV\t\t\t=\t(Version) Versionsinfo\n0\t\t\t=\tLiebling / Favorit 0 (Datei oder Ordner möglich)\n1\t\t\t=\tLiebling / Favorit 1 als Pfad aus Baum\n2\t\t\t=\tLiebling / Favorit 2 als Pfad aus Baum\n3\t\t\t=\tUSB Laufwerk 1 (Partition 1)\n4\t\t\t=\tUSB Laufwerk 2 (Partition 2)\n5\t\t\t=\tUSB Laufwerk 3 (Partition 3)\nAlt\t\t\t=\tMenüleiste\nPgUp\t\t=\tSymbole vergrößern / Schrift vergrößern (Detailansicht)\nPgDown\t=\tSymbole verkleinern / Schrift verkleinern (Detailansicht)\n\n\n\nUm die Favoriten dauerhaft festzulegen einmal die Einstellungen \nöffnen und dort den Speichern-Button benutzen. Auch bei \nÄnderungen an diesen so vorgehen.\n* (einige Funktionen nur eingeschränkt verfügbar)")
     ReadOnly = True

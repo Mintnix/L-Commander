@@ -2,7 +2,7 @@
 
 { Form Form
   MoveScaled(0,0,100,71)
-  Background = &HDFFFFF
+  Background = &HBFEFFF
   Text = ("Programmeinstellungen")
   Resizable = False
   Utility = True

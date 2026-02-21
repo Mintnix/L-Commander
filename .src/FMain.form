@@ -2,7 +2,7 @@
 
 { Form Form
   MoveScaled(0,0,171.375,100)
-  Background = &HDFFFFF
+  Background = &HBFEFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
   Arrangement = Arrange.Vertical

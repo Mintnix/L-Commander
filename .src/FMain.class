@@ -432,7 +432,8 @@ Public Sub Kopieren()
     ''Kopierfunktion mit den Testroutinen
     ' Alle Dateien kopieren
     Dim i As Integer
-    'Dim x As String
+    'Dim iJa As Integer
+    
     InAction()
     Print "Kopiervorgang"
     If iLR = 1 Then QUELLPFAD = FileView1.Dir
@@ -448,12 +449,28 @@ Public Sub Kopieren()
                 Print FileView1.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView1.Selection[i]
                 Print " KOPIERVORGANG von links nach rechts"
-                If QUELLE = ZIEL Then Print "Fehler, kann nicht auf sich selbst kopieren."
-                If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
-                If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
-                If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
-                If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-                Wait 0.3
+                
+                If Exist(ZIEL &/ FileView1.Selection[i]) Then 
+                    Print "Datei existiert schon"
+                    If Message.Warning("Auswahl " & Quote(FileView1.Selection[i]) & " existiert schon. \n Soll diese überschrieben werden?", "JA", "NEIN") = 1 Then 
+                        If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                        If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                        If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das hat nicht funktioniert. Quelle und Ziel identisch?"
+                        If Process.LastValue = 0 Then TextLabel1.Text = Quote(QUELLE) & " <=> wurde kopiert."
+                        Wait 0.5
+                    Else 
+                        Print "Datei wird nicht überschrieben"
+                        TextLabel1.Text = "Element " & Quote(FileView1.Selection[i]) & " wurde nicht kopiert."
+                        Wait 0.8
+                    Endif 
+                Endif
+                If Not Exist(ZIEL &/ FileView1.Selection[i]) Then 
+                    If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                    If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                    If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Da ist ein Fehler aufgetreten."
+                    If Process.LastValue = 0 Then TextLabel1.Text = Quote(QUELLE) & " <=> wurde kopiert."
+                    Wait 0.3
+                Endif
             Next
         Endif 
         DirView1.Enabled = True
@@ -472,12 +489,28 @@ Public Sub Kopieren()
                 Print FileView2.Selection[i]
                 QUELLE = QUELLPFAD &/ FileView2.Selection[i]
                 Print " KOPIERVORGANG von rechts nach links"
-                If QUELLE = ZIEL Then TextLabel1.Text = "Fehler, kann nicht auf sich selbst kopieren."
-                If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
-                If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait 
-                If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das funktioniert so nicht!"
-                If Process.LastValue = 0 Then TextLabel1.Text = QUELLE & " <=> wurde kopiert."
-                Wait 0.3
+                
+                If Exist(ZIEL &/ FileView2.Selection[i]) Then 
+                    Print "Datei existiert schon"
+                    If Message.Warning("Auswahl " & Quote(FileView2.Selection[i]) & " existiert schon. \n Soll diese überschrieben werden?", "JA", "NEIN") = 1 Then 
+                        If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                        If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                        If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Das hat nicht funktioniert. Quelle und Ziel identisch?"
+                        If Process.LastValue = 0 Then TextLabel1.Text = Quote(QUELLE) & " <=> wurde kopiert."
+                        Wait 0.5
+                    Else 
+                        Print "Datei wird nicht überschrieben"
+                        TextLabel1.Text = "Element " & Quote(FileView2.Selection[i]) & " wurde nicht kopiert."
+                        Wait 0.8
+                    Endif 
+                Endif
+                If Not Exist(ZIEL &/ FileView2.Selection[i]) Then 
+                    If IsDir(QUELLE) = True Then Shell "cp -r " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                    If IsDir(QUELLE) = False Then Shell "cp " & Shell(QUELLE) & " " & Shell(ZIEL) Wait
+                    If Error Or If Process.LastValue <> 0 Then TextLabel1.Text = "Da ist ein Fehler aufgetreten."
+                    If Process.LastValue = 0 Then TextLabel1.Text = Quote(QUELLE) & " <=> wurde kopiert."
+                    Wait 0.3
+                Endif
             Next
         Endif 
         DirView1.Enabled = True
@@ -1192,7 +1225,7 @@ Public Sub Button4_Click()
                 QUELLE = FileView1.Dir &/ FileView1.Selection[i]
                 Print QUELLE & " - Verschieben"
                 If Exist(FileView2.Dir &/ FileView1.Selection[i]) Then 
-                    TextLabel1.Text = "Die Datei " & FileView1.Selection[i] & " existiert schon und wird nicht verschoben."
+                    TextLabel1.Text = "Die Auswahl " & Quote(FileView1.Selection[i]) & " existiert schon und wird nicht verschoben."
                     Print FileView1.Selection[i] & "  ausgelassen, gibt es schon"
                     Wait 1
                 Endif
@@ -1200,9 +1233,7 @@ Public Sub Button4_Click()
                     Try Shell "mv " & Shell(QUELLE) & " " & Shell(FileView2.Dir) Wait 
                     If Error Or If Process.LastValue <> 0 Then Print "Der Befehl move gab einen Fehler zurück." Else TextLabel1.Text = 
                     FileView1.Selection[i] & " >=> wurde verschoben."
-                    'Funktionen.Verschieben()
                     Print QUELLE & "  wurde verschoben"
-                    'TextLabel1.Text = Funktionen.sInfotext
                     Wait 0.5
                 Endif 
             Next
@@ -1226,7 +1257,7 @@ Public Sub Button4_Click()
                 QUELLE = FileView2.Dir &/ FileView2.Selection[i]
                 Print QUELLE & " - Verschieben"
                 If Exist(FileView1.Dir &/ FileView2.Selection[i]) Then 
-                    TextLabel1.Text = "Die Datei " & FileView2.Selection[i] & " existiert schon und wird nicht verschoben."
+                    TextLabel1.Text = "Die Auswahl " & Quote(FileView2.Selection[i]) & " existiert schon und wird nicht verschoben."
                     Print FileView2.Selection[i] & "  ausgelassen, gibt es schon"
                     Wait 1
                 Endif
@@ -1234,7 +1265,6 @@ Public Sub Button4_Click()
                     Try Shell "mv " & Shell(QUELLE) & " " & Shell(FileView1.Dir) Wait 
                     If Error Or If Process.LastValue <> 0 Then Print "Der Befehl move gab einen Fehler zurück." Else TextLabel1.Text = 
                     FileView2.Selection[i] & " >=> wurde verschoben."
-                    'Funktionen.Verschieben()
                     Print QUELLE & "  wurde verschoben"
                     Wait 0.5
                 Endif
@@ -1261,13 +1291,13 @@ Public Sub Menu37_Click()
     'Datei als Favorit festlegen
     If sLiebling3 > "" Then 
         Select Message.Question("Favorit ist bereits vergeben. \nMöchten Sie die Taste 0 neu belegen? \n Wählen Sie Löschen und versuchen\nSie Ihre Auswahl noch einmal.", "Löschen", "Abbrechen")
-                Case 1
-                    sLiebling3 = ""
-                    Menu68.Text = "Liebling 0: "
-                    TextLabel1.Text = "Favorit 0 gelöscht."
-                Case 2
-                    Return 
-            End Select
+        Case 1
+            sLiebling3 = ""
+            Menu68.Text = "Liebling 0: "
+            TextLabel1.Text = "Favorit 0 gelöscht."
+        Case 2
+            Return 
+        End Select
     Else 
         sLiebling3 = FileView2.Path
         Menu68.Text = "Liebling 0: " & sLiebling3
@@ -1852,11 +1882,11 @@ Public Sub DirView1_DblClick()
                 Case 1
                     sLiebling1 = ""
                     Menu62.Text = "Liebling"
-                    TextLabel1.Text = "Favotit 1 gelöscht."
+                    TextLabel1.Text = "Favorit 1 gelöscht."
                 Case 2
                     sLiebling2 = ""
                     Menu63.Text = "Liebling"
-                    TextLabel1.Text = "Favotit 2 gelöscht."
+                    TextLabel1.Text = "Favorit 2 gelöscht."
                 Case 3
                     Return 
             End Select
@@ -2059,7 +2089,7 @@ Public Sub Menu72_Click()
 End
 
 Public Sub Menu73_Click()
-    'Kopieren wie Strg + C
+    '' linke Seite Kopieren wie Strg + C
     CopyOrMove = 1
     Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
     If FMain.CopyList.Count > 0 Then 
@@ -2070,7 +2100,7 @@ Public Sub Menu73_Click()
 End
 
 Public Sub Menu74_Click()
-    'Einfügen wie Strg + V
+    ''linke Seite Einfügen wie Strg + V
     Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2))  
     If CopyOrMove = 0 Then 
         Menu78.Enabled = False
@@ -2079,7 +2109,7 @@ Public Sub Menu74_Click()
 End
 
 Public Sub Menu75_Click()
-    'Ausschneiden wie Strg + X
+    ''linke Seite Ausschneiden wie Strg + X
     CopyOrMove = 2
     Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
     If FMain.CopyList.Count > 0 Then 
@@ -2090,7 +2120,7 @@ Public Sub Menu75_Click()
 End
 
 Public Sub Menu76_Click()
-    'Kopieren wie Strg + C
+    ''rechte Seite Kopieren wie Strg + C
     CopyOrMove = 1
     Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
     If FMain.CopyList.Count > 0 Then 
@@ -2101,7 +2131,7 @@ Public Sub Menu76_Click()
 End
 
 Public Sub Menu77_Click()
-    'Ausschneiden wie Strg + X
+    ''rechte Seite Ausschneiden wie Strg + X
     CopyOrMove = 2
     Funktionen.CopySelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
     If FMain.CopyList.Count > 0 Then 
@@ -2112,7 +2142,7 @@ Public Sub Menu77_Click()
 End
 
 Public Sub Menu78_Click()
-    'Einfügen wie Strg + V
+    ''rechte Seite Einfügen wie Strg + V
     Funktionen.PasteSelection(Funktionen.ActiveFileView(iLR, FileView1, FileView2)) 
     If CopyOrMove = 0 Then 
         Menu78.Enabled = False
@@ -2179,6 +2209,6 @@ Public Sub Menu81_Click()
 End
 
 Public Sub Menu82_Click()
-   'im Feld links die Datei per Mailanhang versenden
+   'im Feld rechts die Datei per Mailanhang versenden
    Funktionen.PerMailSenden
 End
