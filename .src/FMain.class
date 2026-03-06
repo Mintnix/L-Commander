@@ -1408,7 +1408,6 @@ End
 
 Public Sub Menu44_Click()
     'Papierkorb anzeigen zum Leeren oder Wiederherstellen
-    'Shell "nemo trash:///"
     Desktop.UsePortal = False
     Desktop.Open("trash:///")
 End
@@ -1687,7 +1686,7 @@ Public Sub Menu56_Click()
     'Mount Verzeichnis prüfen
     MountDir = User.Home & "/.lcommander_sftp"
     Print MountDir
-    If Not Exist(MountDir) Then Mkdir MountDir
+    If Not Exist(MountDir) Then Mkdir Quote(MountDir)
     
     mountsftp = MountDir
     If Funktionen.IsMounted(mountsftp) Then 
@@ -1720,21 +1719,26 @@ Public Sub Menu56_Click()
     If Not Exist("/usr/bin/sshfs") Then 
         If Message.Warning("Das Paket SSHFS ist noch nicht vorhanden,\n für die richtige Funktion aber essentiell.", "SSHFS installieren", "Abbrechen") = 1 Then 
             Me.Hide
-            Shell "gnome-terminal -- apt install sshfs" Wait 
-            Wait 5
+            Wait 
+            Dim p As Process
+            p = Shell ("x-terminal-emulator -e apt install sshfs")
+            p.Wait
             Me.Show 
+            p = Shell ("ssh -o BatchMode=yes -o ConnectTimeout=5 -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & " exit")
+            p.Wait
+            If p.Value = 0 Then Print "Key auf dem Server vorhanden" Else Message.Info("Key noch nicht auf dem Server. \nEin Verbindungsaufbau kann noch nicht stattfinden. \nBitte den Schlüssel zuerst auf den Server kopieren. \nDazu den entsprechenden Button benutzen.", "OK")
         Else 
             Return 
         Endif
     Endif
     
     'Shell Befehl basteln
-    cmd = "/usr/bin/sshfs -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & ":/home/" & sftp.UserName & " " & MountDir & " -o reconnect &"
+    cmd = "/usr/bin/sshfs -p " & sftp.Port & " " & sftp.UserName & "@" & sftp.Server & ":/home/" & sftp.UserName & " " & Quote(MountDir) & " -o reconnect &"
     Print cmd
 
     'Befehl aufrufen
-    Shell cmd
-    Wait
+    Shell cmd 
+    Wait 1
     
     'Fehlerbehandlung: ist eingehängt ?
     If Funktionen.IsMounted(mountsftp) Then
@@ -1960,7 +1964,7 @@ Public Sub Menu67_Click()
     PictureBox2.Picture = pLED_GRUEN
     sInfo = TextLabel1.Text
     TextLabel1.Background = &H0000FF
-    Shell "df -h " & FileView1.Dir & " | tail -1 | awk '{print $4}'" To sResult
+    Shell "df -h " & Quote(FileView1.Dir) & " | tail -1 | awk '{print $4}'" To sResult
     TextLabel1.Text = "Freier Speicherplatz:  " & sResult
     Wait 2
     TextLabel1.Text = sInfo

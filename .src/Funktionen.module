@@ -115,7 +115,6 @@ Public Sub Einpacken()
     Endif
 End
 
-
 Public Sub Baum()
     'Baum anzeigen
     Dim hFont As Font

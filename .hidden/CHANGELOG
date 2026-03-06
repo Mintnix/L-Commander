@@ -1,3 +1,7 @@
+* Fri Mar 06 2026 Mintnix <pcspezialist@arcor.de> 0.2.6
+- x-terminal-emulator -e für Terminalaufrufe verwendet, damit eine bessere  Kompatibilität zu anderen Oberflächen gegeben wird
+- Abfrage ob Key auf Server vorhanden ist, nach SSHFS Installation
+
 * Sat Feb 21 2026 Mintnix <pcspezialist@arcor.de> 0.2.5
 - Kopieren über F5 berücksichtigt nun vorhandene Dateien und fragt ab
 - kleinere Farbanpassungen der Dialogfelder

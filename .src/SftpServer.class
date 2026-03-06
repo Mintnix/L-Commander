@@ -56,7 +56,7 @@ Public Sub btnKey_Click()
         Return 
     Endif
     'SSH Key im Terminal erstellen
-    cmd = "gnome-terminal -- ssh-keygen -t ed25519 -f " & keyFile
+    cmd = "x-terminal-emulator -e  ssh-keygen -t ed25519 -f " & keyFile
     Print cmd
     Shell cmd
     Message.Info("Die SSH-Schlüssel werden erzeugt. Bitte den Anweisungen im Terminal folgen.\n Wichtig, nach dieser Aktion den öffentlichen Schlüssel auf den Server übertragen.")
@@ -65,10 +65,11 @@ End
 Public Sub btnKeyCopy_Click()
     'SSH-Key (Public-Key) auf Server übertragen
     Dim cmd As String
+    Dim p As Process
     
-    cmd = "gnome-terminal -- ssh-copy-id -i " & User.Home & "/.ssh/id_ed25519" & " -p " & txtPort.Text & " " & txtUser.Text & "@" & txtServer.Text
-    Print cmd
-    Shell cmd
+    cmd = "x-terminal-emulator -e ssh-copy-id -i " & User.Home & "/.ssh/id_ed25519" & " -p " & txtPort.Text & " " & txtUser.Text & "@" & txtServer.Text
+    p = Shell cmd
+    p.Wait
 End
 
 Public Sub Form_Open()
