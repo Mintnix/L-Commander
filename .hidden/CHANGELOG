@@ -1,3 +1,9 @@
+* Sun Mar 08 2026 Mintnix <pcspezialist@arcor.de> 0.2.7
+- UI aufgeräumt und angepasst
+- zusätzliche Textleiste für Tasteninformationen
+- Tastenbelegungen teilweise geändert
+- F12 startet neue Entpackfunktion
+
 * Fri Mar 06 2026 Mintnix <pcspezialist@arcor.de> 0.2.6
 - x-terminal-emulator -e für Terminalaufrufe verwendet, damit eine bessere  Kompatibilität zu anderen Oberflächen gegeben wird
 - Abfrage ob Key auf Server vorhanden ist, nach SSHFS Installation

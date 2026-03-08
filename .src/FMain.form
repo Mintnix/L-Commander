@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,171.375,100)
+  MoveScaled(0,0,170.75,100)
   Background = &HBFEFFF
   Text = ("LC - der einfachste Linux Commander der Welt")
   Icon = Picture["LC_Icon.png"]
@@ -90,25 +90,31 @@
     { Menu28 Menu
       Text = ("ext. Programm ausführen")
       Picture = Picture["icon:/medium/application"]
-      { Menu29 Menu
-        Text = ("Data-SCP")
-        Picture = Picture["icon:/medium/exclusive"]
-      }
       { Menu30 Menu
         Text = ("Rechner")
         Picture = Picture["icon:/medium/calculator"]
       }
     }
+    { Menu9 Menu
+      Text = ("Tastencodes")
+      Picture = Picture["icon:/medium/help"]
+      Shortcut = "F1"
+    }
+    { Menu54 Menu
+      Text = ("Programminfo im Internet")
+      Picture = Picture["icon:/medium/internet"]
+      Shortcut = "Alt+W"
+    }
     { Menu10 Menu
       Text = ("Über")
       Picture = Picture["icon:/medium/info"]
-      Shortcut = "V"
+      Shortcut = "Alt+V"
     }
     { Menu7 Menu
     }
     { Menu5 Menu
       Text = ("Beenden")
-      Picture = Picture["icon:/medium/close"]
+      Picture = Picture["icon:/medium/quit"]
       Shortcut = "F10"
     }
   }
@@ -117,18 +123,18 @@
     { Menu14 Menu
       Text = ("Ansicht aktualisieren und Speicher leeren")
       Picture = Picture["icon:/medium/refresh"]
-      Shortcut = "R"
+      Shortcut = "Ctrl+R"
     }
     { Menu67 Menu
       Text = ("Speicherinfo")
       Picture = Picture["icon:/medium/harddisk"]
-      Shortcut = "I"
+      Shortcut = "Alt+I"
     }
     { Menu8 Menu
       Text = ("Versteckte Dateien anzeigen")
       Picture = Picture["icon:/medium/watch"]
       Toggle = True
-      Shortcut = "H"
+      Shortcut = "Ctrl+H"
     }
     { Menu19 Menu
       Text = ("Details anzeigen")
@@ -152,7 +158,7 @@
       Text = ("Schriftvorschau")
       Picture = Picture["icon:/medium/font"]
       Toggle = True
-      Shortcut = "F"
+      Shortcut = "Alt+L"
     }
     { Menu20 Menu
       Text = ("Icons vergrößern")
@@ -197,15 +203,20 @@
       Picture = Picture["icon:/medium/compress"]
       Shortcut = "F11"
     }
+    { Menu83 Menu
+      Text = ("Archivdatei auspacken")
+      Picture = Picture["icon:/medium/uncompress"]
+      Shortcut = "F12"
+    }
     { Menu49 Menu
       Text = ("Zugriff auf externe Datenträger")
       Picture = Picture["icon:/medium/harddisk"]
-      Shortcut = "F12"
+      Shortcut = "Alt+D"
     }
     { Menu44 Menu
       Text = ("Papierkorb durchwühlen")
       Picture = Picture["icon:/medium/trash-full"]
-      Shortcut = "T"
+      Shortcut = "Alt+T"
     }
     { Menu51 Menu
       Text = ("Endgültig Löschen")
@@ -287,19 +298,6 @@
       Picture = Picture["icon:/medium/usb"]
       Visible = False
       Shortcut = "5"
-    }
-  }
-  { Menu53 Menu
-    Text = Shortcut(("Hilfe"), "H")
-    { Menu9 Menu
-      Text = ("Tastencodes")
-      Picture = Picture["icon:/medium/help"]
-      Shortcut = "F1"
-    }
-    { Menu54 Menu
-      Text = ("Programminfo im Internet")
-      Picture = Picture["icon:/medium/internet"]
-      Shortcut = "Alt+I"
     }
   }
   { Menu15 Menu
@@ -446,7 +444,7 @@
     }
   }
   { !Splitter1 Splitter
-    MoveScaled(1,13,169,69)
+    MoveScaled(1,8,169,69)
     #Public = True
     Expand = True
     Centered = True
@@ -472,66 +470,86 @@
       NoTabFocus = True
       Centered = True
       { Spring5 Spring
-        MoveScaled(6,1,4,4)
+        MoveScaled(6,0,4,1)
       }
       { Button3 Button
-        MoveScaled(1,5,16,6)
+        MoveScaled(1,1,16,6)
         Background = Color.Transparent
         ToolTip = ("Kopieren")
         Text = ("F5")
         Picture = Picture["icon:/medium/copy"]
       }
       { Spring1 Spring
-        MoveScaled(6,11,4,4)
+        MoveScaled(6,7,4,1)
       }
       { Button4 Button
-        MoveScaled(1,15,16,6)
+        MoveScaled(1,8,16,6)
         Background = Color.Transparent
         ToolTip = ("Verschieben")
         Text = ("F6")
         Picture = Picture["icon:/medium/move"]
       }
       { Spring2 Spring
-        MoveScaled(6,22,4,4)
+        MoveScaled(6,14,4,1)
       }
       { Button7 Button
-        MoveScaled(1,26,16,6)
+        MoveScaled(1,15,16,6)
         Background = Color.Transparent
         ToolTip = ("Neuen Ordner erstellen")
         Text = ("F7")
         Picture = Picture["icon:/medium/new-dir"]
       }
       { Spring8 Spring
-        MoveScaled(7,32,4,4)
+        MoveScaled(7,21,4,1)
       }
       { Button6 Button
-        MoveScaled(1,37,16,6)
+        MoveScaled(1,22,16,6)
         Background = Color.Transparent
         ToolTip = ("Umbenennen")
         Text = ("F8")
         Picture = Picture["icon:/medium/rename"]
       }
       { Spring7 Spring
-        MoveScaled(7,45,4,4)
-      }
-      { Button10 Button
-        MoveScaled(1,48,16,6)
-        Background = Color.Transparent
-        ToolTip = ("Datenträger anzeigen")
-        Text = ("F12")
-        Picture = Picture["icon:/medium/usb"]
-      }
-      { Spring3 Spring
-        MoveScaled(7,53,4,4)
-      }
-      { Button5 Button
-        MoveScaled(1,55,16,6)
-        Background = Color.Transparent
-        ToolTip = ("Löschen")
-        Picture = Picture["icon:/medium/trash"]
+        MoveScaled(7,28,4,1)
       }
       { Spring4 Spring
-        MoveScaled(7,59,4,4)
+        MoveScaled(7,31,4,1)
+      }
+      { Spring12 Spring
+        MoveScaled(7,33,4,1)
+      }
+      { PictureBox2 PictureBox
+        MoveScaled(6,35,6,6)
+        Alignment = Align.Center
+      }
+      { Spring13 Spring
+        MoveScaled(7,43,4,1)
+      }
+      { Spring9 Spring
+        MoveScaled(7,45,4,1)
+      }
+      { Spring11 Spring
+        MoveScaled(7,47,4,1)
+      }
+      { Button5 Button
+        MoveScaled(1,50,16,6)
+        Background = Color.Transparent
+        ToolTip = ("Löschen")
+        Text = ("Del")
+        Picture = Picture["icon:/medium/trash"]
+      }
+      { Spring3 Spring
+        MoveScaled(7,56,4,1)
+      }
+      { Button10 Button
+        MoveScaled(1,57,16,6)
+        Background = Color.Transparent
+        ToolTip = ("L-Commander beenden")
+        Text = ("F10")
+        Picture = Picture["icon:/medium/quit"]
+      }
+      { Spring10 Spring
+        MoveScaled(7,63,4,1)
       }
     }
     { !FileView2 FileView
@@ -548,7 +566,7 @@
       MoveScaled(131,37,35,11)
       Visible = False
       NoTabFocus = True
-      ToolTip = ("F beendet die Funktion.")
+      ToolTip = ("Alt L beendet die Funktion.")
       Text = ("Dies ist ein Text, der hier angezeigt wird.")
     }
     { PictureBox1 PictureBox
@@ -566,22 +584,29 @@
       ToolTip = ("F2 beendet die Funktion.")
     }
   }
-  { HBox2 HBox
-    MoveScaled(1,83,169,6)
+  { HBox2 VBox
+    MoveScaled(1,78,169,11)
     NoTabFocus = True
     Centered = True
     Padding = 5
-    { PictureBox2 PictureBox
-      MoveScaled(1,1,5,4)
-    }
     { !TextLabel1 TextLabel
-      MoveScaled(7,1,161,4)
+      MoveScaled(1,1,167,4)
       #Public = True
       Font = Font["Bold"]
       NoTabFocus = True
       Expand = True
       Padding = 5
       Text = ("Was kann denn hier für ein Text stehen?")
+      Alignment = Align.Center
+    }
+    { !TextLabel2 TextLabel
+      MoveScaled(1,6,167,4)
+      #Public = True
+      Foreground = &HC5C5C5
+      NoTabFocus = True
+      Expand = True
+      Padding = 5
+      Text = ("F1: Hilfe | F2: Details | F3: Bildvorschau | F4: Verzeichnisbaum | F5: Kopieren | F6: Verschieben | F7: Ordner erstellen | F8:  Umbenennen | F9: Datei erstellen | F11: Zip | F12: Unzip\n| #: Größe berechnen | 0-2: Schnellzugriff Favoriten | 3-5: Schnellwahl Datenträger ")
       Alignment = Align.Center
     }
   }

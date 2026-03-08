@@ -24,7 +24,8 @@ Public Sub CopyDir(src As String, dst As String)
             CopyDir(src &/ f, dst &/ f)             'Verzeichnis erkennen und Funktion mit neuem Ordnernamen aufrufen
         Else 
             Try Copy src &/ f To dst &/ f           'Dateien kopieren
-            If Not Error Then FMain.TextLabel1.Text = "Verzeichnis kopiert. Speicher über Taste R freigeben." 
+            Wait 
+            If Not Error Then FMain.TextLabel1.Text = "Verzeichnis kopiert. Speicher über Tastenkombination Strg R freigeben." 
             If Error Then FMain.TextLabel1.Text = "Verzeichnis kopieren fehlgeschlagen."
         Endif
     Next
@@ -67,13 +68,14 @@ Public Sub PasteSelection(fvTarget As FileView)
                     Print "Fehler beim Kopieren aufgetreten, Datei " & s & " existiert schon."
                     FMain.TextLabel1.Text = "Bereits existierende Dateien wurden nicht kopiert."
                 Endif 
-                If Not Error Then FMain.TextLabel1.Text = "Kopieren abgeschlossen. Speicher über Taste R freigeben."
+                If Not Error Then FMain.TextLabel1.Text = "Kopieren abgeschlossen. Speicher über Tastenkombination Strg R freigeben."
                 Wait 1
             Endif 
         Endif 
         If FMain.CopyOrMove = 2 Then
             Try Move src To dst
             If Not Error Then FMain.TextLabel1.Text = "Verschieben abgeschlossen."
+            Wait 
             If Error Then 
                 Print "Fehler beim Verschieben, es wird die Fehlerbehandlung probiert."
                 Try Copy src To dst
@@ -81,13 +83,13 @@ Public Sub PasteSelection(fvTarget As FileView)
                 If Error Then 
                     Print "Datei " & s & " existiert schon und wird nicht verschoben."
                     FMain.TextLabel1.Text = "Existierende Dateien wurden nicht verschoben."
-                    Wait 1
+                    Wait 2
                 Endif 
             Endif 
         Endif
     Next
     If FMain.CopyOrMove = 2 Then 
-        Wait 0.8
+        Wait 1
         FMain.Reset
     Else 
         fvTarget.Reload
@@ -102,18 +104,75 @@ End
 
 
 Public Sub Einpacken()
-    ''Packfunktion um Daten in ein Archiv zu speichern
+    ''Packfunktion um Daten in ein Zip-Archiv zu speichern
+    Dim archive As String
+    Dim cmd As String
+    Dim f As String
+    
+    archive = InputBox("Name der Archivdatei:", "Zip-Archiv befüllen ...")
+    
+    If archive = "" Then archive = "ZIP_ARCHIV"
+    Wait 'hier warten, weil sonst kommen die nachfolgenden Meldungen nicht zuverlässig
+    
     If FMain.iLR = 1 Then
-        If Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Datei / Ordner wurde dem Archiv im Home-Ordner hinzugefügt." 
-        If Not Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt."
-        Try Shell "zip -r ARCHIV.zip " & Shell(FMain.FileView1.Path) Wait 
+        Print FMain.FileView1.Dir &/ archive
+        If Exist(FMain.FileView1.Dir &/ archive & ".zip") Then sInfotext = "Datei / Ordner wurde dem Archiv " & archive & ".zip im aktuellen Ordner hinzugefügt." 
+        If Not Exist(FMain.FileView1.Dir &/ archive & ".zip") Then sInfotext = "Es wurde ein Zip-Archiv " & archive & ".zip im aktuellen Ordner erstellt."
+        
+        cmd = "cd " & Quote(FMain.FileView1.Dir) & " && zip -r " & Quote(archive) & " "
+        
+        For Each f In FMain.FileView1.Selection
+            cmd &= Quote(f) & " "
+        Next
+        Try Shell cmd Wait 
     Endif
     If FMain.iLR = 2 Then
-        If Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Datei / Ordner wurde dem Archiv im Home-Ordner hinzugefügt." 
-        If Not Exist(User.Home &/ "ARCHIV.zip") Then sInfotext = "Es wurde ein ARCHIV.zip im Home-Ordner erstellt."
-        Try Shell "zip -r ARCHIV.zip " & Shell(FMain.FileView2.Path) Wait 
+        Print FMain.FileView2.Dir &/ archive
+        If Exist(FMain.FileView2.Dir &/ archive & ".zip") Then sInfotext = "Datei / Ordner wurde dem Archiv " & archive & ".zip im aktuellen Ordner hinzugefügt." 
+        If Not Exist(FMain.FileView2.Dir &/ archive & ".zip") Then sInfotext = "Es wurde ein Zip-Archiv " & archive & ".zip im aktuellen Ordner erstellt."
+        
+        cmd = "cd " & Quote(FMain.FileView2.Dir) & " && zip -r " & Quote(archive) & " "
+        
+        For Each f In FMain.FileView2.Selection
+            cmd &= Quote(f) & " "
+        Next
+        Try Shell cmd Wait 
     Endif
 End
+
+Public Sub Auspacken()
+    ''Entpacken von Zip-Archiven
+    Dim cmd As String
+    Dim archive As String
+    Dim targetDir As String
+    
+    targetDir = InputBox("Entpacken nach:", "Zip-Archiv auspacken ...")
+    If targetDir = "" Then targetDir = "ARCHIV_UNZIP"
+    Wait 
+    
+    If FMain.iLR = 1 Then 
+        If Exist(FMain.FileView1.Dir &/ targetDir) Then
+            If Message.Question("Der Ordner " & targetDir & " existiert bereits. \n Alle vorhandenen Dateien mit gleichen Namen \n werden ersetzt. Entpacken trotzdem ausführen?", "JA", "NEIN") <> 1 Then Return
+            Wait  
+        Endif
+        archive = FMain.FileView1.Selection[0]
+        cmd = "cd " & Quote(FMain.FileView1.Dir) & " && unzip -o " & Quote(archive) & " -d " & Quote(targetDir)
+        Try Shell cmd Wait  
+    Endif 
+    
+    If FMain.iLR = 2 Then 
+        If Exist(FMain.FileView2.Dir &/ targetDir) Then
+            If Message.Question("Der Ordner " & targetDir & " existiert bereits. \n Alle vorhandenen Dateien mit gleichen Namen \n werden ersetzt. Entpacken trotzdem ausführen?", "JA", "NEIN") <> 1 Then Return 
+            Wait 
+        Endif
+        archive = FMain.FileView2.Selection[0]
+        cmd = "cd " & Quote(FMain.FileView2.Dir) & " && unzip -o " & Quote(archive) & " -d " & Quote(targetDir)
+        Try Shell cmd Wait  
+    Endif
+    
+    sInfotext = "Das Archiv " & archive & " wurde in das Unterverzeichnis " & targetDir & " entpackt."  
+End
+
 
 Public Sub Baum()
     'Baum anzeigen

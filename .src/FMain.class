@@ -161,7 +161,6 @@ Public Sub Form_Open()
         Menu34.Checked = True
         Menu33.Visible = False
         Menu45.Visible = False
-        Button10.Enabled = False
     Endif 
 
     Funktionen.Baum()
@@ -181,8 +180,6 @@ Public Sub Form_Open()
         Button8.Foreground = iVordergrund
         Button9.Foreground = iVordergrund
     Endif 
-    If Not Exist("/usr/share/applications/data-scp.desktop") Then Menu29.Visible = False
-    If Not Exist("/usr/share/applications/data-backup.desktop") Then Menu30.Visible = False
 
     ''Mountpoint Befehle zum Auffinden der Partitionen
     sBefehl = "lsblk -r -o NAME,MOUNTPOINT | awk '$2==\"/\"{print $1}'"             'Diese fucking Leerzeichen, die manchmal entstehen, wenn man den Befehl nicht gleich in richtiger Sysntax übergibt, lassen mir graue Haare wachsen!!! 
@@ -216,6 +213,8 @@ End
 
 Public Sub Reset()
     'Ansicht Aktualisieren
+    FileView1.UnselectAll
+    FileView2.UnselectAll
     FileView1.Reload
     FileView2.Reload
     DirView1.Reload
@@ -232,6 +231,7 @@ Public Sub Reset()
     Wait 1
     PictureBox2.Picture = pLED_Status
     Print "RESET - Speicher und Ansicht aktualisiert."
+    Wait 0.5
     TextLabel1.Text = "LC ist bereit."
 End
 
@@ -1109,11 +1109,6 @@ Public Sub Menu27_Click()
     FileView2.SetFocus
 End
 
-Public Sub Menu29_Click()
-    'Data-SCP
-    Exec ["data-scp"] Wait 
-End
-
 Public Sub Menu30_Click()
     'Taschenrechner
     Exec ["gnome-calculator"] Wait 
@@ -1161,7 +1156,6 @@ Public Sub Menu34_Click()
     If Menu34.Checked = True Then Splitter3.Layout = [18, 3, 22, 3, 24, 13, 3, 13, 3] Else Splitter3.Layout = [0, 3, 20, 3, 24, 24, 3, 20, 3]
     If Menu34.Checked = True Then DirView1.Visible = True Else DirView1.Visible = False
     If Menu34.Checked = True Then Menu45.Visible = False Else Menu45.Visible = True
-    If Menu34.Checked = True Then Button10.Enabled = False Else Button10.Enabled = True
     If Menu19.Checked = True Then Menu19.Checked = False
     If Menu34.Checked = True Then DirView1.SetFocus Else FileView1.SetFocus             ''SetFocus setzt das jeweilige Fenster aktiv, wichtig um die Tastenbedienung zu erhalten
     If FMain.Maximized = True Then DirView1.Font.Grade = 2
@@ -1606,11 +1600,6 @@ Public Sub Menu49_Click()
     Endif
 End
 
-Public Sub Button10_Click()
-    'Externe Datenträger anzeigen
-    Menu49_Click
-End
-
 Public Sub TextBox1_KeyPress()
     'Bei Return soll der Pfad geändert werden
     If Key.Code = Key.Return Then 
@@ -1821,12 +1810,20 @@ End
 
 Public Sub Form_KeyPress()
     'Versuch die Schriftgröße im Baum anzupassen
-    If Key.Code = Key["L"] And If Key.Control Then 
+    If Key.Alt Then 
+        TextLabel2.Text = "Tastenkombinationen mit ALT & E: Einstellungen | V: Version | I: Info Systemspeicher | L: Schriftvorschau | D: ext. Datenträger | T: Papierkorb | C: Computer | N: Netzwerk | S: Server | W: Web-Info "
+    Endif
+    If Key.Control Then 
+        TextLabel2.Text = "Tastenkombinationen mit STRG + H: Versteckte Dateien | F: Suche | O: Öffnen mit | S: Senden als Mailanhang | R: Rücksetzen/Aktualisieren | C: Kopieren | X: Ausschneiden | V: Einfügen | Entf: Löschen(endgültig) | +: Baumschrift vergrößern | -: Baumschrift verkleinern | 0: Löschen aller Favoriten "
+    Endif
+    If Key.Code = Key["0"] And If Key.Control Then  'löscht die Favoritenbelegungen
         sLiebling1 = ""
         Menu62.Text = "Liebling"
         sLiebling2 = ""
         Menu63.Text = "Liebling"
-        TextLabel1.Text = "Liebling- bzw. Favorit- Belegungen, Nummer 1 und 2, entfernt. Vergessen Sie nicht unter Einstellungen abzuspeichern."
+        sLiebling3 = ""
+        Menu68.Text = "Liebling"
+        TextLabel1.Text = "Liebling- bzw. Favorit- Belegungen entfernt. Vergessen Sie nicht unter Einstellungen abzuspeichern."
     Endif
     If Key.Code = Key["+"] And If Key.Control Then DirView1.Font.Grade += 1
     If Key.Code = Key["-"] And If Key.Control Then DirView1.Font.Grade -= 1
@@ -1983,7 +1980,7 @@ Public Sub FileView1_KeyRelease()
     If Key.Control And Key.Code = Key["o"] Then Menu71_Click
     If Key.Control And Key.Code = Key["s"] Then Funktionen.PerMailSenden()
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
-    If Key.Code = Key["#"] Or If Key.Code = Key["m"] Then 
+    If Key.Code = Key["#"] Then 
         pLED_Status = PictureBox2.Picture
         PictureBox2.Picture = pLED_GELB 
         Wait 
@@ -2019,7 +2016,7 @@ Public Sub FileView2_KeyRelease()
     If Key.Control And Key.Code = Key["o"] Then Menu72_Click
     If Key.Control And Key.Code = Key["s"] Then Funktionen.PerMailSenden()
     If Key.Code = Key.Return Or Key.Code = Key.Enter Then OpenCurrent()
-    If Key.Code = Key["m"] Or If Key.Code = Key["#"] Then 
+    If Key.Code = Key["#"] Then 
         pLED_Status = PictureBox2.Picture
         PictureBox2.Picture = pLED_GELB
         Wait 
@@ -2215,4 +2212,23 @@ End
 Public Sub Menu82_Click()
    'im Feld rechts die Datei per Mailanhang versenden
    Funktionen.PerMailSenden
+End
+
+
+Public Sub Button10_Click()
+    'LC beenden
+    Menu5_Click
+End
+
+Public Sub Menu83_Click()
+    'Entpacken eines Zip-Archiv
+    Funktionen.Auspacken
+    TextLabel1.Text = Funktionen.sInfotext
+    FileView1.Reload
+    FileView2.Reload
+End
+
+Public Sub Form_KeyRelease()
+    'was beim loslassen der Taste passieren soll
+        TextLabel2.Text = "F1: Hilfe | F2: Details | F3: Bildvorschau | F4: Baum | F5: Kopieren | F6: Verschieben | F7: Ordner erstellen | F8:  Umbenennen | F9: Datei erstellen | F10: Ende | F11: Zip | F12: Unzip | #: Größe berechnen | 0-2: Schnellzugriff Favoriten | 3-5: Schnellwahl Datenträger "
 End
