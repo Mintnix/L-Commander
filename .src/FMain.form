@@ -160,6 +160,12 @@
       Toggle = True
       Shortcut = "Alt+L"
     }
+    { Menu29 Menu
+      Text = ("Suchanzeige")
+      Picture = Picture["icon:/medium/find"]
+      Toggle = True
+      Shortcut = "Ctrl+F"
+    }
     { Menu20 Menu
       Text = ("Icons vergrößern")
       Picture = Picture["icon:/medium/add"]
@@ -576,6 +582,11 @@
       ToolTip = ("F3 beendet die Funktion.")
       Alignment = Align.Center
       Border = Border.Plain
+    }
+    { ListBox1 ListBox
+      MoveScaled(131,49,35,16)
+      Visible = False
+      ToolTip = ("Strg F beendet die Suchfunktion.")
     }
     { FileProperties1 FileProperties
       MoveScaled(131,2,35,18)

@@ -109,9 +109,8 @@ Public Sub Einpacken()
     Dim cmd As String
     Dim f As String
     
-    archive = InputBox("Name der Archivdatei:", "Zip-Archiv befüllen ...")
-    
-    If archive = "" Then archive = "ZIP_ARCHIV"
+    archive = InputBox("Name der Archivdatei:", "Zip-Archiv befüllen ...", "ZIP_ARCHIV")
+    If archive = Null Then Return 
     Wait 'hier warten, weil sonst kommen die nachfolgenden Meldungen nicht zuverlässig
     
     If FMain.iLR = 1 Then
@@ -146,8 +145,8 @@ Public Sub Auspacken()
     Dim archive As String
     Dim targetDir As String
     
-    targetDir = InputBox("Entpacken nach:", "Zip-Archiv auspacken ...")
-    If targetDir = "" Then targetDir = "ARCHIV_UNZIP"
+    targetDir = InputBox(" Entpacken nach : ", "Zip-Archiv auspacken ...   ", "ARCHIV_UNZIP")
+    If targetDir = Null Then Return 
     Wait 
     
     If FMain.iLR = 1 Then 

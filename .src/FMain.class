@@ -45,7 +45,7 @@ Public CopyOrMove As Integer = 0    '1 = Kopieren, 2 = Verschieben
 Public sServerID As String                      'Servername oder IP
 Public sServerUser As String                    'Server Benutzername
 Public iServerPort As Integer                   'Server SSH-Port
-
+Private Gefunden As String[]
  
 
 
@@ -2231,4 +2231,48 @@ End
 Public Sub Form_KeyRelease()
     'was beim loslassen der Taste passieren soll
         TextLabel2.Text = "F1: Hilfe | F2: Details | F3: Bildvorschau | F4: Baum | F5: Kopieren | F6: Verschieben | F7: Ordner erstellen | F8:  Umbenennen | F9: Datei erstellen | F10: Ende | F11: Zip | F12: Unzip | #: Größe berechnen | 0-2: Schnellzugriff Favoriten | 3-5: Schnellwahl Datenträger "
+End
+
+Public Sub Menu29_Click()
+    'Suchansicht einschalten und Suche nutzen
+    If Gefunden = Null Then Gefunden = New String[]
+    ListBox1.Clear
+    Gefunden.Clear
+    
+    ListBox1.Background = iHindergrund
+    If iHindergrund = &HFFFFFF Then ListBox1.Foreground = &H0000FF Else ListBox1.Foreground = &HFF003F
+    If Menu29.Checked = True Then FileView2.Visible = False Else FileView2.Visible = True 
+    If Menu29.Checked = True Then ListBox1.Visible = True Else ListBox1.Visible = False
+    
+    Dim pattern As String
+    If Menu29.Checked = True Then pattern = InputBox("Nach Dateien suchen. \nEin Wildcard * wird dem Suchbegriff automatisch \n angefügt. Sie können auch ein * vor den Namen schreiben, um inmitten der Dateinamen zu suchen.\n Bitte Suchbegriff eingeben: ", "Suchen nach ... ", "*Beispiel") & "*" Else Return 
+    If pattern = Null Then Return  
+    
+    Dim ausgabe As String
+    Dim zeilen As String[]
+
+    Dim i As Integer
+    
+    Shell "find " & Quote(FileView1.Dir) & " -iname " & Quote(pattern) To ausgabe
+    Print ausgabe
+    zeilen = Split(ausgabe, gb.NewLine)
+    
+    For i = 0 To zeilen.Max
+        If zeilen[i] <> "" Then 
+            ListBox1.Add(File.Name(zeilen[i]))
+            Gefunden.Add(zeilen[i])
+        Endif
+    Next
+    
+    Wait 
+    Print "Anzahl Eintäge: " & ListBox1.Count
+    TextLabel1.Text = "Gefundene Einträge:  " & ListBox1.Count
+End
+
+Public Sub ListBox1_Activate()
+   'Doppelklick in der Suchbox
+    Dim pfad As String
+    pfad = Gefunden[ListBox1.Index]
+    FileView1.Dir = File.Dir(pfad)
+    FileView1.Current = File.Name(pfad)
 End
