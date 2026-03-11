@@ -1809,14 +1809,14 @@ Public Sub Form_State()
 End
 
 Public Sub Form_KeyPress()
-    'Versuch die Schriftgröße im Baum anzupassen
+    'Das soll bei Tastendruck passieren
     If Key.Alt Then 
         TextLabel2.Text = "Tastenkombinationen mit ALT & E: Einstellungen | V: Version | I: Info Systemspeicher | L: Schriftvorschau | D: ext. Datenträger | T: Papierkorb | C: Computer | N: Netzwerk | S: Server | W: Web-Info "
     Endif
     If Key.Control Then 
-        TextLabel2.Text = "Tastenkombinationen mit STRG + H: Versteckte Dateien | F: Suche | O: Öffnen mit | S: Senden als Mailanhang | R: Rücksetzen/Aktualisieren | C: Kopieren | X: Ausschneiden | V: Einfügen | Entf: Löschen(endgültig) | +: Baumschrift vergrößern | -: Baumschrift verkleinern | 0: Löschen aller Favoriten "
+        TextLabel2.Text = "Tastenkombinationen mit STRG & H: Versteckte Dateien | F: Suche | O: Öffnen mit | S: Senden als Mailanhang | R: Rücksetzen/Aktualisieren | C: Kopieren | X: Ausschneiden | V: Einfügen | Entf: Löschen(endgültig) | +: Baumschrift vergrößern | -: Baumschrift verkleinern | 0: Löschen aller Favoriten "
     Endif
-    If Key.Code = Key["0"] And If Key.Control Then  'löscht die Favoritenbelegungen
+    If Key.Code = Key["0"] And If Key.Control Then  'löscht alle Favoritenbelegungen
         sLiebling1 = ""
         Menu62.Text = "Liebling"
         sLiebling2 = ""
@@ -2245,8 +2245,8 @@ Public Sub Menu29_Click()
     If Menu29.Checked = True Then ListBox1.Visible = True Else ListBox1.Visible = False
     
     Dim pattern As String
-    If Menu29.Checked = True Then pattern = InputBox("Nach Dateien suchen. \nEin Wildcard * wird dem Suchbegriff automatisch \n angefügt. Sie können auch ein * vor den Namen schreiben, um inmitten der Dateinamen zu suchen.\n Bitte Suchbegriff eingeben: ", "Suchen nach ... ", "*Beispiel") & "*" Else Return 
-    If pattern = Null Then Return  
+    If Menu29.Checked = True Then pattern = InputBox("... Dateien. Ein Wildcard * wird dem Suchbegriff automatisch angefügt. Sie können auch ein * vor den Namen schreiben, um inmitten der Dateinamen zu suchen.\nBitte Suchbegriff eingeben: ", "Suchen nach ... ", "*Beispiel_um_in_Dateinamen_zu_suchen") & "*" Else Return 
+    If pattern = Null Or If pattern = "*Beispiel_um_in_Dateinamen_zu_suchen*" Or If pattern = "*" Then Return  
     
     Dim ausgabe As String
     Dim zeilen As String[]
@@ -2266,7 +2266,7 @@ Public Sub Menu29_Click()
     
     Wait 
     Print "Anzahl Eintäge: " & ListBox1.Count
-    TextLabel1.Text = "Gefundene Einträge:  " & ListBox1.Count
+    TextLabel1.Text = "Suchbegriff: " & Quote(pattern) & " Gefundene Einträge: " & ListBox1.Count
 End
 
 Public Sub ListBox1_Activate()
