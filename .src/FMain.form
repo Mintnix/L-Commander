@@ -524,15 +524,16 @@
       { Spring12 Spring
         MoveScaled(7,33,4,1)
       }
-      { PictureBox2 PictureBox
-        MoveScaled(6,35,6,6)
-        Alignment = Align.Center
-      }
       { Spring13 Spring
-        MoveScaled(7,43,4,1)
+        MoveScaled(7,36,4,1)
       }
       { Spring9 Spring
-        MoveScaled(7,45,4,1)
+        MoveScaled(7,38,4,1)
+      }
+      { PictureBox2 PictureBox
+        MoveScaled(6,41,6,6)
+        Picture = Picture.Load("led_grau.png")
+        Alignment = Align.Center
       }
       { Spring11 Spring
         MoveScaled(7,47,4,1)

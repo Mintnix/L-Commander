@@ -190,7 +190,7 @@ Public Sub Form_Open()
     'Timer1.Enabled = True
     PictureBox2.Picture = pLED_GRAU
     Print "Fontgrade = ", FileView1.Font.Grade
-    Reset()
+
     TextLabel1.Text = "Der L-Commander ist bereit für die Arbeit mit Ihren Dateien."
     
     Dim mountsftp As String = User.Home & "/.lcommander_sftp" 
@@ -203,6 +203,10 @@ Public Sub Form_Open()
         Me.Title = "L-Commander - der einfachste Dateimanager der Welt!"
         PictureBox2.Picture = pLED_GRAU
     Endif
+    Wait 
+    PictureBox2.Picture = pLED_GRAU
+    Wait 
+    Reset()
 End
 
 Public Sub Menu5_Click()
@@ -217,7 +221,7 @@ Public Sub Reset()
     FileView2.UnselectAll
     FileView1.Reload
     FileView2.Reload
-    DirView1.Reload
+    If PictureBox2.Picture = pLED_SFTP Then FileView2.Dir = User.Home & "/.lcommander_sftp" Else DirView1.Reload
     CopyList.Clear
     CopySourceDir = ""
     CopyOrMove = 0
@@ -228,7 +232,7 @@ Public Sub Reset()
     TextLabel1.Text = "Speicher freigegeben und Ansicht aktualisiert"
     pLED_Status = PictureBox2.Picture
     PictureBox2.Picture = pLED_BLAU 
-    Wait 1
+    Wait 0.5
     PictureBox2.Picture = pLED_Status
     Print "RESET - Speicher und Ansicht aktualisiert."
     Wait 0.5
@@ -1805,6 +1809,7 @@ Public Sub Form_State()
     If FMain.Maximized = True Then FileView2.IconSize = 128 Else FileView2.IconSize = 64 
     If FMain.Maximized = True Then FileView1.Font.Grade = 3 Else FileView1.Font.Grade = 2
     If FMain.Maximized = True Then FileView2.Font.Grade = 3 Else FileView2.Font.Grade = 2
+    Wait 0.1
     Reset()
 End
 
@@ -1814,7 +1819,7 @@ Public Sub Form_KeyPress()
         TextLabel2.Text = "Tastenkombinationen mit ALT & E: Einstellungen | V: Version | I: Info Systemspeicher | L: Schriftvorschau | D: ext. Datenträger | T: Papierkorb | C: Computer | N: Netzwerk | S: Server | W: Web-Info "
     Endif
     If Key.Control Then 
-        TextLabel2.Text = "Tastenkombinationen mit STRG & H: Versteckte Dateien | F: Suche | O: Öffnen mit | S: Senden als Mailanhang | R: Rücksetzen/Aktualisieren | C: Kopieren | X: Ausschneiden | V: Einfügen | Entf: Löschen(endgültig) | +: Baumschrift vergrößern | -: Baumschrift verkleinern | 0: Löschen aller Favoriten "
+        TextLabel2.Text = "Tastenkombinationen mit STRG & H: Versteckte Dateien | F: Suche | O: Öffnen mit | S: Senden als Mailanhang | R: Rücksetzen/Aktualisieren | C: Kopieren | X: Ausschneiden | V: Einfügen | U: Ansicht L/R tauschen | ←: R/L anzeigen | →: L/R anzeigen | Entf: Löschen(endgültig) | +: Baumschrift vergrößern | -: Baumschrift verkleinern | 0: Löschen aller Favoriten "
     Endif
     If Key.Code = Key["0"] And If Key.Control Then  'löscht alle Favoritenbelegungen
         sLiebling1 = ""
@@ -1825,10 +1830,23 @@ Public Sub Form_KeyPress()
         Menu68.Text = "Liebling"
         TextLabel1.Text = "Liebling- bzw. Favorit- Belegungen entfernt. Vergessen Sie nicht unter Einstellungen abzuspeichern."
     Endif
-    If Key.Code = Key["+"] And If Key.Control Then DirView1.Font.Grade += 1
-    If Key.Code = Key["-"] And If Key.Control Then DirView1.Font.Grade -= 1
-    Print DirView1.Font.Grade
-    DirView1.Refresh
+    If Key.Control And Key.Code = Key["U"] Then 
+        Funktionen.SwapPanels()
+    Endif
+    
+    If Key.Control And Key.Code = Key.Right Then FileView2.Dir = FileView1.Dir
+    If Key.Control And Key.Code = Key.Left Then FileView1.Dir = FileView2.Dir
+    
+    If Key.Code = Key["+"] And If Key.Control Then 
+        DirView1.Font.Grade += 1
+        Print DirView1.Font.Grade
+        DirView1.Refresh
+    Endif 
+    If Key.Code = Key["-"] And If Key.Control Then 
+        DirView1.Font.Grade -= 1
+        Print DirView1.Font.Grade
+        DirView1.Refresh
+    Endif 
 End
 
 '' Orte hinzugefügt -------------------------------------------
@@ -2200,6 +2218,7 @@ Public Sub PictureBox2_Enter()
     If PictureBox2.Picture = pLED_SFTP Then
         PictureBox2.Tooltip = "Sie sind aktuell mit einem Server verbunden.\n Im rechten Feld wird der Server-Home-Ordner angezeigt."
         FileView2.Dir = User.Home & "/.lcommander_sftp"
+        Reset()
         FileView2.SetFocus
     Endif 
 End
@@ -2238,6 +2257,8 @@ Public Sub Menu29_Click()
     If Gefunden = Null Then Gefunden = New String[]
     ListBox1.Clear
     Gefunden.Clear
+    FileView1.SetFocus
+    pLED_Status = PictureBox2.Picture 
     
     ListBox1.Background = iHindergrund
     If iHindergrund = &HFFFFFF Then ListBox1.Foreground = &H0000FF Else ListBox1.Foreground = &HFF003F
@@ -2256,7 +2277,7 @@ Public Sub Menu29_Click()
     Shell "find " & Quote(FileView1.Dir) & " -iname " & Quote(pattern) To ausgabe
     Print ausgabe
     zeilen = Split(ausgabe, gb.NewLine)
-    
+    PictureBox2.Picture = pLED_GELB
     For i = 0 To zeilen.Max
         If zeilen[i] <> "" Then 
             ListBox1.Add(File.Name(zeilen[i]))
@@ -2267,6 +2288,7 @@ Public Sub Menu29_Click()
     Wait 
     Print "Anzahl Eintäge: " & ListBox1.Count
     TextLabel1.Text = "Suchbegriff: " & Quote(pattern) & " Gefundene Einträge: " & ListBox1.Count
+    PictureBox2.Picture = pLED_Status
 End
 
 Public Sub ListBox1_Activate()

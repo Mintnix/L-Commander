@@ -293,3 +293,20 @@ Public Sub PerMailSenden()
         Endif  
     Endif
 End
+
+Public Sub SwapPanels()
+    'Ansichten tauschen
+    Dim tmp1 As String
+    Dim tmp2 As String
+    
+    tmp1 = FMain.FileView1.Dir
+    tmp2 = FMain.FileView2.Dir
+    Wait 
+    FMain.FileView2.Dir = tmp1
+    FMain.FileView1.Dir = tmp2
+    Wait 
+    Print FMain.FileView1.Dir
+    Print FMain.FileView2.Dir
+    Wait 
+    'FMain.Reset
+End
