@@ -166,6 +166,12 @@
       Toggle = True
       Shortcut = "Ctrl+F"
     }
+    { Menu53 Menu
+      Text = ("Dateien filtern")
+      Picture = Picture["icon:/medium/filter"]
+      Toggle = True
+      Shortcut = "Ctrl+I"
+    }
     { Menu20 Menu
       Text = ("Icons vergrößern")
       Picture = Picture["icon:/medium/add"]

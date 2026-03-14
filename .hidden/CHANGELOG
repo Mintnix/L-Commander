@@ -1,3 +1,9 @@
+* Sat Mar 14 2026 Mintnix <pcspezialist@arcor.de> 0.2.9
+- Filterfunktion eingebaut (Dateien nach nach Endungen filtern, z.B. *.pdf) über Menü oder Strg + I
+- Anpassung Abbruch Suchfunktion bei NULL Wert bzw. keiner Texteingabe
+- Hilfe Fenster Text angepasst
+- es können noch kleinere Bugs enthalten sein
+
 * Fri Mar 13 2026 Mintnix <pcspezialist@arcor.de> 0.2.8
 - Ansichten tauschen mit verschiedenen Tastenkombinationen möglich
 - Anpassungen bei Reset

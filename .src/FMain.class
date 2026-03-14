@@ -1819,7 +1819,7 @@ Public Sub Form_KeyPress()
         TextLabel2.Text = "Tastenkombinationen mit ALT & E: Einstellungen | V: Version | I: Info Systemspeicher | L: Schriftvorschau | D: ext. Datenträger | T: Papierkorb | C: Computer | N: Netzwerk | S: Server | W: Web-Info "
     Endif
     If Key.Control Then 
-        TextLabel2.Text = "Tastenkombinationen mit STRG & H: Versteckte Dateien | F: Suche | O: Öffnen mit | S: Senden als Mailanhang | R: Rücksetzen/Aktualisieren | C: Kopieren | X: Ausschneiden | V: Einfügen | U: Ansicht L/R tauschen | ←: R/L anzeigen | →: L/R anzeigen | Entf: Löschen(endgültig) | +: Baumschrift vergrößern | -: Baumschrift verkleinern | 0: Löschen aller Favoriten "
+        TextLabel2.Text = "Tastenkombinationen mit STRG & H: Versteckte Dateien | F: Suche | O: Öffnen mit | S: Senden als Mailanhang | R: Rücksetzen/Aktualisieren | C: Kopieren | X: Ausschneiden | V: Einfügen | U: Ansicht L/R tauschen | ←: R/L anzeigen | →: L/R anzeigen | Entf: Löschen(endgültig) | +: Baumschrift vergrößern | -: Baumschrift verkleinern | 0: Löschen aller Favoriten | I: Filter"
     Endif
     If Key.Code = Key["0"] And If Key.Control Then  'löscht alle Favoritenbelegungen
         sLiebling1 = ""
@@ -2267,7 +2267,13 @@ Public Sub Menu29_Click()
     
     Dim pattern As String
     If Menu29.Checked = True Then pattern = InputBox("... Dateien. Ein Wildcard * wird dem Suchbegriff automatisch angefügt. Sie können auch ein * vor den Namen schreiben, um inmitten der Dateinamen zu suchen.\nBitte Suchbegriff eingeben: ", "Suchen nach ... ", "*Beispiel_um_in_Dateinamen_zu_suchen") & "*" Else Return 
-    If pattern = Null Or If pattern = "*Beispiel_um_in_Dateinamen_zu_suchen*" Or If pattern = "*" Then Return  
+    If pattern = Null Or If pattern = "*Beispiel_um_in_Dateinamen_zu_suchen*" Or If pattern = "*" Then 
+        Menu29.Checked = False
+        FileView2.Visible = True 
+        ListBox1.Visible = False
+        Print "Kein Suchbegriff eingegeben"
+        Return 
+    Endif 
     
     Dim ausgabe As String
     Dim zeilen As String[]
@@ -2297,4 +2303,40 @@ Public Sub ListBox1_Activate()
     pfad = Gefunden[ListBox1.Index]
     FileView1.Dir = File.Dir(pfad)
     FileView1.Current = File.Name(pfad)
+End
+
+Public Sub Menu53_Click()
+    'Dateien filtern
+    If Menu53.Checked = True Then 
+        If PictureBox2.Picture = pLED_SFTP Then pLED_Status = pLED_SFTP Else pLED_Status = pLED_GRAU
+        Dim f As String
+        f = InputBox("Ein Wildcard *. wird dem Filterbegriff automatisch vorangestellt. Bitte Filterwort eingeben: ", "Filtern nach ...")
+        
+        If f = "" Then 
+            FileView1.Filter = Null
+            FileView2.Filter = Null
+            Menu53.Checked = False
+            PictureBox2.Picture = pLED_Status
+            Print "Kein Filter eingegeben"
+            Return 
+        Else 
+            PictureBox2.Picture = pLED_GELB
+            If InStr(f, "*") = 0 And InStr(f, ".") = 0 Then 
+                f = "*." & f
+            Endif
+            Print "Filter: ", f
+            FileView1.Filter = [f]
+            FileView2.Filter = [f]
+            Wait 
+            TextLabel1.Text = "Filter aktiv. Es werden nur Dateien mit der Endung " & f & " angezeigt. Strg I zum Deaktivieren."
+        Endif 
+    Endif 
+    If Menu53.Checked = False Then 
+        FileView1.Filter = Null
+        FileView2.Filter = Null
+        Menu53.Checked = False
+        Print "Filter deaktiviert"
+        PictureBox2.Picture = pLED_Status
+        Reset()
+    Endif
 End
